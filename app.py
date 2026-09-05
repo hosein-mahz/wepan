@@ -1,86 +1,50 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
-import os
-import tempfile
-from note_detector import NoteDetector
-import json
+import os, tempfile, librosa, numpy as np
 
 app = Flask(__name__)
-CORS(app)
-detector = NoteDetector()
 
-# صفحه اصلی
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# تشخیص نت از فایل صوتی
 @app.route('/analyze', methods=['POST'])
-def analyze_audio():
+def analyze():
     try:
-        if 'audio' not in request.files:
-            return jsonify({'error': 'فایل صوتی ارسال نشده'}), 400
-        
-        audio_file = request.files['audio']
-        
+        file = request.files['audio']
         with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp:
-            audio_file.save(tmp.name)
-            tmp_path = tmp.name
+            file.save(tmp.name)
+            path = tmp.name
         
-        detected_notes = detector.detect_notes_from_file(tmp_path)
-        os.unlink(tmp_path)
+        y, sr = librosa.load(path, sr=22050, duration=2)
+        pitches, mags = librosa.piptrack(y=y, sr=sr)
         
-        return jsonify({
-            'status': 'success',
-            'detected_notes': detected_notes
-        })
+        detected = []
+        note_names = ['C','D','E','F','G','A','Bb']
+        for t in range(pitches.shape[1]):
+            idx = mags[:,t].argmax()
+            freq = pitches[idx,t]
+            if 80 < freq < 1000:
+                n = int((np.log2(freq/440)*12) % 12)
+                n = max(0, min(11, n))
+                notes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+                if notes[n] in note_names:
+                    detected.append(notes[n])
         
+        os.unlink(path)
+        return jsonify({'status':'success', 'detected_notes':list(dict.fromkeys(detected))[:5]})
     except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+        return jsonify({'status':'error','message':str(e)}), 500
 
-# محاسبه امتیاز
 @app.route('/score', methods=['POST'])
-def calculate_score():
-    try:
-        data = request.json
-        expected = data.get('expectedNotes', [])
-        detected = data.get('detectedNotes', [])
-        
-        result = detector.calculate_score(expected, detected)
-        result['status'] = 'success'
-        return jsonify(result)
-        
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-# دریافت لیست درس‌ها
-@app.route('/lessons', methods=['GET'])
-def get_lessons():
-    # اینجا می‌تونی از Firebase یا یه فایل JSON استفاده کنی
-    lessons = [
-        {
-            'id': '1',
-            'title': 'نت C4',
-            'description': 'یک ضربه آروم روی نت C4 بزن',
-            'level': 1,
-            'expectedNotes': ['C4']
-        },
-        {
-            'id': '2',
-            'title': 'نت D4',
-            'description': 'روی نت D4 ضربه بزن',
-            'level': 1,
-            'expectedNotes': ['D4']
-        },
-        {
-            'id': '3',
-            'title': 'ترکیب C4 و D4',
-            'description': 'به ترتیب C4 و D4 رو بزن',
-            'level': 2,
-            'expectedNotes': ['C4', 'D4']
-        }
-    ]
-    return jsonify(lessons)
+def score():
+    data = request.json
+    expected = set(data.get('expectedNotes', []))
+    detected = set(data.get('detectedNotes', []))
+    correct = expected.intersection(detected)
+    acc = (len(correct)/len(expected))*100 if expected else 0
+    sc = max(0, min(100, acc*0.8 + 20 - len(detected-expected)*5))
+    msg = '🎉 عالی!' if sc>=90 else '💪 خوب!' if sc>=70 else '📚 تمرین بیشتر'
+    return jsonify({'score':round(sc), 'accuracy':round(acc,1), 'message':msg})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
