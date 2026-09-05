@@ -1,0 +1,24 @@
+#import firebase_admin
+#from firebase_admin import credentials, firestore
+
+# فایل کلید رو از کنسول Firebase دانلود کن
+#cred = credentials.Certificate("path/to/serviceAccountKey.json")
+#firebase_admin.initialize_app(cred)
+
+#db = firestore.client()
+
+# ذخیره یه درس جدید
+#doc_ref = db.collection('lessons').document('lesson_1')
+#doc_ref.set({
+#    'title': 'نت C4',
+#    'description': 'یک ضربه روی نت C4',
+#    'level': 1,
+#    'expectedNotes': ['C4'],
+#    'audioGuideUrl': 'https://your-storage.com/c4_guide.wav'
+#})
+
+# خوندن درس‌ها
+#lessons_ref = db.collection('lessons')
+#docs = lessons_ref.stream()
+#for doc in docs:
+#    print(f'{doc.id} => {doc.to_dict()}')

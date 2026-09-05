@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>هنگ‌درام | آموزش حرفه‌ای</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- صفحه اصلی -->
+        <div id="homePage">
+            <header>
+                <h1>🎵 هنگ‌درام</h1>
+                <p class="subtitle">یادگیری هوشمند با تشخیص نت</p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="number" id="totalLessons">۰</div>
+                        <div class="label">درس‌ها</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number" id="completedLessons">۰</div>
+                        <div class="label">تکمیل شده</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number" id="avgScore">۰</div>
+                        <div class="label">میانگین امتیاز</div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content">
+                <div class="section-title">
+                    <span>📚 درس‌ها</span>
+                    <span class="badge" id="progressBadge">۰%</span>
+                </div>
+                <div id="lessonsContainer"></div>
+            </div>
+        </div>
+
+        <!-- صفحه تمرین -->
+        <div id="practicePage" style="display:none;">
+            <div class="practice-header">
+                <button class="back-btn" id="backButton">←</button>
+                <div class="practice-title" id="lessonTitle">درس</div>
+                <div class="practice-desc" id="lessonDescription">توضیحات</div>
+            </div>
+            
+            <div style="padding:20px 25px 30px;">
+                <div style="text-align:center;margin-bottom:10px;">
+                    <span style="font-size:13px;color:var(--gray);">نت‌هایی که باید بزنی</span>
+                </div>
+                <div class="notes-display" id="expectedNotesDisplay"></div>
+
+                <div class="record-container">
+                    <button class="record-btn" id="recordButton">
+                        🎤
+                    </button>
+                    <div class="record-status" id="recordingStatus">برای شروع ضبط بزن</div>
+                </div>
+
+                <audio id="audioPlayer" controls style="display:none;"></audio>
+
+                <!-- نتیجه -->
+                <div class="result-card" id="resultArea">
+                    <div class="score" id="scoreDisplay">۰</div>
+                    <div class="score-label">امتیاز شما</div>
+                    <div class="accuracy-bar">
+                        <div class="fill" id="accuracyFill" style="width:0%;"></div>
+                    </div>
+                    <div style="text-align:center;font-size:14px;color:var(--gray);">
+                        دقت: <span id="accuracyText">۰%</span>
+                    </div>
+                    <div class="message" id="resultMessage"></div>
+                    
+                    <div style="margin-top:10px;">
+                        <div style="font-size:13px;color:var(--gray);text-align:center;">نت‌های تشخیص داده شده</div>
+                        <div class="notes-display" id="detectedNotesDisplay" style="padding:10px 0;"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-secondary" id="retryButton">🔄 دوباره</button>
+                        <button class="btn-success" id="nextLessonButton">درس بعدی →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
