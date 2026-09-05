@@ -1,4 +1,4 @@
-echo flask > requirements.txt
-echo librosa >> requirements.txt
-echo numpy >> requirements.txt
-echo gunicorn >> requirements.txt
+flask
+librosa
+numpy
+gunicorn
