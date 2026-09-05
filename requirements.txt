@@ -1,4 +1,4 @@
-cd C:\Users\User\Desktop\Wepan_Web
+pip install -r requirements.txt
 echo flask > requirements.txt
 echo librosa >> requirements.txt
 echo numpy >> requirements.txt
