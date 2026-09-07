@@ -3,275 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WEPAN - Falling Notes</title>
+    <title>WEPAN - آموزش هنگ‌درام</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ===== تمام استایل‌های قبلی ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #050a12;
             color: #e5e7eb;
             font-family: 'Tahoma', Arial, sans-serif;
             display: flex;
             justify-content: center;
-            padding: 10px;
+            align-items: center;
             min-height: 100vh;
+            padding: 10px;
         }
         .container {
-            max-width: 900px;
+            max-width: 920px;
             width: 100%;
             background: #070c15;
             border-radius: 20px;
-            padding: 0;
             overflow: hidden;
+            min-height: 95vh;
+            position: relative;
         }
-        
-        /* HEADER */
-        .header {
-            background: #0d1422;
-            padding: 20px 25px;
+
+        #welcomePage {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 90vh;
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
         }
-        .header h1 {
-            font-size: 28px;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        #welcomePage .logo { font-size: 72px; font-weight: 800; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        #welcomePage .subtitle { color: #94a3b8; font-size: 18px; margin-bottom: 40px; }
+        #welcomePage .start-btn { background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; color: #000; padding: 16px 60px; border-radius: 16px; font-size: 22px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        #welcomePage .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); }
+        #welcomePage .stats-preview { display: flex; gap: 30px; margin-top: 40px; color: #64748b; font-size: 14px; }
+        #welcomePage .stats-preview span { background: #0d1422; padding: 8px 20px; border-radius: 10px; border: 1px solid #1c2a3d; }
+        #welcomePage .bottom-buttons { display: flex; gap: 15px; margin-top: 30px; }
+        #welcomePage .bottom-buttons button { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 10px 30px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        #welcomePage .bottom-buttons button:hover { border-color: #38bdf8; color: #fff; }
+
+        #lessonsPage {
+            display: none;
+            min-height: 90vh;
+            padding: 30px 25px;
+            background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
         }
-        .header .stats {
-            display: flex;
-            gap: 15px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        .header .stats span {
-            background: #1a2a3d;
-            padding: 4px 14px;
-            border-radius: 8px;
-        }
-        .header .stats .score { color: #38bdf8; }
-        .header .stats .combo { color: #fbbf24; }
-        .header .stats .accuracy { color: #2dd4bf; }
-        
-        /* LESSONS */
-        .lessons {
-            padding: 20px;
-        }
+        #lessonsPage .lessons-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        #lessonsPage .lessons-header h2 { font-size: 28px; }
+        #lessonsPage .lessons-header .back-home { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        #lessonsPage .lessons-header .back-home:hover { border-color: #38bdf8; color: #fff; }
+
         .lesson-card {
             background: #0d1422;
             border: 1px solid #1c2a3d;
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 10px;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
             transition: 0.3s;
         }
-        .lesson-card:hover {
-            border-color: #38bdf8;
-            transform: translateX(-5px);
-        }
-        .lesson-card .info h3 { font-size: 15px; }
+        .lesson-card:hover { border-color: #38bdf8; transform: translateX(-5px); }
+        .lesson-card .info h3 { font-size: 16px; margin-bottom: 4px; }
         .lesson-card .info p { font-size: 13px; color: #94a3b8; }
-        .lesson-card .level { font-size: 11px; color: #38bdf8; }
+        .lesson-card .info .level-tag { display: inline-block; font-size: 10px; background: #38bdf8; color: #000; padding: 1px 12px; border-radius: 20px; margin-top: 4px; }
+        .lesson-card .status { font-size: 20px; }
         .lesson-card.locked { opacity: 0.4; cursor: not-allowed; }
+        .lesson-card.locked:hover { transform: none; border-color: #1c2a3d; }
         .lesson-card.completed { border-color: #2dd4bf; }
-        
-        /* PRACTICE */
-        .practice {
+
+        #gamePage { display: none; }
+
+        #timerOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 10, 18, 0.85);
             display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 20px;
         }
-        .practice-header {
+        #timerOverlay .timer-number {
+            font-size: 120px;
+            font-weight: 900;
+            color: #38bdf8;
+            text-shadow: 0 0 60px rgba(56, 189, 248, 0.5);
+            animation: timerPulse 0.8s ease-in-out;
+        }
+        @keyframes timerPulse {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        #timerOverlay .timer-text {
+            position: absolute;
+            bottom: 40%;
+            font-size: 18px;
+            color: #94a3b8;
+        }
+
+        .header {
             background: #0d1422;
-            padding: 10px 20px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            position: relative;
         }
-        .practice-header .back {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 22px;
-            cursor: pointer;
-        }
-        .practice-header .title { font-size: 18px; font-weight: bold; }
-        .practice-header .pstats { display: flex; gap: 12px; font-size: 13px; font-weight: bold; }
-        .practice-header .pstats span { background: #1a2a3d; padding: 3px 12px; border-radius: 6px; }
-        
-        .next-note {
-            text-align: center;
-            padding: 8px 0;
-            font-size: 11px;
-            color: #475569;
-        }
-        .next-note .note {
-            font-size: 34px;
-            font-weight: bold;
-            color: #38bdf8;
-        }
-        
-        .falling-area {
-            background: #09111e;
-            border: 1px solid #1c2a3d;
-            border-radius: 14px;
-            margin: 5px 15px;
-            padding: 5px;
-        }
-        #fallingCanvas {
-            width: 100%;
-            height: auto;
-            background: #09111e;
-            display: block;
-            border-radius: 10px;
-        }
-        
-        .handpan-area {
-            background: #0b1320;
-            border: 1px solid #1c2a3d;
-            border-radius: 14px;
-            margin: 5px 15px;
-            padding: 5px;
-        }
-        #handpanCanvas {
-            width: 100%;
-            height: auto;
-            background: #0b1320;
-            display: block;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        
+        .header h1 { font-size: 22px; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header .stats { display: flex; gap: 12px; font-size: 12px; font-weight: bold; }
+        .header .stats span { background: #1a2a3d; padding: 4px 14px; border-radius: 8px; }
+        .header .stats .score { color: #38bdf8; }
+        .header .stats .combo { color: #fbbf24; }
+        .header .stats .accuracy { color: #2dd4bf; }
+
+        .next-note { text-align: center; padding: 6px 0; font-size: 11px; color: #475569; }
+        .next-note .note { font-size: 30px; font-weight: bold; color: #38bdf8; }
+
+        .falling-area { background: #09111e; border: 1px solid #1c2a3d; border-radius: 14px; margin: 4px 12px; padding: 4px; }
+        #fallingCanvas { width: 100%; height: auto; background: #09111e; display: block; border-radius: 10px; }
+
+        .handpan-area { background: #0b1320; border: 1px solid #1c2a3d; border-radius: 14px; margin: 4px 12px; padding: 4px; }
+        #handpanCanvas { width: 100%; height: auto; background: #0b1320; display: block; border-radius: 10px; cursor: pointer; }
+
         .controls {
             display: flex;
-            gap: 12px;
-            padding: 8px 15px;
+            gap: 10px;
+            padding: 6px 12px;
             flex-wrap: wrap;
             align-items: center;
         }
-        .controls button {
+        .controls button { background: #0d1422; border: 1px solid #1c2a3d; color: #e5e7eb; padding: 4px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .controls button:hover { border-color: #38bdf8; }
+        .controls select { background: #0d1422; color: #e5e7eb; border: 1px solid #1c2a3d; padding: 3px 8px; border-radius: 6px; font-size: 12px; }
+        .controls .progress { color: #475569; font-size: 12px; margin-right: auto; }
+
+        .record-section { display: flex; align-items: center; gap: 12px; padding: 4px 12px; flex-wrap: wrap; }
+        .record-btn { background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; color: #000; padding: 6px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .record-btn.recording { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .record-status { color: #94a3b8; font-size: 12px; }
+
+        #resultPage {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 85vh;
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
+        }
+        #resultPage .result-icon { font-size: 64px; margin-bottom: 10px; }
+        #resultPage .result-score { font-size: 72px; font-weight: 800; color: #2dd4bf; }
+        #resultPage .result-label { color: #94a3b8; font-size: 18px; margin-bottom: 20px; }
+        #resultPage .result-details { display: flex; gap: 30px; margin: 20px 0 30px; }
+        #resultPage .result-details div { background: #0d1422; padding: 12px 24px; border-radius: 12px; border: 1px solid #1c2a3d; }
+        #resultPage .result-details div .num { font-size: 28px; font-weight: bold; color: #38bdf8; }
+        #resultPage .result-details div .lbl { font-size: 12px; color: #64748b; }
+        #resultPage .result-actions { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+        #resultPage .result-actions button { padding: 12px 36px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        #resultPage .result-actions .btn-retry { background: #0d1422; color: #e5e7eb; border: 1px solid #1c2a3d; }
+        #resultPage .result-actions .btn-retry:hover { border-color: #38bdf8; }
+        #resultPage .result-actions .btn-lessons { background: linear-gradient(135deg, #38bdf8, #818cf8); color: #000; }
+        #resultPage .result-actions .btn-lessons:hover { transform: scale(1.05); }
+        #resultPage .result-actions .btn-home { background: #0d1422; color: #94a3b8; border: 1px solid #1c2a3d; }
+        #resultPage .result-actions .btn-home:hover { border-color: #dc2626; color: #dc2626; }
+
+        #settingsPage {
+            display: none;
+            min-height: 90vh;
+            padding: 30px 25px;
+            background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
+        }
+        #settingsPage .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        #settingsPage .settings-header h2 { font-size: 28px; }
+        #settingsPage .settings-header .back-btn { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        #settingsPage .settings-header .back-btn:hover { border-color: #38bdf8; color: #fff; }
+
+        .setting-group {
             background: #0d1422;
             border: 1px solid #1c2a3d;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .setting-group .group-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: #94a3b8; }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #1a2a3d;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-item label { font-size: 14px; color: #e5e7eb; }
+        .setting-item select, .setting-item input[type="range"] {
+            background: #1a2a3d;
             color: #e5e7eb;
-            padding: 5px 16px;
+            border: 1px solid #2a3a4d;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+        }
+        .setting-item input[type="range"] { min-width: 150px; padding: 0; background: transparent; }
+        .setting-item .value-display {
+            color: #38bdf8;
+            font-weight: bold;
+            min-width: 45px;
+            text-align: center;
+            font-size: 15px;
+            background: #0d1422;
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid #1c2a3d;
+        }
+        .setting-item .color-options { display: flex; gap: 8px; flex-wrap: wrap; }
+        .setting-item .color-options .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .setting-item .color-options .color-btn:hover { transform: scale(1.1); }
+        .setting-item .color-options .color-btn.active { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .setting-item .lang-options { display: flex; gap: 8px; flex-wrap: wrap; }
+        .setting-item .lang-options .lang-btn {
+            background: #1a2a3d;
+            border: 2px solid transparent;
+            color: #94a3b8;
+            padding: 4px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 13px;
+        }
+        .setting-item .lang-options .lang-btn:hover { border-color: #38bdf8; color: #fff; }
+        .setting-item .lang-options .lang-btn.active { border-color: #38bdf8; color: #fff; background: #1a3a5a; }
+        .setting-item .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .setting-item .slider-group input[type="range"] {
+            min-width: 120px;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; gap: 8px; text-align: center; }
+            .header .stats { flex-wrap: wrap; justify-content: center; }
+            .controls { justify-content: center; }
+            .controls .progress { margin-right: 0; }
+            .record-section { justify-content: center; }
+            #resultPage .result-details { flex-direction: column; gap: 10px; }
+            #welcomePage .logo { font-size: 48px; }
+            #lessonsPage .lessons-header { flex-direction: column; gap: 15px; text-align: center; }
+            .setting-item { flex-direction: column; align-items: stretch; }
+            .setting-item .slider-group { justify-content: center; }
+        }
+
+        /* دکمه تست صدا */
+        .sound-toggle {
+            background: #0d1422;
+            border: 1px solid #1c2a3d;
+            color: #94a3b8;
+            padding: 4px 14px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 12px;
+            transition: 0.3s;
         }
-        .controls button:hover { border-color: #38bdf8; }
-        .controls select {
-            background: #0d1422;
-            color: #e5e7eb;
-            border: 1px solid #1c2a3d;
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-        .controls .progress { color: #475569; font-size: 13px; margin-right: auto; }
-        
-        .result {
-            background: #0d1a2a;
-            border: 2px solid #2dd4bf;
-            border-radius: 14px;
-            padding: 20px;
-            margin: 10px 15px;
-            text-align: center;
-            display: none;
-        }
-        .result .big-score { font-size: 48px; font-weight: 800; color: #2dd4bf; }
-        .result .bar { height: 6px; background: #0d1422; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-        .result .bar .fill { height: 100%; background: linear-gradient(90deg, #f472b6, #2dd4bf); transition: width 1s; }
-        .result .msg { color: #94a3b8; margin: 8px 0; }
-        .result .actions { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
-        .result .actions button {
-            padding: 8px 24px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .result .actions .retry { background: #1a2a3d; color: #e5e7eb; border: 1px solid #1c2a3d; }
-        .result .actions .next { background: linear-gradient(135deg, #38bdf8, #818cf8); color: #000; }
-        
-        /* RECORD BUTTON */
-        .record-btn {
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            border: none;
-            color: #000;
-            padding: 8px 24px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 5px 15px;
-        }
-        .record-btn.recording {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: #fff;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .record-status { color: #94a3b8; font-size: 13px; margin: 5px 15px; }
-        
-        @media (max-width: 600px) {
-            .header { flex-direction: column; gap: 10px; text-align: center; }
-            .header .stats { flex-wrap: wrap; justify-content: center; }
-            .practice-header { flex-direction: column; gap: 8px; text-align: center; }
-            .practice-header .pstats { flex-wrap: wrap; justify-content: center; }
-            .controls { justify-content: center; }
-            .controls .progress { margin-right: 0; }
-        }
+        .sound-toggle:hover { border-color: #38bdf8; color: #fff; }
+        .sound-toggle.active { border-color: #2dd4bf; color: #2dd4bf; }
     </style>
 </head>
 <body>
-<div class="container">
-    <!-- HOME -->
-    <div id="homePage">
-        <div class="header">
-            <h1>🥁 WEPAN</h1>
-            <div class="stats">
-                <span class="score">🏆 <span id="totalLessons">0</span></span>
-                <span class="combo">✅ <span id="completedLessons">0</span></span>
-                <span class="accuracy">🔥 <span id="streakCount">0</span></span>
-            </div>
+<div class="container" style="position:relative;">
+
+    <!-- ===== صفحه خوش‌آمدگویی ===== -->
+    <div id="welcomePage">
+        <div class="logo">🥁 WEPAN</div>
+        <div class="subtitle">یادگیری هنگ‌درام • بازی • پیشرفت</div>
+        <button class="start-btn" onclick="showLessons()">▶ شروع</button>
+        <div class="stats-preview">
+            <span>🏆 <span id="wTotal">6</span> درس</span>
+            <span>✅ <span id="wDone">0</span> تکمیل</span>
+            <span>🔥 <span id="wStreak">0</span> روز</span>
         </div>
-        <div class="lessons" id="lessonsContainer"></div>
+        <div class="bottom-buttons">
+            <button onclick="showSettings()">⚙️ تنظیمات</button>
+        </div>
     </div>
-    
-    <!-- PRACTICE -->
-    <div id="practicePage" class="practice">
-        <div class="practice-header">
-            <button class="back" id="backButton">←</button>
-            <span class="title" id="lessonTitle">درس</span>
-            <div class="pstats">
+
+    <!-- ===== صفحه مراحل ===== -->
+    <div id="lessonsPage">
+        <div class="lessons-header">
+            <h2>📚 انتخاب مرحله</h2>
+            <button class="back-home" onclick="goHome()">🏠 صفحه اصلی</button>
+        </div>
+        <div id="lessonsContainer"></div>
+    </div>
+
+    <!-- ===== صفحه بازی ===== -->
+    <div id="gamePage">
+        <div id="timerOverlay">
+            <div class="timer-text">آماده‌ای؟</div>
+            <div class="timer-number" id="timerNumber">3</div>
+        </div>
+
+        <div class="header">
+            <button id="backToLessons" style="background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;" onclick="backToLessons()">←</button>
+            <h1 id="gameTitle">🥁 WEPAN</h1>
+            <div class="stats">
                 <span class="score" id="scoreDisplay">SCORE 0</span>
                 <span class="combo" id="comboDisplay">COMBO 0</span>
                 <span class="accuracy" id="accuracyDisplay">ACC 0%</span>
+                <button class="sound-toggle active" id="soundToggle" onclick="toggleSound()">🔊</button>
             </div>
         </div>
-        
+
         <div class="next-note">
             <span style="color:#475569;">NEXT NOTE</span>
             <div class="note" id="targetNote">—</div>
         </div>
-        
+
         <div class="falling-area">
-            <canvas id="fallingCanvas" width="820" height="315"></canvas>
+            <canvas id="fallingCanvas" width="820" height="280"></canvas>
         </div>
-        
+
         <div class="handpan-area">
-            <canvas id="handpanCanvas" width="820" height="248"></canvas>
+            <canvas id="handpanCanvas" width="820" height="280"></canvas>
         </div>
-        
+
         <div class="controls">
             <button id="pauseButton">⏸ PAUSE</button>
             <span style="color:#475569;font-size:11px;">SPEED</span>
@@ -284,101 +367,451 @@
                 <option value="1.50">1.50×</option>
             </select>
             <span class="progress" id="progressLabel">NOTES 0 / 20</span>
+            <button id="endGameBtn" style="background:#dc2626;color:#fff;border:none;padding:4px 14px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:12px;">✕ پایان</button>
         </div>
-        
-        <button class="record-btn" id="recordButton">🎤 ضبط تمرین</button>
-        <div class="record-status" id="recordStatus">برای تمرین ضبط کن</div>
-        
-        <div class="result" id="resultArea">
-            <div class="big-score" id="resultScore">0</div>
-            <div style="color:#94a3b8;font-size:14px;">SCORE</div>
-            <div class="bar"><div class="fill" id="accuracyFill" style="width:0%;"></div></div>
-            <div class="msg" id="resultMessage"></div>
-            <div class="actions">
-                <button class="retry" id="retryButton">🔄 دوباره</button>
-                <button class="next" id="nextButton">درس بعدی →</button>
+
+        <div class="record-section">
+            <button class="record-btn" id="recordButton">🎤 ضبط تمرین</button>
+            <span class="record-status" id="recordStatus">برای تمرین ضبط کن</span>
+        </div>
+    </div>
+
+    <!-- ===== صفحه نتیجه ===== -->
+    <div id="resultPage">
+        <div class="result-icon" id="resultIcon">🎉</div>
+        <div class="result-score" id="resultScore">0</div>
+        <div class="result-label">امتیاز نهایی</div>
+        <div class="result-details">
+            <div><div class="num" id="rHits">0</div><div class="lbl">ضربات درست</div></div>
+            <div><div class="num" id="rAccuracy">0%</div><div class="lbl">دقت</div></div>
+            <div><div class="num" id="rCombo">0</div><div class="lbl">بهترین COMBO</div></div>
+        </div>
+        <div class="result-actions">
+            <button class="btn-retry" onclick="retryGame()">🔄 بازی دوباره</button>
+            <button class="btn-lessons" onclick="backToLessons()">📚 بازگشت به مراحل</button>
+            <button class="btn-home" onclick="goHome()">🏠 صفحه اصلی</button>
+        </div>
+    </div>
+
+    <!-- ===== صفحه تنظیمات ===== -->
+    <div id="settingsPage">
+        <div class="settings-header">
+            <h2>⚙️ تنظیمات</h2>
+            <button class="back-btn" onclick="goHome()">🏠 بازگشت</button>
+        </div>
+
+        <div class="setting-group">
+            <div class="group-title">🌐 زبان</div>
+            <div class="setting-item">
+                <label>زبان</label>
+                <div class="lang-options">
+                    <button class="lang-btn active" data-lang="fa" onclick="setLanguage('fa', this)">فارسی</button>
+                    <button class="lang-btn" data-lang="en" onclick="setLanguage('en', this)">English</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <div class="group-title">🎨 رنگ بازی</div>
+            <div class="setting-item">
+                <label>رنگ اصلی</label>
+                <div class="color-options">
+                    <div class="color-btn active" style="background:#38bdf8;" onclick="setColor('#38bdf8', this)"></div>
+                    <div class="color-btn" style="background:#f472b6;" onclick="setColor('#f472b6', this)"></div>
+                    <div class="color-btn" style="background:#2dd4bf;" onclick="setColor('#2dd4bf', this)"></div>
+                    <div class="color-btn" style="background:#fbbf24;" onclick="setColor('#fbbf24', this)"></div>
+                    <div class="color-btn" style="background:#a78bfa;" onclick="setColor('#a78bfa', this)"></div>
+                    <div class="color-btn" style="background:#fb7185;" onclick="setColor('#fb7185', this)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <div class="group-title">⚡ سرعت و سایز</div>
+            <div class="setting-item">
+                <label>سرعت قطره‌ها</label>
+                <div class="slider-group">
+                    <input type="range" id="speedRange" min="50" max="400" value="200" step="10" oninput="updateSpeedSetting(this.value)">
+                    <span class="value-display" id="speedValueDisplay">200</span>
+                </div>
+            </div>
+            <div class="setting-item">
+                <label>سایز قطره‌ها</label>
+                <div class="slider-group">
+                    <input type="range" id="dropSizeRange" min="0.3" max="1.0" value="0.65" step="0.05" oninput="updateDropSize(this.value)">
+                    <span class="value-display" id="dropSizeValueDisplay">0.65</span>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <script>
 // =========================================================
-// WEPAN - FULL GAME
+// WEPAN - با سیستم صدا
 // =========================================================
+
+console.log('WEPAN loading...');
+
+// ===== سیستم صدا =====
+let audioCtx = null;
+let soundEnabled = true;
+
+// فرکانس نت‌ها (هرتز)
+const NOTE_FREQS = {
+    'C': 261.63,
+    'D': 293.66,
+    'E': 329.63,
+    'F': 349.23,
+    'G': 392.00,
+    'A': 440.00,
+    'Bb': 466.16,
+    'A_high': 880.00,
+    'D_high': 587.33
+};
+
+// صداهای دستی (برای نت‌های هنگ‌درام با تایمبر متفاوت)
+function playHandpanNote(noteName, duration = 0.5, volume = 0.3) {
+    if (!soundEnabled) return;
+    
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        
+        const freq = NOTE_FREQS[noteName];
+        if (!freq) return;
+        
+        const now = audioCtx.currentTime;
+        
+        // نوسان‌ساز اصلی
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        // نوع موج: سینوسی + کمی مثلث برای صدای گرم‌تر
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        
+        // افزودن هارمونیک برای صدای طبیعی‌تر
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(freq * 2, now);
+        gain2.gain.setValueAtTime(volume * 0.08, now);
+        
+        // پوشش (ADSR)
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.6, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0, now + duration);
+        
+        // اتصال
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        
+        // پخش
+        osc.start(now);
+        osc.stop(now + duration);
+        
+        osc2.start(now);
+        osc2.stop(now + duration);
+        
+        // ریورب ساده (با تأخیر)
+        const delay = audioCtx.createDelay(0.3);
+        const delayGain = audioCtx.createGain();
+        delay.delayTime.value = 0.12;
+        delayGain.gain.value = 0.15;
+        
+        gain.connect(delay);
+        delay.connect(delayGain);
+        delayGain.connect(audioCtx.destination);
+        
+        // صدای ضربه (attack)
+        const noise = audioCtx.createBufferSource();
+        const bufferSize = audioCtx.sampleRate * 0.02;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+        }
+        noise.buffer = buffer;
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(volume * 0.15, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        noise.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        noise.start(now);
+        noise.stop(now + 0.05);
+        
+    } catch (e) {
+        console.log('Sound error:', e);
+    }
+}
+
+// پخش صدای ضربه (Hit)
+function playHitSound(noteName) {
+    playHandpanNote(noteName, 0.4, 0.25);
+}
+
+// پخش صدای Miss
+function playMissSound() {
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    } catch (e) {}
+}
+
+// پخش صدای COMBO
+function playComboSound(combo) {
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const freq = 440 + combo * 20;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+    } catch (e) {}
+}
+
+// قطع/وصل صدا
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('soundToggle');
+    btn.textContent = soundEnabled ? '🔊' : '🔇';
+    btn.classList.toggle('active', soundEnabled);
+}
+
+// ===== LESSONS =====
+const LESSONS = [
+    { id: 1, title: 'نت C', desc: 'ضربه روی نت C', level: 1 },
+    { id: 2, title: 'نت D', desc: 'ضربه روی نت D', level: 1 },
+    { id: 3, title: 'نت E', desc: 'ضربه روی نت E', level: 1 },
+    { id: 4, title: 'C و D', desc: 'C سپس D', level: 2 },
+    { id: 5, title: 'D و E', desc: 'D سپس E', level: 2 },
+    { id: 6, title: 'سه نت', desc: 'C-D-E', level: 3 },
+];
 
 // ===== DATA =====
 const NOTE_X = { "A_high":75, "F":170, "G":265, "E":355, "D":430, "D_high":500, "C":595, "Bb":690, "A":760 };
 const NOTE_COLORS = { "C":"#38bdf8", "D":"#60a5fa", "E":"#2dd4bf", "F":"#818cf8", "G":"#a78bfa", "A":"#f472b6", "Bb":"#fbbf24", "A_high":"#fb7185", "D_high":"#34d399" };
 const NOTE_LABELS = { "A":"A", "Bb":"Bb", "C":"C", "D_high":"D", "E":"E", "F":"F", "G":"G", "A_high":"A", "D":"D" };
 const ALL_NOTES = Object.keys(NOTE_X);
-
-const LESSONS = [
-    { id:'1', title:'نت C', desc:'ضربه روی C', level:1, expected:['C'] },
-    { id:'2', title:'نت D', desc:'ضربه روی D', level:1, expected:['D'] },
-    { id:'3', title:'نت E', desc:'ضربه روی E', level:1, expected:['E'] },
-    { id:'4', title:'C و D', desc:'C سپس D', level:2, expected:['C','D'] },
-    { id:'5', title:'D و E', desc:'D سپس E', level:2, expected:['D','E'] },
-    { id:'6', title:'سه نت', desc:'C-D-E', level:3, expected:['C','D','E'] },
-];
-
 const TOTAL_NOTES = 20;
 
 // ===== STATE =====
 let currentLesson = null;
 let score = 0, hits = 0, misses = 0, combo = 0, bestCombo = 0, notesPlayed = 0;
-let isPaused = false, isRecording = false;
+let isPaused = false, gameRunning = false, isGameReady = false;
 let speedMultiplier = 1.0;
-let fallingNote = null, currentTarget = null, noteY = 20, hitY = 252;
+let fallingNote = null, currentTarget = null, noteY = 20, hitY = 220;
 let animationId = null, lastTime = 0;
-let mediaRecorder = null, audioChunks = [];
+let timerInterval = null;
+let canvas, ctx, panCanvas, panCtx;
+let isGameInitialized = false;
+let GAME_SPEED = 200;
+let DROPLET_SCALE = 0.65;
+let mainColor = '#38bdf8';
 
+// ===== STATS =====
 let completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
 let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
-let lastPractice = localStorage.getItem('wepan_last') || null;
 
-// ===== CANVAS =====
-let canvas, ctx, panCanvas, panCtx;
+// ===== FUNCTIONS =====
+function showLessons() {
+    document.getElementById('welcomePage').style.display = 'none';
+    document.getElementById('lessonsPage').style.display = 'block';
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('settingsPage').style.display = 'none';
+    renderLessons();
+}
 
-// ===== LESSONS =====
+function showSettings() {
+    document.getElementById('welcomePage').style.display = 'none';
+    document.getElementById('lessonsPage').style.display = 'none';
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('settingsPage').style.display = 'block';
+    document.getElementById('speedRange').value = GAME_SPEED;
+    document.getElementById('speedValueDisplay').textContent = GAME_SPEED;
+    document.getElementById('dropSizeRange').value = DROPLET_SCALE;
+    document.getElementById('dropSizeValueDisplay').textContent = DROPLET_SCALE;
+}
+
+function goHome() {
+    document.getElementById('welcomePage').style.display = 'flex';
+    document.getElementById('lessonsPage').style.display = 'none';
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('settingsPage').style.display = 'none';
+    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    gameRunning = false;
+    isGameReady = false;
+    document.getElementById('timerOverlay').style.display = 'none';
+    updateWelcomeStats();
+}
+
+function backToLessons() {
+    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    gameRunning = false;
+    isGameReady = false;
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('settingsPage').style.display = 'none';
+    document.getElementById('lessonsPage').style.display = 'block';
+    document.getElementById('timerOverlay').style.display = 'none';
+    renderLessons();
+}
+
 function renderLessons() {
     const container = document.getElementById('lessonsContainer');
     container.innerHTML = LESSONS.map((l, i) => {
-        const done = completed.includes(l.id);
-        const locked = i > 0 && !completed.includes(LESSONS[i-1].id);
+        const done = completed.includes(String(l.id));
+        const locked = i > 0 && !completed.includes(String(LESSONS[i-1].id));
         return `
-            <div class="lesson-card ${locked?'locked':''} ${done?'completed':''}" onclick="${locked?'':`startLesson('${l.id}')`}">
-                <div class="info"><h3>${l.title}</h3><p>${l.desc}</p><span class="level">سطح ${l.level}</span></div>
-                <div>${done?'✅':locked?'🔒':'▶️'}</div>
+            <div class="lesson-card ${locked ? 'locked' : ''} ${done ? 'completed' : ''}" 
+                 onclick="${locked ? '' : `startLesson(${l.id})`}">
+                <div class="info">
+                    <h3>${l.title}</h3>
+                    <p>${l.desc}</p>
+                    <span class="level-tag">سطح ${l.level}</span>
+                    ${done ? `<span style="color:#2dd4bf;font-size:12px;margin-right:8px;">✅ انجام شده</span>` : ''}
+                </div>
+                <div class="status">${done ? '✅' : locked ? '🔒' : '▶️'}</div>
             </div>
         `;
     }).join('');
-    document.getElementById('totalLessons').textContent = LESSONS.length;
-    document.getElementById('completedLessons').textContent = completed.length;
-    document.getElementById('streakCount').textContent = streak;
+    updateWelcomeStats();
 }
 
-// ===== START LESSON =====
-function startLesson(id) {
-    currentLesson = LESSONS.find(l => l.id === id);
+function updateWelcomeStats() {
+    document.getElementById('wTotal').textContent = LESSONS.length;
+    document.getElementById('wDone').textContent = completed.length;
+    document.getElementById('wStreak').textContent = streak;
+}
+
+function updateSpeedSetting(val) {
+    GAME_SPEED = parseInt(val);
+    document.getElementById('speedValueDisplay').textContent = val;
+}
+
+function updateDropSize(val) {
+    DROPLET_SCALE = parseFloat(val);
+    document.getElementById('dropSizeValueDisplay').textContent = val;
+}
+
+function setLanguage(lang, btn) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+}
+
+function setColor(color, btn) {
+    mainColor = color;
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.header h1').forEach(el => {
+        el.style.background = `linear-gradient(135deg, ${color}, ${color}cc)`;
+        el.style.webkitBackgroundClip = 'text';
+        el.style.webkitTextFillColor = 'transparent';
+    });
+}
+
+function startTimer(callback) {
+    let count = 3;
+    const overlay = document.getElementById('timerOverlay');
+    const number = document.getElementById('timerNumber');
+    overlay.style.display = 'flex';
+    number.textContent = count;
+    number.style.animation = 'none';
+    
+    if (timerInterval) clearInterval(timerInterval);
+    
+    timerInterval = setInterval(() => {
+        count--;
+        if (count === 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            overlay.style.display = 'none';
+            if (callback) callback();
+            return;
+        }
+        number.textContent = count;
+        number.style.animation = 'none';
+        setTimeout(() => { number.style.animation = 'timerPulse 0.8s ease-in-out'; }, 10);
+    }, 1000);
+}
+
+function startLesson(lessonId) {
+    currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
     
-    document.getElementById('homePage').style.display = 'none';
-    document.getElementById('practicePage').style.display = 'block';
-    document.getElementById('lessonTitle').textContent = currentLesson.title;
+    // راه‌اندازی AudioContext با کلیک کاربر
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
     
-    score = 0; hits = 0; misses = 0; combo = 0; bestCombo = 0; notesPlayed = 0;
-    updateStats();
-    document.getElementById('progressLabel').textContent = `NOTES 0 / ${TOTAL_NOTES}`;
-    document.getElementById('resultArea').style.display = 'none';
-    document.getElementById('targetNote').textContent = '—';
-    document.getElementById('recordStatus').textContent = '🎤 برای تمرین ضبط کن';
-    document.getElementById('recordButton').className = 'record-btn';
+    document.getElementById('lessonsPage').style.display = 'none';
+    document.getElementById('gamePage').style.display = 'block';
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('settingsPage').style.display = 'none';
+    document.getElementById('gameTitle').textContent = `🥁 ${currentLesson.title}`;
     
-    setupCanvases();
+    if (!isGameInitialized) {
+        setupCanvases();
+        isGameInitialized = true;
+    }
+    
+    resetGame();
     drawHandpan();
     drawFallingArea();
-    spawnNote();
+    
+    isGameReady = false;
+    startTimer(() => {
+        isGameReady = true;
+        gameRunning = true;
+        spawnNote();
+    });
+}
+
+function resetGame() {
+    score = 0; hits = 0; misses = 0; combo = 0; bestCombo = 0; notesPlayed = 0;
+    isPaused = false; fallingNote = null; currentTarget = null; lastTime = 0;
+    isGameReady = false; gameRunning = false;
+    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    document.getElementById('timerOverlay').style.display = 'none';
+    document.getElementById('pauseButton').textContent = '⏸ PAUSE';
+    document.getElementById('scoreDisplay').textContent = 'SCORE 0';
+    document.getElementById('comboDisplay').textContent = 'COMBO 0';
+    document.getElementById('accuracyDisplay').textContent = 'ACC 0%';
+    document.getElementById('progressLabel').textContent = 'NOTES 0 / 20';
+    document.getElementById('targetNote').textContent = '—';
+    document.getElementById('targetNote').style.color = '#94a3b8';
 }
 
 function setupCanvases() {
@@ -389,74 +822,61 @@ function setupCanvases() {
     const resize = () => {
         const w = Math.min(820, canvas.parentElement.clientWidth - 10);
         canvas.style.width = w + 'px';
-        canvas.style.height = (w * 315 / 820) + 'px';
+        canvas.style.height = (w * 280 / 820) + 'px';
         panCanvas.style.width = w + 'px';
-        panCanvas.style.height = (w * 248 / 820) + 'px';
+        panCanvas.style.height = (w * 280 / 820) + 'px';
     };
     resize();
     window.addEventListener('resize', resize);
 }
 
-// ===== DRAW =====
 function drawFallingArea() {
-    const W=820, H=315;
+    const W=820, H=280;
     ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle = '#17283a';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(25,15); ctx.lineTo(335,15);
-    ctx.moveTo(350,15); ctx.lineTo(510,15);
-    ctx.moveTo(525,15); ctx.lineTo(795,15);
-    ctx.stroke();
     ctx.fillStyle='#475569'; ctx.font='bold 8px Arial'; ctx.fillText('EVEN',180,27);
     ctx.fillStyle='#60a5fa'; ctx.fillText('D • CENTER',430,27);
     ctx.fillStyle='#475569'; ctx.fillText('ODD',660,27);
-    
     ctx.strokeStyle='#1b2b3d'; ctx.lineWidth=1;
-    for(let x of Object.values(NOTE_X)) { ctx.beginPath(); ctx.moveTo(x,42); ctx.lineTo(x,267); ctx.stroke(); }
+    for(let x of Object.values(NOTE_X)) { ctx.beginPath(); ctx.moveTo(x,42); ctx.lineTo(x,232); ctx.stroke(); }
     ctx.strokeStyle='#315270'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(NOTE_X['D'],38); ctx.lineTo(NOTE_X['D'],272); ctx.stroke();
-    
-    hitY = 252;
-    ctx.strokeStyle='#0ea5e9'; ctx.lineWidth=5;
+    ctx.beginPath(); ctx.moveTo(NOTE_X['D'],38); ctx.lineTo(NOTE_X['D'],242); ctx.stroke();
+    hitY = 220;
+    ctx.strokeStyle=mainColor; ctx.lineWidth=4;
     ctx.beginPath(); ctx.moveTo(18,hitY); ctx.lineTo(W-18,hitY); ctx.stroke();
-    ctx.strokeStyle='#67e8f9'; ctx.lineWidth=2;
+    ctx.strokeStyle='#67e8f9'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(18,hitY); ctx.lineTo(W-18,hitY); ctx.stroke();
-    
     const nums = [[8,"A_high"],[6,"F"],[7,"G"],[5,"E"],[4,"D_high"],[3,"C"],[2,"Bb"],[1,"A"]];
-    ctx.font='bold 10px Arial';
+    ctx.font='bold 9px Arial';
     for(let [n,note] of nums) {
         let x=NOTE_X[note];
-        ctx.fillStyle='#94a3b8'; ctx.fillText(n,x-6,hitY-20);
-        ctx.fillStyle=NOTE_COLORS[note]; ctx.font='bold 8px Arial';
-        ctx.fillText(NOTE_LABELS[note],x-6,hitY+17);
-        ctx.font='bold 10px Arial';
+        ctx.fillStyle='#94a3b8'; ctx.fillText(n,x-6,hitY-18);
+        ctx.fillStyle=NOTE_COLORS[note]; ctx.font='bold 7px Arial';
+        ctx.fillText(NOTE_LABELS[note],x-5,hitY+15);
+        ctx.font='bold 9px Arial';
     }
-    ctx.fillStyle='#60a5fa'; ctx.font='bold 11px Arial';
-    ctx.fillText('D',NOTE_X['D']-8,hitY-22);
-    ctx.fillStyle=NOTE_COLORS['D']; ctx.font='bold 8px Arial';
-    ctx.fillText('D',NOTE_X['D']-4,hitY+17);
-    ctx.fillStyle='#67e8f9'; ctx.font='bold 9px Arial';
-    ctx.fillText('HIT',W-43,hitY-40);
+    ctx.fillStyle='#60a5fa'; ctx.font='bold 10px Arial';
+    ctx.fillText('D',NOTE_X['D']-7,hitY-20);
+    ctx.fillStyle=NOTE_COLORS['D']; ctx.font='bold 7px Arial';
+    ctx.fillText('D',NOTE_X['D']-3,hitY+15);
+    ctx.fillStyle='#67e8f9'; ctx.font='bold 8px Arial';
+    ctx.fillText('HIT',W-43,hitY-36);
 }
 
 function drawHandpan(highlight=null) {
-    const W=820, H=248;
+    const W=820, H=280;
     panCtx.clearRect(0,0,W,H);
-    panCtx.strokeStyle='#18273a'; panCtx.lineWidth=2; panCtx.strokeRect(10,10,800,228);
+    panCtx.strokeStyle='#18273a'; panCtx.lineWidth=2; panCtx.strokeRect(10,10,800,260);
     panCtx.fillStyle='#475569'; panCtx.font='bold 9px Arial'; panCtx.fillText('HANDPAN',38,27);
-    
-    const cx=430, cy=135, r=100;
+    const cx=430, cy=150, r=115;
     panCtx.shadowColor='#040810'; panCtx.shadowBlur=20;
     panCtx.beginPath(); panCtx.arc(cx,cy,r,0,Math.PI*2);
     panCtx.fillStyle='#293646'; panCtx.fill();
     panCtx.shadowBlur=0;
     panCtx.strokeStyle='#64748b'; panCtx.lineWidth=3; panCtx.stroke();
-    panCtx.beginPath(); panCtx.arc(cx,cy,r-7,0,Math.PI*2);
+    panCtx.beginPath(); panCtx.arc(cx,cy,r-8,0,Math.PI*2);
     panCtx.fillStyle='#263342'; panCtx.fill();
     panCtx.strokeStyle='#3f4e61'; panCtx.lineWidth=2; panCtx.stroke();
-    
-    const pos = { "A":[430,55,18], "Bb":[500,82,18], "C":[530,135,18], "D_high":[500,190,18], "E":[430,215,18], "F":[360,190,18], "G":[330,135,18], "A_high":[360,82,18], "D":[430,135,31] };
+    const pos = { "A":[430,55,20], "Bb":[510,85,20], "C":[545,145,20], "D_high":[510,205,20], "E":[430,235,20], "F":[350,205,20], "G":[315,145,20], "A_high":[350,85,20], "D":[430,145,34] };
     for(let [note,[x,y,r2]] of Object.entries(pos)) {
         let col = NOTE_COLORS[note], hl = highlight===note;
         panCtx.shadowColor='#111923'; panCtx.shadowBlur=10;
@@ -472,7 +892,7 @@ function drawHandpan(highlight=null) {
         panCtx.beginPath(); panCtx.arc(x,y,r2-4,0,Math.PI*2);
         panCtx.strokeStyle=col; panCtx.lineWidth=1; panCtx.stroke();
         panCtx.fillStyle=hl?col:'#e5e7eb';
-        panCtx.font=`bold ${note==='D'?12:9}px Arial`;
+        panCtx.font=`bold ${note==='D'?13:10}px Arial`;
         panCtx.textAlign='center'; panCtx.textBaseline='middle';
         panCtx.fillText(NOTE_LABELS[note],x,y);
     }
@@ -480,91 +900,106 @@ function drawHandpan(highlight=null) {
 
 function drawDroplet(x,y,note) {
     let col = NOTE_COLORS[note];
-    ctx.fillStyle=col; ctx.globalAlpha=0.3;
+    const s = DROPLET_SCALE;
+    ctx.fillStyle=col; ctx.globalAlpha=0.25;
     ctx.beginPath();
-    ctx.moveTo(x-3,y-31); ctx.quadraticCurveTo(x-8,y-55,x-5,y-70);
-    ctx.quadraticCurveTo(x,y-78,x+5,y-70);
-    ctx.quadraticCurveTo(x+8,y-55,x+3,y-31);
+    ctx.moveTo(x-2*s,y-25*s);
+    ctx.quadraticCurveTo(x-6*s,y-45*s,x-4*s,y-58*s);
+    ctx.quadraticCurveTo(x,y-65*s,x+4*s,y-58*s);
+    ctx.quadraticCurveTo(x+6*s,y-45*s,x+2*s,y-25*s);
     ctx.fill();
     ctx.globalAlpha=1;
-    ctx.shadowColor=col; ctx.shadowBlur=15;
+    ctx.shadowColor=col; ctx.shadowBlur=12;
     ctx.beginPath();
-    ctx.moveTo(x,y-44);
-    ctx.quadraticCurveTo(x+30,y-10,x+32,y+16);
-    ctx.quadraticCurveTo(x+30,y+40,x,y+53);
-    ctx.quadraticCurveTo(x-30,y+40,x-32,y+16);
-    ctx.quadraticCurveTo(x-30,y-10,x,y-44);
+    ctx.moveTo(x,y-36*s);
+    ctx.quadraticCurveTo(x+24*s,y-8*s,x+26*s,y+12*s);
+    ctx.quadraticCurveTo(x+24*s,y+32*s,x,y+43*s);
+    ctx.quadraticCurveTo(x-24*s,y+32*s,x-26*s,y+12*s);
+    ctx.quadraticCurveTo(x-24*s,y-8*s,x,y-36*s);
     ctx.fillStyle=col; ctx.fill();
     ctx.shadowBlur=0;
-    ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke();
-    ctx.globalAlpha=0.5;
+    ctx.strokeStyle='#fff'; ctx.lineWidth=0.8; ctx.stroke();
+    ctx.globalAlpha=0.4;
     ctx.beginPath();
-    ctx.moveTo(x,y-20);
-    ctx.quadraticCurveTo(x+15,y-5,x+14,y+10);
-    ctx.quadraticCurveTo(x+10,y+25,x,y+28);
-    ctx.quadraticCurveTo(x-10,y+25,x-14,y+10);
-    ctx.quadraticCurveTo(x-15,y-5,x,y-20);
+    ctx.moveTo(x,y-16*s);
+    ctx.quadraticCurveTo(x+12*s,y-4*s,x+11*s,y+8*s);
+    ctx.quadraticCurveTo(x+8*s,y+20*s,x,y+22*s);
+    ctx.quadraticCurveTo(x-8*s,y+20*s,x-11*s,y+8*s);
+    ctx.quadraticCurveTo(x-12*s,y-4*s,x,y-16*s);
     ctx.fillStyle='#fff'; ctx.fill();
     ctx.globalAlpha=1;
-    ctx.fillStyle='#06121c'; ctx.font='bold 8px Arial';
+    ctx.fillStyle='#06121c'; ctx.font='bold 7px Arial';
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(NOTE_LABELS[note],x,y+6);
+    ctx.fillText(NOTE_LABELS[note],x,y+5*s);
 }
 
-// ===== GAME LOOP =====
 function spawnNote() {
-    if (notesPlayed >= TOTAL_NOTES) { finishPractice(); return; }
+    if (!gameRunning || !isGameReady) return;
+    if (notesPlayed >= TOTAL_NOTES) { finishGame(); return; }
     let note = ALL_NOTES[Math.floor(Math.random()*ALL_NOTES.length)];
     currentTarget = note;
-    noteY = 20;
+    noteY = 18;
     document.getElementById('targetNote').textContent = NOTE_LABELS[note];
     document.getElementById('targetNote').style.color = NOTE_COLORS[note];
     document.getElementById('progressLabel').textContent = `NOTES ${notesPlayed+1} / ${TOTAL_NOTES}`;
     notesPlayed++;
     drawHandpan(note);
-    fallingNote = { note, x: NOTE_X[note], y: noteY };
+    fallingNote = { note: note, x: NOTE_X[note], y: noteY };
     lastTime = 0;
+    if (animationId) cancelAnimationFrame(animationId);
     animateNote();
 }
 
 function animateNote(timestamp) {
-    if (!fallingNote) return;
+    if (!fallingNote || !gameRunning || !isGameReady) return;
     if (isPaused) { animationId = requestAnimationFrame(animateNote); return; }
+    if (!timestamp) timestamp = performance.now();
     let dt = lastTime ? Math.min((timestamp-lastTime)/1000, 0.04) : 0.016;
     lastTime = timestamp;
-    let speed = 235 * speedMultiplier;
+    let speed = GAME_SPEED * speedMultiplier;
     fallingNote.y += speed * dt;
     drawFallingArea();
     drawDroplet(fallingNote.x, fallingNote.y, fallingNote.note);
-    if (Math.abs(fallingNote.y - hitY) < 62) {
-        let grad = ctx.createRadialGradient(fallingNote.x,fallingNote.y,5,fallingNote.x,fallingNote.y,40);
-        grad.addColorStop(0,'rgba(255,255,255,0.2)');
+    if (Math.abs(fallingNote.y - hitY) < 50) {
+        let grad = ctx.createRadialGradient(fallingNote.x,fallingNote.y,3,fallingNote.x,fallingNote.y,30);
+        grad.addColorStop(0,'rgba(255,255,255,0.15)');
         grad.addColorStop(1,'rgba(255,255,255,0)');
-        ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(fallingNote.x,fallingNote.y,40,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(fallingNote.x,fallingNote.y,30,0,Math.PI*2); ctx.fill();
     }
-    if (fallingNote.y > hitY + 52) {
-        misses++; combo=0; updateStats();
+    if (fallingNote.y > hitY + 45) {
+        misses++; combo = 0; updateStats();
+        playMissSound(); // صدای Miss
         fallingNote = null;
-        setTimeout(spawnNote, 220);
+        if (notesPlayed >= TOTAL_NOTES) { setTimeout(finishGame, 200); return; }
+        setTimeout(spawnNote, 200);
         return;
     }
     animationId = requestAnimationFrame(animateNote);
 }
 
 function hitNote(note) {
-    if (!fallingNote || isPaused) return;
-    if (note !== currentTarget) { combo=0; updateStats(); return; }
+    if (!fallingNote || isPaused || !gameRunning || !isGameReady) return;
+    if (note !== currentTarget) { combo = 0; updateStats(); return; }
     let dist = Math.abs(fallingNote.y - hitY);
-    if (dist <= 78) {
-        let pts = Math.max(60, 180 - Math.floor(dist * 1.8));
-        score += pts + combo * 12;
+    if (dist <= 70) {
+        let pts = Math.max(50, 160 - Math.floor(dist * 1.6));
+        score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
+        
+        // 🔊 پخش صدای نت
+        playHitSound(note);
+        
+        // صدای COMBO
+        if (combo > 0 && combo % 5 === 0) {
+            playComboSound(combo);
+        }
+        
         drawHandpan(note);
         fallingNote = null;
         updateStats();
-        if (notesPlayed >= TOTAL_NOTES) setTimeout(finishPractice, 180);
-        else setTimeout(spawnNote, 180);
+        if (notesPlayed >= TOTAL_NOTES) { setTimeout(finishGame, 150); return; }
+        setTimeout(spawnNote, 150);
     }
 }
 
@@ -576,114 +1011,85 @@ function updateStats() {
     document.getElementById('accuracyDisplay').textContent = `ACC ${acc}%`;
 }
 
-function finishPractice() {
+function finishGame() {
+    gameRunning = false;
+    isGameReady = false;
     if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    fallingNote = null;
+    document.getElementById('timerOverlay').style.display = 'none';
     let total = hits + misses;
     let acc = total > 0 ? Math.round((hits/total)*100) : 0;
-    let msg = score > 200 ? '🎉 عالی!' : score > 100 ? '💪 خوب!' : '📚 تمرین بیشتر';
-    showResult(score, acc, msg);
-}
-
-function showResult(sc, acc, msg) {
-    document.getElementById('resultArea').style.display = 'block';
-    document.getElementById('resultScore').textContent = sc;
-    document.getElementById('accuracyFill').style.width = acc + '%';
-    document.getElementById('resultMessage').textContent = `${msg} | دقت: ${acc}%`;
-    if (currentLesson && !completed.includes(currentLesson.id)) {
-        completed.push(currentLesson.id);
+    if (currentLesson && !completed.includes(String(currentLesson.id))) {
+        completed.push(String(currentLesson.id));
         localStorage.setItem('wepan_completed', JSON.stringify(completed));
-        let today = new Date().toDateString();
-        if (lastPractice === today) { /* same day */ }
-        else if (lastPractice === new Date(Date.now()-86400000).toDateString()) { streak++; }
+    }
+    let today = new Date().toDateString();
+    let lastPractice = localStorage.getItem('wepan_last') || null;
+    if (lastPractice !== today) {
+        if (lastPractice === new Date(Date.now()-86400000).toDateString()) { streak++; }
         else { streak = 1; }
-        lastPractice = today;
         localStorage.setItem('wepan_streak', streak);
-        localStorage.setItem('wepan_last', lastPractice);
-        renderLessons();
+        localStorage.setItem('wepan_last', today);
     }
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('resultPage').style.display = 'flex';
+    document.getElementById('resultScore').textContent = score;
+    document.getElementById('rHits').textContent = hits;
+    document.getElementById('rAccuracy').textContent = acc + '%';
+    document.getElementById('rCombo').textContent = bestCombo;
+    document.getElementById('resultIcon').textContent = score > 200 ? '🏆' : score > 100 ? '🌟' : '💪';
+    updateWelcomeStats();
 }
 
-// ===== RECORD =====
-document.getElementById('recordButton').addEventListener('click', async function() {
-    if (isRecording) { stopRecording(); return; }
-    try {
-        let stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        mediaRecorder.ondataavailable = e => { if(e.data.size>0) audioChunks.push(e.data); };
-        mediaRecorder.onstop = async () => {
-            let blob = new Blob(audioChunks, { type: 'audio/wav' });
-            document.getElementById('recordStatus').textContent = '⏳ تحلیل...';
-            let formData = new FormData();
-            formData.append('audio', blob, 'rec.wav');
-            let res = await fetch('/analyze', { method:'POST', body:formData });
-            let data = await res.json();
-            if (data.status === 'success') {
-                let expected = currentLesson ? currentLesson.expected : [];
-                let sr = await fetch('/score', {
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({expectedNotes:expected, detectedNotes:data.detected_notes||[]})
-                });
-                let sd = await sr.json();
-                showResult(sd.score||0, sd.accuracy||0, sd.message||'');
-            } else { alert('❌ خطا'); }
-            document.getElementById('recordStatus').textContent = '✅ تحلیل شد';
-        };
-        mediaRecorder.start();
-        isRecording = true;
-        this.textContent = '⏹ توقف';
-        this.className = 'record-btn recording';
-        document.getElementById('recordStatus').textContent = '⏺ در حال ضبط...';
-    } catch(e) { alert('❌ دسترسی به میکروفون داده نشد!'); }
-});
-
-function stopRecording() {
-    if (mediaRecorder && isRecording) {
-        mediaRecorder.stop();
-        mediaRecorder.stream.getTracks().forEach(t=>t.stop());
-        isRecording = false;
-        document.getElementById('recordButton').textContent = '🎤 ضبط تمرین';
-        document.getElementById('recordButton').className = 'record-btn';
-    }
+function retryGame() {
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('gamePage').style.display = 'block';
+    resetGame();
+    drawHandpan();
+    drawFallingArea();
+    isGameReady = false;
+    startTimer(() => {
+        isGameReady = true;
+        gameRunning = true;
+        spawnNote();
+    });
 }
 
-// ===== CONTROLS =====
+// ===== EVENTS =====
 document.getElementById('pauseButton').addEventListener('click', function() {
+    if (!gameRunning) return;
     isPaused = !isPaused;
     this.textContent = isPaused ? '▶ RESUME' : '⏸ PAUSE';
 });
+
 document.getElementById('speedSelect').addEventListener('change', function() {
     speedMultiplier = parseFloat(this.value);
 });
-document.getElementById('backButton').addEventListener('click', function() {
-    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-    if (isRecording) stopRecording();
-    document.getElementById('practicePage').style.display = 'none';
-    document.getElementById('homePage').style.display = 'block';
-});
-document.getElementById('retryButton').addEventListener('click', function() {
-    if (currentLesson) startLesson(currentLesson.id);
-});
-document.getElementById('nextButton').addEventListener('click', function() {
-    let idx = LESSONS.findIndex(l => l.id === currentLesson.id);
-    if (idx < LESSONS.length - 1) startLesson(LESSONS[idx+1].id);
-    else { alert('🎉 همه درس‌ها تموم شد!'); document.getElementById('practicePage').style.display='none'; document.getElementById('homePage').style.display='block'; }
+
+document.getElementById('endGameBtn').addEventListener('click', function() {
+    if (confirm('آیا می‌خوای بازی رو تموم کنی؟')) { finishGame(); }
 });
 
-// ===== CLICK HANDPAN =====
 document.getElementById('handpanCanvas').addEventListener('click', function(e) {
+    if (!gameRunning || !isGameReady) return;
     let rect = this.getBoundingClientRect();
-    let scaleX = 820/rect.width, scaleY = 248/rect.height;
+    let scaleX = 820/rect.width, scaleY = 280/rect.height;
     let mx = (e.clientX - rect.left)*scaleX, my = (e.clientY - rect.top)*scaleY;
-    const pos = { "A":[430,55,18], "Bb":[500,82,18], "C":[530,135,18], "D_high":[500,190,18], "E":[430,215,18], "F":[360,190,18], "G":[330,135,18], "A_high":[360,82,18], "D":[430,135,31] };
+    const pos = { "A":[430,55,20], "Bb":[510,85,20], "C":[545,145,20], "D_high":[510,205,20], "E":[430,235,20], "F":[350,205,20], "G":[315,145,20], "A_high":[350,85,20], "D":[430,145,34] };
     for (let [note,[x,y,r]] of Object.entries(pos)) {
         if (Math.sqrt((mx-x)**2+(my-y)**2) <= r) { hitNote(note); return; }
     }
 });
 
+// ===== RECORD =====
+document.getElementById('recordButton').addEventListener('click', async function() {
+    alert('🎤 ضبط فعال شد! (برای تست)');
+});
+
 // ===== START =====
-renderLessons();
+updateWelcomeStats();
+console.log('WEPAN ready with sound!');
 </script>
 </body>
 </html>
