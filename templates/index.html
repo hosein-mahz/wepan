@@ -523,10 +523,14 @@ const HIT_ORDER = [
 ];
 
 // ===== سیستم صدا (پشتیبانی از گوشی) =====
+// =========================================================
+// سیستم صدا - نسخه موج‌دار و طولانی (مناسب هنگ‌درام)
+// =========================================================
+
 let audioCtx = null;
 let soundEnabled = true;
 
-// ===== فرکانس‌های دقیق نت‌ها برای Web Audio API =====
+// ===== فرکانس‌های دقیق نت‌ها =====
 const FREQS = {
     'A1': 110.00,
     'D2': 146.83,
@@ -558,14 +562,14 @@ function initAudio() {
     }
     if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
-        console.log('✅ AudioContext resumed!');
     }
     return audioCtx;
 }
 
-// ===== پخش صدا با Web Audio API (برای گوشی) =====
-function playSoundMobile(note, volume = 0.5) {
+// ===== پخش صدای هنگ‌درام (موج‌دار و طولانی) =====
+function playHandpanSound(note, volume = 0.35) {
     if (!soundEnabled) return;
+    
     try {
         const ctx = initAudio();
         if (!ctx) return;
@@ -573,54 +577,128 @@ function playSoundMobile(note, volume = 0.5) {
         // پیدا کردن فرکانس
         let freq = FREQS[note];
         if (!freq) {
-            // اگه نت پیدا نشد، از نام اصلی استفاده کن
             const baseNote = note.replace(/[0-9]/g, '');
             freq = FREQS[baseNote] || 440;
         }
         
         const now = ctx.currentTime;
+        const duration = 1.2; // طولانی‌تر: 1.2 ثانیه
         
-        // نوسان‌ساز اصلی
+        // ===== ۱. نوسان‌ساز اصلی (سینوسی با مدولاسیون) =====
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now);
         
-        // پوشش نرم (ADSR)
+        // افزودن ویبراتوی طبیعی (تغییر فرکانس ملایم)
+        const vibrato = ctx.createOscillator();
+        const vibratoGain = ctx.createGain();
+        vibrato.frequency.value = 3.5; // سرعت ویبراتو
+        vibratoGain.gain.value = 1.8;
+        vibrato.connect(vibratoGain);
+        vibratoGain.connect(osc.frequency);
+        vibrato.start(now);
+        vibrato.stop(now + duration);
+        
+        // پوشش ADSR برای صدای هنگ‌درام (نرم و طولانی)
         gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.005);
-        gain.gain.linearRampToValueAtTime(volume * 0.8, now + 0.03);
-        gain.gain.exponentialRampToValueAtTime(volume * 0.5, now + 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        gain.gain.linearRampToValueAtTime(volume * 0.9, now + 0.02);  // Attack
+        gain.gain.linearRampToValueAtTime(volume * 0.7, now + 0.08);  // Hold
+        gain.gain.exponentialRampToValueAtTime(volume * 0.4, now + 0.3); // Decay شروع
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration); // Release طولانی
         
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.5);
+        osc.stop(now + duration + 0.1);
         
-        // هارمونیک دوم (برای صدای گرم‌تر)
+        // ===== ۲. هارمونیک دوم (اکتاو) =====
         const osc2 = ctx.createOscillator();
         const gain2 = ctx.createGain();
-        osc2.type = 'triangle';
+        osc2.type = 'sine';
         osc2.frequency.setValueAtTime(freq * 2, now);
         gain2.gain.setValueAtTime(0, now);
-        gain2.gain.linearRampToValueAtTime(volume * 0.08, now + 0.01);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        gain2.gain.linearRampToValueAtTime(volume * 0.12, now + 0.02);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.9);
         osc2.connect(gain2);
         gain2.connect(ctx.destination);
         osc2.start(now);
-        osc2.stop(now + 0.35);
+        osc2.stop(now + duration + 0.1);
         
-        // صدای ضربه (Attack)
-        const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
+        // ===== ۳. هارمونیک سوم (برای صدای گرم) =====
+        const osc3 = ctx.createOscillator();
+        const gain3 = ctx.createGain();
+        osc3.type = 'triangle';
+        osc3.frequency.setValueAtTime(freq * 3, now);
+        gain3.gain.setValueAtTime(0, now);
+        gain3.gain.linearRampToValueAtTime(volume * 0.05, now + 0.03);
+        gain3.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.6);
+        osc3.connect(gain3);
+        gain3.connect(ctx.destination);
+        osc3.start(now);
+        osc3.stop(now + duration + 0.1);
+        
+        // ===== ۴. هارمونیک چهارم (برای درخشش) =====
+        const osc4 = ctx.createOscillator();
+        const gain4 = ctx.createGain();
+        osc4.type = 'sine';
+        osc4.frequency.setValueAtTime(freq * 4, now);
+        gain4.gain.setValueAtTime(0, now);
+        gain4.gain.linearRampToValueAtTime(volume * 0.03, now + 0.04);
+        gain4.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.4);
+        osc4.connect(gain4);
+        gain4.connect(ctx.destination);
+        osc4.start(now);
+        osc4.stop(now + duration + 0.1);
+        
+        // ===== ۵. ریورب طبیعی (تأخیر با بازخورد) =====
+        const delay = ctx.createDelay(0.5);
+        const delayGain = ctx.createGain();
+        delay.delayTime.value = 0.35; // تأخیر بیشتر
+        delayGain.gain.setValueAtTime(0.18, now);
+        delayGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        
+        // فیدبک برای ریورب طبیعی‌تر
+        const feedback = ctx.createGain();
+        feedback.gain.value = 0.3;
+        delay.connect(feedback);
+        feedback.connect(delay);
+        
+        gain.connect(delay);
+        delay.connect(delayGain);
+        delayGain.connect(ctx.destination);
+        
+        // ===== ۶. افکت اتاق (برای عمق صدا) =====
+        const convolver = ctx.createConvolver();
+        // ایجاد یک پاسخ ضربه ساده برای شبیه‌سازی اتاق
+        const impulseLength = ctx.sampleRate * 0.3;
+        const impulseBuffer = ctx.createBuffer(2, impulseLength, ctx.sampleRate);
+        for (let channel = 0; channel < 2; channel++) {
+            const data = impulseBuffer.getChannelData(channel);
+            for (let i = 0; i < impulseLength; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (impulseLength * 0.15));
+            }
+        }
+        convolver.buffer = impulseBuffer;
+        
+        const reverbGain = ctx.createGain();
+        reverbGain.gain.setValueAtTime(0.08, now);
+        reverbGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        
+        gain.connect(convolver);
+        convolver.connect(reverbGain);
+        reverbGain.connect(ctx.destination);
+        
+        // ===== ۷. صدای ضربه (Attack ملایم) =====
+        const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.025, ctx.sampleRate);
         const noiseData = noiseBuffer.getChannelData(0);
         for (let i = 0; i < noiseData.length; i++) {
-            noiseData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (noiseData.length * 0.3));
+            noiseData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (noiseData.length * 0.2));
         }
         const noise = ctx.createBufferSource();
         noise.buffer = noiseBuffer;
         const noiseGain = ctx.createGain();
-        noiseGain.gain.setValueAtTime(volume * 0.1, now);
+        noiseGain.gain.setValueAtTime(volume * 0.08, now);
         noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
         noise.connect(noiseGain);
         noiseGain.connect(ctx.destination);
@@ -632,49 +710,52 @@ function playSoundMobile(note, volume = 0.5) {
     }
 }
 
-// ===== فایل‌های صوتی برای دسکتاپ =====
-const SOUND_MAP = {
-    "A1": "1.wav", "D2": "2.wav", "C3": "3.wav",
-    "E4": "4.wav", "F5": "5.wav", "Bb6": "6.wav",
-    "G7": "7.wav", "A8": "8.wav", "D": "D.wav",
-    "miss": "miss.wav", "combo": "combo.wav"
-};
-let audioElements = {};
-
-function loadSounds() {
-    if (isMobile()) {
-        console.log('📱 گوشی تشخیص داده شد - استفاده از Web Audio API');
-        return;
-    }
-    for (let [note, file] of Object.entries(SOUND_MAP)) {
-        try {
-            const audio = new Audio(`/sounds/${file}`);
-            audio.preload = 'auto';
-            audioElements[note] = audio;
-        } catch (e) {}
-    }
-    console.log('✅ صداهای دسکتاپ بارگذاری شدند');
-}
-
-// ===== پخش صدا (انتخاب خودکار روش) =====
-function playSound(note, volume = 0.6) {
+// ===== پخش صدای Miss (کوتاه و ناخوشایند) =====
+function playMissSound() {
     if (!soundEnabled) return;
-    if (isMobile()) {
-        playSoundMobile(note, volume);
-        return;
-    }
     try {
-        const audio = audioElements[note];
-        if (!audio) return;
-        const sound = audio.cloneNode();
-        sound.volume = volume;
-        sound.play().catch(() => {});
-        sound.onended = () => sound.remove();
+        const ctx = initAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.25);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
     } catch (e) {}
 }
 
-function playMissSound() { playSound('miss', 0.4); }
-function playComboSound() { playSound('combo', 0.5); }
+// ===== پخش صدای COMBO (شاد و کوتاه) =====
+function playComboSound() {
+    if (!soundEnabled) return;
+    try {
+        const ctx = initAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        
+        // دو نت بالا رونده
+        for (let i = 0; i < 3; i++) {
+            const freq = 660 + i * 110;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + i * 0.08);
+            gain.gain.setValueAtTime(0, now + i * 0.08);
+            gain.gain.linearRampToValueAtTime(0.15, now + i * 0.08 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.15);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + i * 0.08);
+            osc.stop(now + i * 0.08 + 0.2);
+        }
+    } catch (e) {}
+}
 
 // ===== قطع/وصل صدا =====
 function toggleSound() {
@@ -684,7 +765,12 @@ function toggleSound() {
         btn.textContent = soundEnabled ? '🔊' : '🔇';
         btn.classList.toggle('active', soundEnabled);
     }
-    console.log('🔊 صدا:', soundEnabled ? 'روشن' : 'خاموش');
+}
+
+// ===== پخش صدا (انتخاب خودکار روش) =====
+function playSound(note, volume = 0.35) {
+    if (!soundEnabled) return;
+    playHandpanSound(note, volume);
 }
 
 // ===== فعال‌سازی صدا با اولین کلیک =====
@@ -1202,19 +1288,26 @@ function animateNote(timestamp) {
     animationId = requestAnimationFrame(animateNote);
 }
 
+// ===== ضربه روی نت (با صدای طولانی) =====
 function hitNote(note) {
     if (!fallingNote || isPaused || !gameRunning || !isGameReady) return;
     if (note !== currentTarget) { combo = 0; updateStats(); return; }
+    
     let dist = Math.abs(fallingNote.y - hitY);
     if (dist <= 70) {
         let pts = Math.max(50, 160 - Math.floor(dist * 1.6));
         score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
-        playSound(note, 0.6);
+        
+        // 🔊 پخش صدای نت (با حجم کم برای طبیعی‌تر شدن)
+        playSound(note, 0.3);
+        
+        // 🔊 صدای COMBO (با تأخیر)
         if (combo > 0 && combo % 5 === 0) {
-            playComboSound();
+            setTimeout(() => playComboSound(), 100);
         }
+        
         drawHandpan(note);
         fallingNote = null;
         updateStats();
@@ -1223,101 +1316,16 @@ function hitNote(note) {
     }
 }
 
-function updateStats() {
-    document.getElementById('scoreDisplay').textContent = `SCORE ${score}`;
-    document.getElementById('comboDisplay').textContent = `COMBO ${combo}`;
-    let total = hits + misses;
-    let acc = total > 0 ? Math.round((hits/total)*100) : 0;
-    document.getElementById('accuracyDisplay').textContent = `ACC ${acc}%`;
-}
-
-function finishGame() {
-    gameRunning = false;
-    isGameReady = false;
-    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    fallingNote = null;
-    document.getElementById('timerOverlay').style.display = 'none';
-    let total = hits + misses;
-    let acc = total > 0 ? Math.round((hits/total)*100) : 0;
-    if (currentLesson && !completed.includes(String(currentLesson.id))) {
-        completed.push(String(currentLesson.id));
-        localStorage.setItem('wepan_completed', JSON.stringify(completed));
+// ===== Miss (صدای کوتاه) =====
+function animateNote(timestamp) {
+    // ... کدهای قبلی ...
+    if (fallingNote.y > hitY + 45) {
+        misses++; combo = 0; updateStats();
+        playMissSound(); // 🔊 صدای Miss (کوتاه)
+        fallingNote = null;
+        // ...
     }
-    let today = new Date().toDateString();
-    let lastPractice = localStorage.getItem('wepan_last') || null;
-    if (lastPractice !== today) {
-        if (lastPractice === new Date(Date.now()-86400000).toDateString()) { streak++; }
-        else { streak = 1; }
-        localStorage.setItem('wepan_streak', streak);
-        localStorage.setItem('wepan_last', today);
-    }
-    document.getElementById('gamePage').style.display = 'none';
-    document.getElementById('resultPage').style.display = 'flex';
-    document.getElementById('resultScore').textContent = score;
-    document.getElementById('rHits').textContent = hits;
-    document.getElementById('rAccuracy').textContent = acc + '%';
-    document.getElementById('rCombo').textContent = bestCombo;
-    document.getElementById('resultIcon').textContent = score > 200 ? '🏆' : score > 100 ? '🌟' : '💪';
-    updateWelcomeStats();
 }
-
-function retryGame() {
-    document.getElementById('resultPage').style.display = 'none';
-    document.getElementById('gamePage').style.display = 'block';
-    resetGame();
-    drawHandpan();
-    drawFallingArea();
-    isGameReady = false;
-    startTimer(() => {
-        isGameReady = true;
-        gameRunning = true;
-        spawnNote();
-    });
-}
-
-// ===== EVENTS =====
-document.getElementById('pauseButton').addEventListener('click', function() {
-    if (!gameRunning) return;
-    isPaused = !isPaused;
-    this.textContent = isPaused ? TEXTS[currentLang].resume : TEXTS[currentLang].pause;
-});
-
-document.getElementById('speedSelect').addEventListener('change', function() {
-    speedMultiplier = parseFloat(this.value);
-});
-
-document.getElementById('endGameBtn').addEventListener('click', function() {
-    if (confirm('آیا می‌خوای بازی رو تموم کنی؟')) { finishGame(); }
-});
-
-document.getElementById('handpanCanvas').addEventListener('click', function(e) {
-    if (!gameRunning || !isGameReady) return;
-    let rect = this.getBoundingClientRect();
-    let scaleX = 820/rect.width, scaleY = 280/rect.height;
-    let mx = (e.clientX - rect.left)*scaleX, my = (e.clientY - rect.top)*scaleY;
-    for (let [note, [x, y, r]] of Object.entries(HANDPAN_POSITIONS)) {
-        if (Math.sqrt((mx-x)**2 + (my-y)**2) <= r) {
-            hitNote(note);
-            return;
-        }
-    }
-});
-
-// ===== RECORD =====
-document.getElementById('recordButton').addEventListener('click', function() {
-    alert('🎤 ضبط تمرین (برای تست)');
-});
-
-// ===== START =====
-loadSounds();
-applyLanguage(currentLang);
-
-document.querySelectorAll('.mode-btn').forEach(b => {
-    if (b.dataset.mode === displayMode) b.classList.add('active');
-    else b.classList.remove('active');
-});
-
 updateWelcomeStats();
 console.log('WEPAN ready!');
 console.log('📱 حالت گوشی:', isMobile() ? 'فعال' : 'غیرفعال');
