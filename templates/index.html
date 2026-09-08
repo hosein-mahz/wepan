@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WEPAN - آموزش هنگ‌درام</title>
     <style>
-        /* ===== تمام استایل‌های قبلی ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #050a12;
@@ -128,6 +127,19 @@
         .header .stats .score { color: #38bdf8; }
         .header .stats .combo { color: #fbbf24; }
         .header .stats .accuracy { color: #2dd4bf; }
+        .sound-toggle {
+            background: #0d1422;
+            border: 1px solid #1c2a3d;
+            color: #94a3b8;
+            padding: 4px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+        .sound-toggle:hover { border-color: #38bdf8; color: #fff; }
+        .sound-toggle.active { border-color: #2dd4bf; color: #2dd4bf; }
 
         .next-note { text-align: center; padding: 6px 0; font-size: 11px; color: #475569; }
         .next-note .note { font-size: 30px; font-weight: bold; color: #38bdf8; }
@@ -268,6 +280,24 @@
             min-width: 120px;
         }
 
+        .display-mode-options {
+            display: flex;
+            gap: 10px;
+        }
+        .display-mode-options .mode-btn {
+            background: #1a2a3d;
+            border: 2px solid transparent;
+            color: #94a3b8;
+            padding: 6px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .display-mode-options .mode-btn:hover { border-color: #38bdf8; color: #fff; }
+        .display-mode-options .mode-btn.active { border-color: #38bdf8; color: #fff; background: #1a3a5a; }
+
         @media (max-width: 600px) {
             .header { flex-direction: column; gap: 8px; text-align: center; }
             .header .stats { flex-wrap: wrap; justify-content: center; }
@@ -279,22 +309,8 @@
             #lessonsPage .lessons-header { flex-direction: column; gap: 15px; text-align: center; }
             .setting-item { flex-direction: column; align-items: stretch; }
             .setting-item .slider-group { justify-content: center; }
+            .display-mode-options { justify-content: center; }
         }
-
-        /* دکمه تست صدا */
-        .sound-toggle {
-            background: #0d1422;
-            border: 1px solid #1c2a3d;
-            color: #94a3b8;
-            padding: 4px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            transition: 0.3s;
-        }
-        .sound-toggle:hover { border-color: #38bdf8; color: #fff; }
-        .sound-toggle.active { border-color: #2dd4bf; color: #2dd4bf; }
     </style>
 </head>
 <body>
@@ -303,23 +319,23 @@
     <!-- ===== صفحه خوش‌آمدگویی ===== -->
     <div id="welcomePage">
         <div class="logo">🥁 WEPAN</div>
-        <div class="subtitle">یادگیری هنگ‌درام • بازی • پیشرفت</div>
-        <button class="start-btn" onclick="showLessons()">▶ شروع</button>
+        <div class="subtitle" id="welcomeSubtitle">یادگیری هنگ‌درام • بازی • پیشرفت</div>
+        <button class="start-btn" id="startBtn" onclick="showLessons()">▶ شروع</button>
         <div class="stats-preview">
-            <span>🏆 <span id="wTotal">6</span> درس</span>
+            <span>🏆 <span id="wTotal">8</span> درس</span>
             <span>✅ <span id="wDone">0</span> تکمیل</span>
             <span>🔥 <span id="wStreak">0</span> روز</span>
         </div>
         <div class="bottom-buttons">
-            <button onclick="showSettings()">⚙️ تنظیمات</button>
+            <button id="settingsBtn" onclick="showSettings()">⚙️ تنظیمات</button>
         </div>
     </div>
 
     <!-- ===== صفحه مراحل ===== -->
     <div id="lessonsPage">
         <div class="lessons-header">
-            <h2>📚 انتخاب مرحله</h2>
-            <button class="back-home" onclick="goHome()">🏠 صفحه اصلی</button>
+            <h2 id="lessonsTitle">📚 انتخاب مرحله</h2>
+            <button class="back-home" id="homeBtn" onclick="goHome()">🏠 صفحه اصلی</button>
         </div>
         <div id="lessonsContainer"></div>
     </div>
@@ -327,7 +343,7 @@
     <!-- ===== صفحه بازی ===== -->
     <div id="gamePage">
         <div id="timerOverlay">
-            <div class="timer-text">آماده‌ای؟</div>
+            <div class="timer-text" id="timerText">آماده‌ای؟</div>
             <div class="timer-number" id="timerNumber">3</div>
         </div>
 
@@ -343,7 +359,7 @@
         </div>
 
         <div class="next-note">
-            <span style="color:#475569;">NEXT NOTE</span>
+            <span style="color:#475569;" id="nextNoteLabel">NEXT NOTE</span>
             <div class="note" id="targetNote">—</div>
         </div>
 
@@ -357,7 +373,7 @@
 
         <div class="controls">
             <button id="pauseButton">⏸ PAUSE</button>
-            <span style="color:#475569;font-size:11px;">SPEED</span>
+            <span style="color:#475569;font-size:11px;" id="speedLabel">SPEED</span>
             <select id="speedSelect">
                 <option value="0.25">0.25×</option>
                 <option value="0.50">0.50×</option>
@@ -380,14 +396,14 @@
     <div id="resultPage">
         <div class="result-icon" id="resultIcon">🎉</div>
         <div class="result-score" id="resultScore">0</div>
-        <div class="result-label">امتیاز نهایی</div>
+        <div class="result-label" id="resultLabel">امتیاز نهایی</div>
         <div class="result-details">
-            <div><div class="num" id="rHits">0</div><div class="lbl">ضربات درست</div></div>
-            <div><div class="num" id="rAccuracy">0%</div><div class="lbl">دقت</div></div>
-            <div><div class="num" id="rCombo">0</div><div class="lbl">بهترین COMBO</div></div>
+            <div><div class="num" id="rHits">0</div><div class="lbl" id="rHitsLabel">ضربات درست</div></div>
+            <div><div class="num" id="rAccuracy">0%</div><div class="lbl" id="rAccuracyLabel">دقت</div></div>
+            <div><div class="num" id="rCombo">0</div><div class="lbl" id="rComboLabel">بهترین COMBO</div></div>
         </div>
         <div class="result-actions">
-            <button class="btn-retry" onclick="retryGame()">🔄 بازی دوباره</button>
+            <button class="btn-retry" id="retryBtn" onclick="retryGame()">🔄 بازی دوباره</button>
             <button class="btn-lessons" onclick="backToLessons()">📚 بازگشت به مراحل</button>
             <button class="btn-home" onclick="goHome()">🏠 صفحه اصلی</button>
         </div>
@@ -396,14 +412,14 @@
     <!-- ===== صفحه تنظیمات ===== -->
     <div id="settingsPage">
         <div class="settings-header">
-            <h2>⚙️ تنظیمات</h2>
+            <h2 id="settingsTitle">⚙️ تنظیمات</h2>
             <button class="back-btn" onclick="goHome()">🏠 بازگشت</button>
         </div>
 
         <div class="setting-group">
-            <div class="group-title">🌐 زبان</div>
+            <div class="group-title" id="langGroupTitle">🌐 زبان</div>
             <div class="setting-item">
-                <label>زبان</label>
+                <label id="langLabel">زبان</label>
                 <div class="lang-options">
                     <button class="lang-btn active" data-lang="fa" onclick="setLanguage('fa', this)">فارسی</button>
                     <button class="lang-btn" data-lang="en" onclick="setLanguage('en', this)">English</button>
@@ -412,9 +428,9 @@
         </div>
 
         <div class="setting-group">
-            <div class="group-title">🎨 رنگ بازی</div>
+            <div class="group-title" id="colorGroupTitle">🎨 رنگ بازی</div>
             <div class="setting-item">
-                <label>رنگ اصلی</label>
+                <label id="colorLabel">رنگ اصلی</label>
                 <div class="color-options">
                     <div class="color-btn active" style="background:#38bdf8;" onclick="setColor('#38bdf8', this)"></div>
                     <div class="color-btn" style="background:#f472b6;" onclick="setColor('#f472b6', this)"></div>
@@ -427,19 +443,30 @@
         </div>
 
         <div class="setting-group">
-            <div class="group-title">⚡ سرعت و سایز</div>
+            <div class="group-title" id="speedGroupTitle">⚡ سرعت و سایز</div>
             <div class="setting-item">
-                <label>سرعت قطره‌ها</label>
+                <label id="speedSettingLabel">سرعت قطره‌ها</label>
                 <div class="slider-group">
                     <input type="range" id="speedRange" min="50" max="400" value="200" step="10" oninput="updateSpeedSetting(this.value)">
                     <span class="value-display" id="speedValueDisplay">200</span>
                 </div>
             </div>
             <div class="setting-item">
-                <label>سایز قطره‌ها</label>
+                <label id="dropSizeLabel">سایز قطره‌ها</label>
                 <div class="slider-group">
                     <input type="range" id="dropSizeRange" min="0.3" max="1.0" value="0.65" step="0.05" oninput="updateDropSize(this.value)">
                     <span class="value-display" id="dropSizeValueDisplay">0.65</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <div class="group-title" id="displayGroupTitle">🔤 نمایش نت‌ها</div>
+            <div class="setting-item">
+                <label id="displayLabel">نمایش روی نت‌ها</label>
+                <div class="display-mode-options">
+                    <button class="mode-btn active" data-mode="letters" onclick="setDisplayMode('letters', this)">حروف (A, B, C)</button>
+                    <button class="mode-btn" data-mode="numbers" onclick="setDisplayMode('numbers', this)">اعداد (۱, ۲, ۳)</button>
                 </div>
             </div>
         </div>
@@ -449,176 +476,308 @@
 
 <script>
 // =========================================================
-// WEPAN - با سیستم صدا
+// WEPAN - نسخه نهایی کامل با صداهای شماره‌گذاری شده
 // =========================================================
 
 console.log('WEPAN loading...');
 
-// ===== سیستم صدا =====
-let audioCtx = null;
-let soundEnabled = true;
-
-// فرکانس نت‌ها (هرتز)
-const NOTE_FREQS = {
-    'C': 261.63,
-    'D': 293.66,
-    'E': 329.63,
-    'F': 349.23,
-    'G': 392.00,
-    'A': 440.00,
-    'Bb': 466.16,
-    'A_high': 880.00,
-    'D_high': 587.33
+// ===== موقعیت‌های نت‌ها روی خط HIT =====
+const NOTE_X = {
+    "D2": 75,
+    "E4": 170,
+    "Bb6": 265,
+    "A8": 355,
+    "D": 430,
+    "G7": 500,
+    "F5": 595,
+    "C3": 690,
+    "A1": 760
 };
 
-// صداهای دستی (برای نت‌های هنگ‌درام با تایمبر متفاوت)
-function playHandpanNote(noteName, duration = 0.5, volume = 0.3) {
-    if (!soundEnabled) return;
-    
-    try {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+// ===== موقعیت‌های نت‌ها روی هنگ‌درام =====
+const HANDPAN_POSITIONS = {
+    "A1": [457, 210, 20],
+    "D2": [403, 210, 20],
+    "C3": [496, 171, 20],
+    "E4": [366, 171, 20],
+    "F5": [496, 118, 20],
+    "Bb6": [366, 118, 20],
+    "G7": [457, 81, 20],
+    "A8": [403, 81, 20],
+    "D": [430, 145, 34]
+};
+
+// ===== رنگ‌های نت‌ها =====
+const NOTE_COLORS = {
+    "A1": "#f472b6",
+    "D2": "#34d399",
+    "C3": "#38bdf8",
+    "E4": "#2dd4bf",
+    "F5": "#818cf8",
+    "Bb6": "#fbbf24",
+    "G7": "#a78bfa",
+    "A8": "#fb7185",
+    "D": "#60a5fa"
+};
+
+// ===== برچسب‌های نت‌ها =====
+const NOTE_LABELS = {
+    "A1": "A",
+    "D2": "D",
+    "C3": "C",
+    "E4": "E",
+    "F5": "F",
+    "Bb6": "Bb",
+    "G7": "G",
+    "A8": "A",
+    "D": "D"
+};
+
+// ===== نقشه نت به شماره =====
+const NOTE_TO_NUMBER = {
+    'A1': 1, 'D2': 2, 'C3': 3, 'E4': 4,
+    'F5': 5, 'Bb6': 6, 'G7': 7, 'A8': 8, 'D': 'D'
+};
+
+// ===== ALL_NOTES =====
+const ALL_NOTES = Object.keys(NOTE_X);
+
+// ===== ترتیب نمایش روی خط HIT =====
+const HIT_ORDER = [
+    { number: 2, note: 'D2' },
+    { number: 4, note: 'E4' },
+    { number: 6, note: 'Bb6' },
+    { number: 8, note: 'A8' },
+    { number: 'D', note: 'D' },
+    { number: 7, note: 'G7' },
+    { number: 5, note: 'F5' },
+    { number: 3, note: 'C3' },
+    { number: 1, note: 'A1' }
+];
+
+// ===== سیستم صدا با فایل‌های شماره‌گذاری شده =====
+const SOUND_MAP = {
+    "A1": "1.wav",
+    "D2": "2.wav",
+    "C3": "3.wav",
+    "E4": "4.wav",
+    "F5": "5.wav",
+    "Bb6": "6.wav",
+    "G7": "7.wav",
+    "A8": "8.wav",
+    "D": "D.wav",
+    "miss": "miss.wav",
+    "combo": "combo.wav"
+};
+
+let audioElements = {};
+let soundEnabled = true;
+
+function loadSounds() {
+    console.log('🔄 در حال بارگذاری صداها...');
+    for (let [note, file] of Object.entries(SOUND_MAP)) {
+        try {
+            const audio = new Audio(`/sounds/${file}`);
+            audio.preload = 'auto';
+            audioElements[note] = audio;
+            console.log(`✅ بارگذاری: ${file} → ${note}`);
+        } catch (e) {
+            console.log(`❌ خطا در بارگذاری ${file}:`, e);
         }
-        
-        const freq = NOTE_FREQS[noteName];
-        if (!freq) return;
-        
-        const now = audioCtx.currentTime;
-        
-        // نوسان‌ساز اصلی
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        
-        // نوع موج: سینوسی + کمی مثلث برای صدای گرم‌تر
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
-        
-        // افزودن هارمونیک برای صدای طبیعی‌تر
-        const osc2 = audioCtx.createOscillator();
-        const gain2 = audioCtx.createGain();
-        osc2.type = 'triangle';
-        osc2.frequency.setValueAtTime(freq * 2, now);
-        gain2.gain.setValueAtTime(volume * 0.08, now);
-        
-        // پوشش (ADSR)
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume, now + 0.01);
-        gain.gain.exponentialRampToValueAtTime(volume * 0.6, now + 0.1);
-        gain.gain.exponentialRampToValueAtTime(0, now + duration);
-        
-        // اتصال
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        
-        osc2.connect(gain2);
-        gain2.connect(audioCtx.destination);
-        
-        // پخش
-        osc.start(now);
-        osc.stop(now + duration);
-        
-        osc2.start(now);
-        osc2.stop(now + duration);
-        
-        // ریورب ساده (با تأخیر)
-        const delay = audioCtx.createDelay(0.3);
-        const delayGain = audioCtx.createGain();
-        delay.delayTime.value = 0.12;
-        delayGain.gain.value = 0.15;
-        
-        gain.connect(delay);
-        delay.connect(delayGain);
-        delayGain.connect(audioCtx.destination);
-        
-        // صدای ضربه (attack)
-        const noise = audioCtx.createBufferSource();
-        const bufferSize = audioCtx.sampleRate * 0.02;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
-        }
-        noise.buffer = buffer;
-        const noiseGain = audioCtx.createGain();
-        noiseGain.gain.setValueAtTime(volume * 0.15, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-        noise.connect(noiseGain);
-        noiseGain.connect(audioCtx.destination);
-        noise.start(now);
-        noise.stop(now + 0.05);
-        
-    } catch (e) {
-        console.log('Sound error:', e);
     }
+    console.log('✅ همه صداها بارگذاری شدند!');
 }
 
-// پخش صدای ضربه (Hit)
-function playHitSound(noteName) {
-    playHandpanNote(noteName, 0.4, 0.25);
+function playSound(note, volume = 0.7) {
+    if (!soundEnabled) return;
+    try {
+        const audio = audioElements[note];
+        if (!audio) {
+            console.log(`❌ صدای ${note} پیدا نشد`);
+            return;
+        }
+        const sound = audio.cloneNode();
+        sound.volume = volume;
+        sound.play().catch(() => {});
+        sound.onended = () => sound.remove();
+    } catch (e) {}
 }
 
-// پخش صدای Miss
 function playMissSound() {
-    try {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0, audioCtx.currentTime + 0.2);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.2);
-    } catch (e) {}
+    playSound('miss', 0.5);
 }
 
-// پخش صدای COMBO
-function playComboSound(combo) {
-    try {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        const freq = 440 + combo * 20;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0, audioCtx.currentTime + 0.15);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.15);
-    } catch (e) {}
+function playComboSound() {
+    playSound('combo', 0.5);
 }
 
-// قطع/وصل صدا
 function toggleSound() {
     soundEnabled = !soundEnabled;
     const btn = document.getElementById('soundToggle');
-    btn.textContent = soundEnabled ? '🔊' : '🔇';
-    btn.classList.toggle('active', soundEnabled);
+    if (btn) {
+        btn.textContent = soundEnabled ? '🔊' : '🔇';
+        btn.classList.toggle('active', soundEnabled);
+    }
+    console.log('🔊 صدا:', soundEnabled ? 'روشن' : 'خاموش');
+}
+
+// ===== حالت نمایش =====
+let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
+
+function getNoteDisplay(noteName) {
+    if (displayMode === 'numbers') {
+        const num = NOTE_TO_NUMBER[noteName];
+        return num !== undefined ? String(num) : noteName;
+    }
+    return NOTE_LABELS[noteName] || noteName;
+}
+
+function setDisplayMode(mode, btn) {
+    displayMode = mode;
+    localStorage.setItem('wepan_display_mode', mode);
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    
+    if (document.getElementById('gamePage').style.display === 'block') {
+        drawHandpan();
+        drawFallingArea();
+        if (currentTarget) {
+            document.getElementById('targetNote').textContent = getNoteDisplay(currentTarget);
+        }
+    }
+    renderLessons();
+}
+
+// ===== متون دو زبانه =====
+const TEXTS = {
+    fa: {
+        welcome: 'یادگیری هنگ‌درام • بازی • پیشرفت',
+        start: '▶ شروع',
+        lessons: '📚 انتخاب مرحله',
+        home: '🏠 صفحه اصلی',
+        settings: '⚙️ تنظیمات',
+        nextNote: 'NEXT NOTE',
+        score: 'SCORE',
+        combo: 'COMBO',
+        accuracy: 'ACC',
+        pause: '⏸ PAUSE',
+        resume: '▶ RESUME',
+        speed: 'SPEED',
+        progress: 'NOTES',
+        end: '✕ پایان',
+        record: '🎤 ضبط تمرین',
+        recordStatus: 'برای تمرین ضبط کن',
+        resultLabel: 'امتیاز نهایی',
+        hits: 'ضربات درست',
+        accLabel: 'دقت',
+        comboLabel: 'بهترین COMBO',
+        retry: '🔄 بازی دوباره',
+        backLessons: '📚 بازگشت به مراحل',
+        done: '✅ انجام شده',
+        locked: '🔒',
+        ready: 'آماده‌ای؟',
+        settingsTitle: '⚙️ تنظیمات',
+        lang: 'زبان',
+        color: 'رنگ اصلی',
+        speedSetting: 'سرعت قطره‌ها',
+        dropSize: 'سایز قطره‌ها',
+        langGroup: '🌐 زبان',
+        colorGroup: '🎨 رنگ بازی',
+        speedGroup: '⚡ سرعت و سایز',
+        displayGroup: '🔤 نمایش نت‌ها',
+        displayLabel: 'نمایش روی نت‌ها'
+    },
+    en: {
+        welcome: 'Learn Handpan • Play • Improve',
+        start: '▶ Start',
+        lessons: '📚 Select Level',
+        home: '🏠 Home',
+        settings: '⚙️ Settings',
+        nextNote: 'NEXT NOTE',
+        score: 'SCORE',
+        combo: 'COMBO',
+        accuracy: 'ACC',
+        pause: '⏸ PAUSE',
+        resume: '▶ RESUME',
+        speed: 'SPEED',
+        progress: 'NOTES',
+        end: '✕ End',
+        record: '🎤 Record Practice',
+        recordStatus: 'Tap to record',
+        resultLabel: 'Final Score',
+        hits: 'Correct Hits',
+        accLabel: 'Accuracy',
+        comboLabel: 'Best COMBO',
+        retry: '🔄 Play Again',
+        backLessons: '📚 Back to Levels',
+        done: '✅ Completed',
+        locked: '🔒',
+        ready: 'Ready?',
+        settingsTitle: '⚙️ Settings',
+        lang: 'Language',
+        color: 'Main Color',
+        speedSetting: 'Droplet Speed',
+        dropSize: 'Droplet Size',
+        langGroup: '🌐 Language',
+        colorGroup: '🎨 Game Color',
+        speedGroup: '⚡ Speed & Size',
+        displayGroup: '🔤 Note Display',
+        displayLabel: 'Display Mode'
+    }
+};
+
+// ===== LANGUAGE =====
+let currentLang = localStorage.getItem('wepan_lang') || 'fa';
+
+function applyLanguage(lang) {
+    const t = TEXTS[lang];
+    if (!t) return;
+    document.getElementById('welcomeSubtitle').textContent = t.welcome;
+    document.getElementById('startBtn').textContent = t.start;
+    document.getElementById('settingsBtn').textContent = t.settings;
+    document.getElementById('lessonsTitle').textContent = t.lessons;
+    document.getElementById('homeBtn').textContent = t.home;
+    document.getElementById('nextNoteLabel').textContent = t.nextNote;
+    document.getElementById('speedLabel').textContent = t.speed;
+    document.getElementById('pauseButton').textContent = t.pause;
+    document.getElementById('endGameBtn').textContent = t.end;
+    document.getElementById('recordButton').textContent = t.record;
+    document.getElementById('recordStatus').textContent = t.recordStatus;
+    document.getElementById('timerText').textContent = t.ready;
+    document.getElementById('resultLabel').textContent = t.resultLabel;
+    document.getElementById('rHitsLabel').textContent = t.hits;
+    document.getElementById('rAccuracyLabel').textContent = t.accLabel;
+    document.getElementById('rComboLabel').textContent = t.comboLabel;
+    document.getElementById('retryBtn').textContent = t.retry;
+    document.getElementById('settingsTitle').textContent = t.settingsTitle;
+    document.getElementById('langGroupTitle').textContent = t.langGroup;
+    document.getElementById('colorGroupTitle').textContent = t.colorGroup;
+    document.getElementById('speedGroupTitle').textContent = t.speedGroup;
+    document.getElementById('displayGroupTitle').textContent = t.displayGroup;
+    document.getElementById('displayLabel').textContent = t.displayLabel;
+    renderLessons();
+}
+
+function setLanguage(lang, btn) {
+    currentLang = lang;
+    localStorage.setItem('wepan_lang', lang);
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyLanguage(lang);
 }
 
 // ===== LESSONS =====
 const LESSONS = [
-    { id: 1, title: 'نت C', desc: 'ضربه روی نت C', level: 1 },
-    { id: 2, title: 'نت D', desc: 'ضربه روی نت D', level: 1 },
-    { id: 3, title: 'نت E', desc: 'ضربه روی نت E', level: 1 },
-    { id: 4, title: 'C و D', desc: 'C سپس D', level: 2 },
-    { id: 5, title: 'D و E', desc: 'D سپس E', level: 2 },
-    { id: 6, title: 'سه نت', desc: 'C-D-E', level: 3 },
+    { id: 1, title_fa: 'نت A', title_en: 'Note A', desc_fa: 'ضربه روی نت A', desc_en: 'Hit note A', level: 1 },
+    { id: 2, title_fa: 'نت D', title_en: 'Note D', desc_fa: 'ضربه روی نت D', desc_en: 'Hit note D', level: 1 },
+    { id: 3, title_fa: 'نت C', title_en: 'Note C', desc_fa: 'ضربه روی نت C', desc_en: 'Hit note C', level: 1 },
+    { id: 4, title_fa: 'نت E', title_en: 'Note E', desc_fa: 'ضربه روی نت E', desc_en: 'Hit note E', level: 1 },
+    { id: 5, title_fa: 'نت F', title_en: 'Note F', desc_fa: 'ضربه روی نت F', desc_en: 'Hit note F', level: 1 },
+    { id: 6, title_fa: 'نت Bb', title_en: 'Note Bb', desc_fa: 'ضربه روی نت Bb', desc_en: 'Hit note Bb', level: 1 },
+    { id: 7, title_fa: 'نت G', title_en: 'Note G', desc_fa: 'ضربه روی نت G', desc_en: 'Hit note G', level: 1 },
+    { id: 8, title_fa: 'نت A', title_en: 'Note A', desc_fa: 'ضربه روی نت A (بالا)', desc_en: 'Hit note A (high)', level: 1 },
 ];
 
-// ===== DATA =====
-const NOTE_X = { "A_high":75, "F":170, "G":265, "E":355, "D":430, "D_high":500, "C":595, "Bb":690, "A":760 };
-const NOTE_COLORS = { "C":"#38bdf8", "D":"#60a5fa", "E":"#2dd4bf", "F":"#818cf8", "G":"#a78bfa", "A":"#f472b6", "Bb":"#fbbf24", "A_high":"#fb7185", "D_high":"#34d399" };
-const NOTE_LABELS = { "A":"A", "Bb":"Bb", "C":"C", "D_high":"D", "E":"E", "F":"F", "G":"G", "A_high":"A", "D":"D" };
-const ALL_NOTES = Object.keys(NOTE_X);
 const TOTAL_NOTES = 20;
 
 // ===== STATE =====
@@ -634,8 +793,6 @@ let isGameInitialized = false;
 let GAME_SPEED = 200;
 let DROPLET_SCALE = 0.65;
 let mainColor = '#38bdf8';
-
-// ===== STATS =====
 let completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
 let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
 
@@ -690,19 +847,22 @@ function backToLessons() {
 
 function renderLessons() {
     const container = document.getElementById('lessonsContainer');
+    const t = TEXTS[currentLang];
     container.innerHTML = LESSONS.map((l, i) => {
         const done = completed.includes(String(l.id));
         const locked = i > 0 && !completed.includes(String(LESSONS[i-1].id));
+        const title = currentLang === 'fa' ? l.title_fa : l.title_en;
+        const desc = currentLang === 'fa' ? l.desc_fa : l.desc_en;
         return `
             <div class="lesson-card ${locked ? 'locked' : ''} ${done ? 'completed' : ''}" 
                  onclick="${locked ? '' : `startLesson(${l.id})`}">
                 <div class="info">
-                    <h3>${l.title}</h3>
-                    <p>${l.desc}</p>
+                    <h3>${title}</h3>
+                    <p>${desc}</p>
                     <span class="level-tag">سطح ${l.level}</span>
-                    ${done ? `<span style="color:#2dd4bf;font-size:12px;margin-right:8px;">✅ انجام شده</span>` : ''}
+                    ${done ? `<span style="color:#2dd4bf;font-size:12px;margin-right:8px;">${t.done}</span>` : ''}
                 </div>
-                <div class="status">${done ? '✅' : locked ? '🔒' : '▶️'}</div>
+                <div class="status">${done ? '✅' : locked ? t.locked : '▶️'}</div>
             </div>
         `;
     }).join('');
@@ -723,11 +883,6 @@ function updateSpeedSetting(val) {
 function updateDropSize(val) {
     DROPLET_SCALE = parseFloat(val);
     document.getElementById('dropSizeValueDisplay').textContent = val;
-}
-
-function setLanguage(lang, btn) {
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
 }
 
 function setColor(color, btn) {
@@ -770,16 +925,13 @@ function startLesson(lessonId) {
     currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
     
-    // راه‌اندازی AudioContext با کلیک کاربر
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    
     document.getElementById('lessonsPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     document.getElementById('resultPage').style.display = 'none';
     document.getElementById('settingsPage').style.display = 'none';
-    document.getElementById('gameTitle').textContent = `🥁 ${currentLesson.title}`;
+    
+    const title = currentLang === 'fa' ? currentLesson.title_fa : currentLesson.title_en;
+    document.getElementById('gameTitle').textContent = `🥁 ${title}`;
     
     if (!isGameInitialized) {
         setupCanvases();
@@ -805,7 +957,7 @@ function resetGame() {
     if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     document.getElementById('timerOverlay').style.display = 'none';
-    document.getElementById('pauseButton').textContent = '⏸ PAUSE';
+    document.getElementById('pauseButton').textContent = TEXTS[currentLang].pause;
     document.getElementById('scoreDisplay').textContent = 'SCORE 0';
     document.getElementById('comboDisplay').textContent = 'COMBO 0';
     document.getElementById('accuracyDisplay').textContent = 'ACC 0%';
@@ -833,41 +985,54 @@ function setupCanvases() {
 function drawFallingArea() {
     const W=820, H=280;
     ctx.clearRect(0,0,W,H);
-    ctx.fillStyle='#475569'; ctx.font='bold 8px Arial'; ctx.fillText('EVEN',180,27);
-    ctx.fillStyle='#60a5fa'; ctx.fillText('D • CENTER',430,27);
-    ctx.fillStyle='#475569'; ctx.fillText('ODD',660,27);
+    
+    ctx.fillStyle='#475569'; ctx.font='bold 8px Arial'; 
+    ctx.fillText('EVEN',180,27);
+    ctx.fillStyle='#60a5fa'; 
+    ctx.fillText('D • CENTER',430,27);
+    ctx.fillStyle='#475569'; 
+    ctx.fillText('ODD',660,27);
+    
     ctx.strokeStyle='#1b2b3d'; ctx.lineWidth=1;
-    for(let x of Object.values(NOTE_X)) { ctx.beginPath(); ctx.moveTo(x,42); ctx.lineTo(x,232); ctx.stroke(); }
+    for(let x of Object.values(NOTE_X)) { 
+        ctx.beginPath(); ctx.moveTo(x,42); ctx.lineTo(x,232); ctx.stroke(); 
+    }
+    
     ctx.strokeStyle='#315270'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.moveTo(NOTE_X['D'],38); ctx.lineTo(NOTE_X['D'],242); ctx.stroke();
+    
     hitY = 220;
     ctx.strokeStyle=mainColor; ctx.lineWidth=4;
     ctx.beginPath(); ctx.moveTo(18,hitY); ctx.lineTo(W-18,hitY); ctx.stroke();
     ctx.strokeStyle='#67e8f9'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(18,hitY); ctx.lineTo(W-18,hitY); ctx.stroke();
-    const nums = [[8,"A_high"],[6,"F"],[7,"G"],[5,"E"],[4,"D_high"],[3,"C"],[2,"Bb"],[1,"A"]];
+    
     ctx.font='bold 9px Arial';
-    for(let [n,note] of nums) {
-        let x=NOTE_X[note];
-        ctx.fillStyle='#94a3b8'; ctx.fillText(n,x-6,hitY-18);
-        ctx.fillStyle=NOTE_COLORS[note]; ctx.font='bold 7px Arial';
-        ctx.fillText(NOTE_LABELS[note],x-5,hitY+15);
+    for(let item of HIT_ORDER) {
+        const note = item.note;
+        if (NOTE_X[note] === undefined) continue;
+        const x = NOTE_X[note];
+        ctx.fillStyle='#94a3b8'; 
+        ctx.fillText(String(item.number), x-6, hitY-18);
+        ctx.fillStyle = NOTE_COLORS[note] || '#94a3b8';
+        ctx.font='bold 7px Arial';
+        ctx.fillText(getNoteDisplay(note), x-5, hitY+15);
         ctx.font='bold 9px Arial';
     }
-    ctx.fillStyle='#60a5fa'; ctx.font='bold 10px Arial';
-    ctx.fillText('D',NOTE_X['D']-7,hitY-20);
-    ctx.fillStyle=NOTE_COLORS['D']; ctx.font='bold 7px Arial';
-    ctx.fillText('D',NOTE_X['D']-3,hitY+15);
+    
     ctx.fillStyle='#67e8f9'; ctx.font='bold 8px Arial';
-    ctx.fillText('HIT',W-43,hitY-36);
+    ctx.fillText('HIT', W-43, hitY-36);
 }
 
 function drawHandpan(highlight=null) {
     const W=820, H=280;
     panCtx.clearRect(0,0,W,H);
-    panCtx.strokeStyle='#18273a'; panCtx.lineWidth=2; panCtx.strokeRect(10,10,800,260);
-    panCtx.fillStyle='#475569'; panCtx.font='bold 9px Arial'; panCtx.fillText('HANDPAN',38,27);
-    const cx=430, cy=150, r=115;
+    panCtx.strokeStyle='#18273a'; panCtx.lineWidth=2; 
+    panCtx.strokeRect(10,10,800,260);
+    panCtx.fillStyle='#475569'; panCtx.font='bold 9px Arial'; 
+    panCtx.fillText('HANDPAN',38,27);
+    
+    const cx=430, cy=145, r=115;
     panCtx.shadowColor='#040810'; panCtx.shadowBlur=20;
     panCtx.beginPath(); panCtx.arc(cx,cy,r,0,Math.PI*2);
     panCtx.fillStyle='#293646'; panCtx.fill();
@@ -876,75 +1041,90 @@ function drawHandpan(highlight=null) {
     panCtx.beginPath(); panCtx.arc(cx,cy,r-8,0,Math.PI*2);
     panCtx.fillStyle='#263342'; panCtx.fill();
     panCtx.strokeStyle='#3f4e61'; panCtx.lineWidth=2; panCtx.stroke();
-    const pos = { "A":[430,55,20], "Bb":[510,85,20], "C":[545,145,20], "D_high":[510,205,20], "E":[430,235,20], "F":[350,205,20], "G":[315,145,20], "A_high":[350,85,20], "D":[430,145,34] };
-    for(let [note,[x,y,r2]] of Object.entries(pos)) {
-        let col = NOTE_COLORS[note], hl = highlight===note;
+    
+    for (let [note, [x, y, r2]] of Object.entries(HANDPAN_POSITIONS)) {
+        const col = NOTE_COLORS[note] || '#4a596d';
+        const hl = highlight === note;
+        const display = getNoteDisplay(note);
+        
         panCtx.shadowColor='#111923'; panCtx.shadowBlur=10;
-        panCtx.beginPath(); panCtx.arc(x,y,r2+2,0,Math.PI*2);
+        panCtx.beginPath(); panCtx.arc(x, y, r2+2, 0, Math.PI*2);
         panCtx.fillStyle='#111923'; panCtx.fill();
         panCtx.shadowBlur=0;
-        panCtx.beginPath(); panCtx.arc(x,y,r2,0,Math.PI*2);
-        panCtx.fillStyle=hl?'#1a3a5a':'#1d2835';
+        
+        panCtx.beginPath(); panCtx.arc(x, y, r2, 0, Math.PI*2);
+        panCtx.fillStyle = hl ? '#1a3a5a' : '#1d2835';
         panCtx.fill();
-        panCtx.strokeStyle=hl?col:'#4a596d';
-        panCtx.lineWidth=hl?3:2;
+        panCtx.strokeStyle = hl ? col : '#4a596d';
+        panCtx.lineWidth = hl ? 3 : 2;
         panCtx.stroke();
-        panCtx.beginPath(); panCtx.arc(x,y,r2-4,0,Math.PI*2);
-        panCtx.strokeStyle=col; panCtx.lineWidth=1; panCtx.stroke();
-        panCtx.fillStyle=hl?col:'#e5e7eb';
-        panCtx.font=`bold ${note==='D'?13:10}px Arial`;
-        panCtx.textAlign='center'; panCtx.textBaseline='middle';
-        panCtx.fillText(NOTE_LABELS[note],x,y);
+        
+        panCtx.beginPath(); panCtx.arc(x, y, r2-4, 0, Math.PI*2);
+        panCtx.strokeStyle = col;
+        panCtx.lineWidth = 1;
+        panCtx.stroke();
+        
+        panCtx.fillStyle = hl ? col : '#e5e7eb';
+        panCtx.font = `bold ${note === 'D' ? 13 : 10}px Arial`;
+        panCtx.textAlign = 'center';
+        panCtx.textBaseline = 'middle';
+        panCtx.fillText(display, x, y);
     }
 }
 
-function drawDroplet(x,y,note) {
-    let col = NOTE_COLORS[note];
+function drawDroplet(x, y, note) {
+    const col = NOTE_COLORS[note] || '#38bdf8';
     const s = DROPLET_SCALE;
-    ctx.fillStyle=col; ctx.globalAlpha=0.25;
+    
+    ctx.fillStyle = col; ctx.globalAlpha = 0.25;
     ctx.beginPath();
-    ctx.moveTo(x-2*s,y-25*s);
-    ctx.quadraticCurveTo(x-6*s,y-45*s,x-4*s,y-58*s);
-    ctx.quadraticCurveTo(x,y-65*s,x+4*s,y-58*s);
-    ctx.quadraticCurveTo(x+6*s,y-45*s,x+2*s,y-25*s);
+    ctx.moveTo(x - 2*s, y - 25*s);
+    ctx.quadraticCurveTo(x - 6*s, y - 45*s, x - 4*s, y - 58*s);
+    ctx.quadraticCurveTo(x, y - 65*s, x + 4*s, y - 58*s);
+    ctx.quadraticCurveTo(x + 6*s, y - 45*s, x + 2*s, y - 25*s);
     ctx.fill();
-    ctx.globalAlpha=1;
-    ctx.shadowColor=col; ctx.shadowBlur=12;
+    ctx.globalAlpha = 1;
+    
+    ctx.shadowColor = col; ctx.shadowBlur = 12;
     ctx.beginPath();
-    ctx.moveTo(x,y-36*s);
-    ctx.quadraticCurveTo(x+24*s,y-8*s,x+26*s,y+12*s);
-    ctx.quadraticCurveTo(x+24*s,y+32*s,x,y+43*s);
-    ctx.quadraticCurveTo(x-24*s,y+32*s,x-26*s,y+12*s);
-    ctx.quadraticCurveTo(x-24*s,y-8*s,x,y-36*s);
-    ctx.fillStyle=col; ctx.fill();
-    ctx.shadowBlur=0;
-    ctx.strokeStyle='#fff'; ctx.lineWidth=0.8; ctx.stroke();
-    ctx.globalAlpha=0.4;
+    ctx.moveTo(x, y - 36*s);
+    ctx.quadraticCurveTo(x + 24*s, y - 8*s, x + 26*s, y + 12*s);
+    ctx.quadraticCurveTo(x + 24*s, y + 32*s, x, y + 43*s);
+    ctx.quadraticCurveTo(x - 24*s, y + 32*s, x - 26*s, y + 12*s);
+    ctx.quadraticCurveTo(x - 24*s, y - 8*s, x, y - 36*s);
+    ctx.fillStyle = col; ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
+    
+    ctx.globalAlpha = 0.4;
     ctx.beginPath();
-    ctx.moveTo(x,y-16*s);
-    ctx.quadraticCurveTo(x+12*s,y-4*s,x+11*s,y+8*s);
-    ctx.quadraticCurveTo(x+8*s,y+20*s,x,y+22*s);
-    ctx.quadraticCurveTo(x-8*s,y+20*s,x-11*s,y+8*s);
-    ctx.quadraticCurveTo(x-12*s,y-4*s,x,y-16*s);
-    ctx.fillStyle='#fff'; ctx.fill();
-    ctx.globalAlpha=1;
-    ctx.fillStyle='#06121c'; ctx.font='bold 7px Arial';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(NOTE_LABELS[note],x,y+5*s);
+    ctx.moveTo(x, y - 16*s);
+    ctx.quadraticCurveTo(x + 12*s, y - 4*s, x + 11*s, y + 8*s);
+    ctx.quadraticCurveTo(x + 8*s, y + 20*s, x, y + 22*s);
+    ctx.quadraticCurveTo(x - 8*s, y + 20*s, x - 11*s, y + 8*s);
+    ctx.quadraticCurveTo(x - 12*s, y - 4*s, x, y - 16*s);
+    ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.globalAlpha = 1;
+    
+    const display = getNoteDisplay(note);
+    ctx.fillStyle = '#06121c'; ctx.font = 'bold 7px Arial';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(display, x, y + 5*s);
 }
 
 function spawnNote() {
     if (!gameRunning || !isGameReady) return;
     if (notesPlayed >= TOTAL_NOTES) { finishGame(); return; }
-    let note = ALL_NOTES[Math.floor(Math.random()*ALL_NOTES.length)];
+    
+    let note = ALL_NOTES[Math.floor(Math.random() * ALL_NOTES.length)];
     currentTarget = note;
     noteY = 18;
-    document.getElementById('targetNote').textContent = NOTE_LABELS[note];
-    document.getElementById('targetNote').style.color = NOTE_COLORS[note];
+    document.getElementById('targetNote').textContent = getNoteDisplay(note);
+    document.getElementById('targetNote').style.color = NOTE_COLORS[note] || '#38bdf8';
     document.getElementById('progressLabel').textContent = `NOTES ${notesPlayed+1} / ${TOTAL_NOTES}`;
     notesPlayed++;
     drawHandpan(note);
-    fallingNote = { note: note, x: NOTE_X[note], y: noteY };
+    fallingNote = { note: note, x: NOTE_X[note] || 430, y: noteY };
     lastTime = 0;
     if (animationId) cancelAnimationFrame(animationId);
     animateNote();
@@ -968,7 +1148,7 @@ function animateNote(timestamp) {
     }
     if (fallingNote.y > hitY + 45) {
         misses++; combo = 0; updateStats();
-        playMissSound(); // صدای Miss
+        playMissSound();
         fallingNote = null;
         if (notesPlayed >= TOTAL_NOTES) { setTimeout(finishGame, 200); return; }
         setTimeout(spawnNote, 200);
@@ -987,12 +1167,9 @@ function hitNote(note) {
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
         
-        // 🔊 پخش صدای نت
-        playHitSound(note);
-        
-        // صدای COMBO
+        playSound(note, 0.6);
         if (combo > 0 && combo % 5 === 0) {
-            playComboSound(combo);
+            playComboSound();
         }
         
         drawHandpan(note);
@@ -1060,7 +1237,7 @@ function retryGame() {
 document.getElementById('pauseButton').addEventListener('click', function() {
     if (!gameRunning) return;
     isPaused = !isPaused;
-    this.textContent = isPaused ? '▶ RESUME' : '⏸ PAUSE';
+    this.textContent = isPaused ? TEXTS[currentLang].resume : TEXTS[currentLang].pause;
 });
 
 document.getElementById('speedSelect').addEventListener('change', function() {
@@ -1076,20 +1253,33 @@ document.getElementById('handpanCanvas').addEventListener('click', function(e) {
     let rect = this.getBoundingClientRect();
     let scaleX = 820/rect.width, scaleY = 280/rect.height;
     let mx = (e.clientX - rect.left)*scaleX, my = (e.clientY - rect.top)*scaleY;
-    const pos = { "A":[430,55,20], "Bb":[510,85,20], "C":[545,145,20], "D_high":[510,205,20], "E":[430,235,20], "F":[350,205,20], "G":[315,145,20], "A_high":[350,85,20], "D":[430,145,34] };
-    for (let [note,[x,y,r]] of Object.entries(pos)) {
-        if (Math.sqrt((mx-x)**2+(my-y)**2) <= r) { hitNote(note); return; }
+    
+    for (let [note, [x, y, r]] of Object.entries(HANDPAN_POSITIONS)) {
+        if (Math.sqrt((mx-x)**2 + (my-y)**2) <= r) {
+            hitNote(note);
+            return;
+        }
     }
 });
 
 // ===== RECORD =====
-document.getElementById('recordButton').addEventListener('click', async function() {
-    alert('🎤 ضبط فعال شد! (برای تست)');
+document.getElementById('recordButton').addEventListener('click', function() {
+    alert('🎤 ضبط تمرین (برای تست)');
 });
 
 // ===== START =====
+loadSounds();
+applyLanguage(currentLang);
+
+document.querySelectorAll('.mode-btn').forEach(b => {
+    if (b.dataset.mode === displayMode) b.classList.add('active');
+    else b.classList.remove('active');
+});
+
 updateWelcomeStats();
-console.log('WEPAN ready with sound!');
+console.log('WEPAN ready!');
+console.log('NOTE_X:', NOTE_X);
+console.log('HIT_ORDER:', HIT_ORDER);
 </script>
 </body>
 </html>
