@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WEPAN - آموزش هنگ‌درام</title>
     <style>
+        /* ===== همه استایل‌های قبلی ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #050a12;
@@ -476,126 +477,195 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی کامل با صداهای شماره‌گذاری شده
+// WEPAN - نسخه کامل با پشتیبانی صدای گوشی
 // =========================================================
 
 console.log('WEPAN loading...');
 
-// ===== موقعیت‌های نت‌ها روی خط HIT =====
+// ===== موقعیت‌های نت‌ها =====
 const NOTE_X = {
-    "D2": 75,
-    "E4": 170,
-    "Bb6": 265,
-    "A8": 355,
-    "D": 430,
-    "G7": 500,
-    "F5": 595,
-    "C3": 690,
-    "A1": 760
+    "D2": 75, "E4": 170, "Bb6": 265, "A8": 355,
+    "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
 
-// ===== موقعیت‌های نت‌ها روی هنگ‌درام =====
 const HANDPAN_POSITIONS = {
-    "A1": [457, 210, 20],
-    "D2": [403, 210, 20],
-    "C3": [496, 171, 20],
-    "E4": [366, 171, 20],
-    "F5": [496, 118, 20],
-    "Bb6": [366, 118, 20],
-    "G7": [457, 81, 20],
-    "A8": [403, 81, 20],
+    "A1": [457, 210, 20], "D2": [403, 210, 20],
+    "C3": [496, 171, 20], "E4": [366, 171, 20],
+    "F5": [496, 118, 20], "Bb6": [366, 118, 20],
+    "G7": [457, 81, 20], "A8": [403, 81, 20],
     "D": [430, 145, 34]
 };
 
-// ===== رنگ‌های نت‌ها =====
 const NOTE_COLORS = {
-    "A1": "#f472b6",
-    "D2": "#34d399",
-    "C3": "#38bdf8",
-    "E4": "#2dd4bf",
-    "F5": "#818cf8",
-    "Bb6": "#fbbf24",
-    "G7": "#a78bfa",
-    "A8": "#fb7185",
-    "D": "#60a5fa"
+    "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8",
+    "E4": "#2dd4bf", "F5": "#818cf8", "Bb6": "#fbbf24",
+    "G7": "#a78bfa", "A8": "#fb7185", "D": "#60a5fa"
 };
 
-// ===== برچسب‌های نت‌ها =====
 const NOTE_LABELS = {
-    "A1": "A",
-    "D2": "D",
-    "C3": "C",
-    "E4": "E",
-    "F5": "F",
-    "Bb6": "Bb",
-    "G7": "G",
-    "A8": "A",
-    "D": "D"
+    "A1": "A", "D2": "D", "C3": "C", "E4": "E",
+    "F5": "F", "Bb6": "Bb", "G7": "G", "A8": "A", "D": "D"
 };
 
-// ===== نقشه نت به شماره =====
 const NOTE_TO_NUMBER = {
     'A1': 1, 'D2': 2, 'C3': 3, 'E4': 4,
     'F5': 5, 'Bb6': 6, 'G7': 7, 'A8': 8, 'D': 'D'
 };
 
-// ===== ALL_NOTES =====
 const ALL_NOTES = Object.keys(NOTE_X);
 
-// ===== ترتیب نمایش روی خط HIT =====
 const HIT_ORDER = [
-    { number: 2, note: 'D2' },
-    { number: 4, note: 'E4' },
-    { number: 6, note: 'Bb6' },
-    { number: 8, note: 'A8' },
-    { number: 'D', note: 'D' },
-    { number: 7, note: 'G7' },
-    { number: 5, note: 'F5' },
-    { number: 3, note: 'C3' },
+    { number: 2, note: 'D2' }, { number: 4, note: 'E4' },
+    { number: 6, note: 'Bb6' }, { number: 8, note: 'A8' },
+    { number: 'D', note: 'D' }, { number: 7, note: 'G7' },
+    { number: 5, note: 'F5' }, { number: 3, note: 'C3' },
     { number: 1, note: 'A1' }
 ];
 
-// ===== سیستم صدا با فایل‌های شماره‌گذاری شده =====
-const SOUND_MAP = {
-    "A1": "1.wav",
-    "D2": "2.wav",
-    "C3": "3.wav",
-    "E4": "4.wav",
-    "F5": "5.wav",
-    "Bb6": "6.wav",
-    "G7": "7.wav",
-    "A8": "8.wav",
-    "D": "D.wav",
-    "miss": "miss.wav",
-    "combo": "combo.wav"
-};
-
-let audioElements = {};
+// ===== سیستم صدا (پشتیبانی از گوشی) =====
+let audioCtx = null;
 let soundEnabled = true;
 
+// ===== فرکانس‌های دقیق نت‌ها برای Web Audio API =====
+const FREQS = {
+    'A1': 110.00,
+    'D2': 146.83,
+    'C3': 130.81,
+    'E4': 329.63,
+    'F5': 698.46,
+    'Bb6': 1864.66,
+    'G7': 3135.96,
+    'A8': 3520.00,
+    'D': 293.66,
+    'miss': 150.00,
+    'combo': 880.00
+};
+
+// ===== تشخیص گوشی =====
+function isMobile() {
+    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// ===== راه‌اندازی AudioContext =====
+function initAudio() {
+    if (!audioCtx) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            console.log('✅ AudioContext فعال شد!');
+        } catch (e) {
+            console.log('❌ AudioContext error:', e);
+        }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+        console.log('✅ AudioContext resumed!');
+    }
+    return audioCtx;
+}
+
+// ===== پخش صدا با Web Audio API (برای گوشی) =====
+function playSoundMobile(note, volume = 0.5) {
+    if (!soundEnabled) return;
+    try {
+        const ctx = initAudio();
+        if (!ctx) return;
+        
+        // پیدا کردن فرکانس
+        let freq = FREQS[note];
+        if (!freq) {
+            // اگه نت پیدا نشد، از نام اصلی استفاده کن
+            const baseNote = note.replace(/[0-9]/g, '');
+            freq = FREQS[baseNote] || 440;
+        }
+        
+        const now = ctx.currentTime;
+        
+        // نوسان‌ساز اصلی
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        
+        // پوشش نرم (ADSR)
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.005);
+        gain.gain.linearRampToValueAtTime(volume * 0.8, now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.5, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+        
+        // هارمونیک دوم (برای صدای گرم‌تر)
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(freq * 2, now);
+        gain2.gain.setValueAtTime(0, now);
+        gain2.gain.linearRampToValueAtTime(volume * 0.08, now + 0.01);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now);
+        osc2.stop(now + 0.35);
+        
+        // صدای ضربه (Attack)
+        const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
+        const noiseData = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < noiseData.length; i++) {
+            noiseData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (noiseData.length * 0.3));
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(volume * 0.1, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        noise.connect(noiseGain);
+        noiseGain.connect(ctx.destination);
+        noise.start(now);
+        noise.stop(now + 0.05);
+        
+    } catch (e) {
+        // خطا رو نادیده بگیر
+    }
+}
+
+// ===== فایل‌های صوتی برای دسکتاپ =====
+const SOUND_MAP = {
+    "A1": "1.wav", "D2": "2.wav", "C3": "3.wav",
+    "E4": "4.wav", "F5": "5.wav", "Bb6": "6.wav",
+    "G7": "7.wav", "A8": "8.wav", "D": "D.wav",
+    "miss": "miss.wav", "combo": "combo.wav"
+};
+let audioElements = {};
+
 function loadSounds() {
-    console.log('🔄 در حال بارگذاری صداها...');
+    if (isMobile()) {
+        console.log('📱 گوشی تشخیص داده شد - استفاده از Web Audio API');
+        return;
+    }
     for (let [note, file] of Object.entries(SOUND_MAP)) {
         try {
             const audio = new Audio(`/sounds/${file}`);
             audio.preload = 'auto';
             audioElements[note] = audio;
-            console.log(`✅ بارگذاری: ${file} → ${note}`);
-        } catch (e) {
-            console.log(`❌ خطا در بارگذاری ${file}:`, e);
-        }
+        } catch (e) {}
     }
-    console.log('✅ همه صداها بارگذاری شدند!');
+    console.log('✅ صداهای دسکتاپ بارگذاری شدند');
 }
 
-function playSound(note, volume = 0.7) {
+// ===== پخش صدا (انتخاب خودکار روش) =====
+function playSound(note, volume = 0.6) {
     if (!soundEnabled) return;
+    if (isMobile()) {
+        playSoundMobile(note, volume);
+        return;
+    }
     try {
         const audio = audioElements[note];
-        if (!audio) {
-            console.log(`❌ صدای ${note} پیدا نشد`);
-            return;
-        }
+        if (!audio) return;
         const sound = audio.cloneNode();
         sound.volume = volume;
         sound.play().catch(() => {});
@@ -603,14 +673,10 @@ function playSound(note, volume = 0.7) {
     } catch (e) {}
 }
 
-function playMissSound() {
-    playSound('miss', 0.5);
-}
+function playMissSound() { playSound('miss', 0.4); }
+function playComboSound() { playSound('combo', 0.5); }
 
-function playComboSound() {
-    playSound('combo', 0.5);
-}
-
+// ===== قطع/وصل صدا =====
 function toggleSound() {
     soundEnabled = !soundEnabled;
     const btn = document.getElementById('soundToggle');
@@ -620,6 +686,10 @@ function toggleSound() {
     }
     console.log('🔊 صدا:', soundEnabled ? 'روشن' : 'خاموش');
 }
+
+// ===== فعال‌سازی صدا با اولین کلیک =====
+document.addEventListener('click', initAudio, { once: true });
+document.addEventListener('touchstart', initAudio, { once: true });
 
 // ===== حالت نمایش =====
 let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
@@ -637,7 +707,6 @@ function setDisplayMode(mode, btn) {
     localStorage.setItem('wepan_display_mode', mode);
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
-    
     if (document.getElementById('gamePage').style.display === 'block') {
         drawHandpan();
         drawFallingArea();
@@ -798,6 +867,7 @@ let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
 
 // ===== FUNCTIONS =====
 function showLessons() {
+    initAudio();
     document.getElementById('welcomePage').style.display = 'none';
     document.getElementById('lessonsPage').style.display = 'block';
     document.getElementById('gamePage').style.display = 'none';
@@ -903,9 +973,7 @@ function startTimer(callback) {
     overlay.style.display = 'flex';
     number.textContent = count;
     number.style.animation = 'none';
-    
     if (timerInterval) clearInterval(timerInterval);
-    
     timerInterval = setInterval(() => {
         count--;
         if (count === 0) {
@@ -924,24 +992,20 @@ function startTimer(callback) {
 function startLesson(lessonId) {
     currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
-    
+    initAudio();
     document.getElementById('lessonsPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     document.getElementById('resultPage').style.display = 'none';
     document.getElementById('settingsPage').style.display = 'none';
-    
     const title = currentLang === 'fa' ? currentLesson.title_fa : currentLesson.title_en;
     document.getElementById('gameTitle').textContent = `🥁 ${title}`;
-    
     if (!isGameInitialized) {
         setupCanvases();
         isGameInitialized = true;
     }
-    
     resetGame();
     drawHandpan();
     drawFallingArea();
-    
     isGameReady = false;
     startTimer(() => {
         isGameReady = true;
@@ -985,28 +1049,21 @@ function setupCanvases() {
 function drawFallingArea() {
     const W=820, H=280;
     ctx.clearRect(0,0,W,H);
-    
     ctx.fillStyle='#475569'; ctx.font='bold 8px Arial'; 
     ctx.fillText('EVEN',180,27);
-    ctx.fillStyle='#60a5fa'; 
-    ctx.fillText('D • CENTER',430,27);
-    ctx.fillStyle='#475569'; 
-    ctx.fillText('ODD',660,27);
-    
+    ctx.fillStyle='#60a5fa'; ctx.fillText('D • CENTER',430,27);
+    ctx.fillStyle='#475569'; ctx.fillText('ODD',660,27);
     ctx.strokeStyle='#1b2b3d'; ctx.lineWidth=1;
     for(let x of Object.values(NOTE_X)) { 
         ctx.beginPath(); ctx.moveTo(x,42); ctx.lineTo(x,232); ctx.stroke(); 
     }
-    
     ctx.strokeStyle='#315270'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.moveTo(NOTE_X['D'],38); ctx.lineTo(NOTE_X['D'],242); ctx.stroke();
-    
     hitY = 220;
     ctx.strokeStyle=mainColor; ctx.lineWidth=4;
     ctx.beginPath(); ctx.moveTo(18,hitY); ctx.lineTo(W-18,hitY); ctx.stroke();
     ctx.strokeStyle='#67e8f9'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(18,hitY); ctx.lineTo(W-18,hitY); ctx.stroke();
-    
     ctx.font='bold 9px Arial';
     for(let item of HIT_ORDER) {
         const note = item.note;
@@ -1019,7 +1076,6 @@ function drawFallingArea() {
         ctx.fillText(getNoteDisplay(note), x-5, hitY+15);
         ctx.font='bold 9px Arial';
     }
-    
     ctx.fillStyle='#67e8f9'; ctx.font='bold 8px Arial';
     ctx.fillText('HIT', W-43, hitY-36);
 }
@@ -1031,7 +1087,6 @@ function drawHandpan(highlight=null) {
     panCtx.strokeRect(10,10,800,260);
     panCtx.fillStyle='#475569'; panCtx.font='bold 9px Arial'; 
     panCtx.fillText('HANDPAN',38,27);
-    
     const cx=430, cy=145, r=115;
     panCtx.shadowColor='#040810'; panCtx.shadowBlur=20;
     panCtx.beginPath(); panCtx.arc(cx,cy,r,0,Math.PI*2);
@@ -1041,29 +1096,24 @@ function drawHandpan(highlight=null) {
     panCtx.beginPath(); panCtx.arc(cx,cy,r-8,0,Math.PI*2);
     panCtx.fillStyle='#263342'; panCtx.fill();
     panCtx.strokeStyle='#3f4e61'; panCtx.lineWidth=2; panCtx.stroke();
-    
     for (let [note, [x, y, r2]] of Object.entries(HANDPAN_POSITIONS)) {
         const col = NOTE_COLORS[note] || '#4a596d';
         const hl = highlight === note;
         const display = getNoteDisplay(note);
-        
         panCtx.shadowColor='#111923'; panCtx.shadowBlur=10;
         panCtx.beginPath(); panCtx.arc(x, y, r2+2, 0, Math.PI*2);
         panCtx.fillStyle='#111923'; panCtx.fill();
         panCtx.shadowBlur=0;
-        
         panCtx.beginPath(); panCtx.arc(x, y, r2, 0, Math.PI*2);
         panCtx.fillStyle = hl ? '#1a3a5a' : '#1d2835';
         panCtx.fill();
         panCtx.strokeStyle = hl ? col : '#4a596d';
         panCtx.lineWidth = hl ? 3 : 2;
         panCtx.stroke();
-        
         panCtx.beginPath(); panCtx.arc(x, y, r2-4, 0, Math.PI*2);
         panCtx.strokeStyle = col;
         panCtx.lineWidth = 1;
         panCtx.stroke();
-        
         panCtx.fillStyle = hl ? col : '#e5e7eb';
         panCtx.font = `bold ${note === 'D' ? 13 : 10}px Arial`;
         panCtx.textAlign = 'center';
@@ -1075,7 +1125,6 @@ function drawHandpan(highlight=null) {
 function drawDroplet(x, y, note) {
     const col = NOTE_COLORS[note] || '#38bdf8';
     const s = DROPLET_SCALE;
-    
     ctx.fillStyle = col; ctx.globalAlpha = 0.25;
     ctx.beginPath();
     ctx.moveTo(x - 2*s, y - 25*s);
@@ -1084,7 +1133,6 @@ function drawDroplet(x, y, note) {
     ctx.quadraticCurveTo(x + 6*s, y - 45*s, x + 2*s, y - 25*s);
     ctx.fill();
     ctx.globalAlpha = 1;
-    
     ctx.shadowColor = col; ctx.shadowBlur = 12;
     ctx.beginPath();
     ctx.moveTo(x, y - 36*s);
@@ -1095,7 +1143,6 @@ function drawDroplet(x, y, note) {
     ctx.fillStyle = col; ctx.fill();
     ctx.shadowBlur = 0;
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
-    
     ctx.globalAlpha = 0.4;
     ctx.beginPath();
     ctx.moveTo(x, y - 16*s);
@@ -1105,7 +1152,6 @@ function drawDroplet(x, y, note) {
     ctx.quadraticCurveTo(x - 12*s, y - 4*s, x, y - 16*s);
     ctx.fillStyle = '#fff'; ctx.fill();
     ctx.globalAlpha = 1;
-    
     const display = getNoteDisplay(note);
     ctx.fillStyle = '#06121c'; ctx.font = 'bold 7px Arial';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -1115,7 +1161,6 @@ function drawDroplet(x, y, note) {
 function spawnNote() {
     if (!gameRunning || !isGameReady) return;
     if (notesPlayed >= TOTAL_NOTES) { finishGame(); return; }
-    
     let note = ALL_NOTES[Math.floor(Math.random() * ALL_NOTES.length)];
     currentTarget = note;
     noteY = 18;
@@ -1166,12 +1211,10 @@ function hitNote(note) {
         score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
-        
         playSound(note, 0.6);
         if (combo > 0 && combo % 5 === 0) {
             playComboSound();
         }
-        
         drawHandpan(note);
         fallingNote = null;
         updateStats();
@@ -1253,7 +1296,6 @@ document.getElementById('handpanCanvas').addEventListener('click', function(e) {
     let rect = this.getBoundingClientRect();
     let scaleX = 820/rect.width, scaleY = 280/rect.height;
     let mx = (e.clientX - rect.left)*scaleX, my = (e.clientY - rect.top)*scaleY;
-    
     for (let [note, [x, y, r]] of Object.entries(HANDPAN_POSITIONS)) {
         if (Math.sqrt((mx-x)**2 + (my-y)**2) <= r) {
             hitNote(note);
@@ -1278,8 +1320,8 @@ document.querySelectorAll('.mode-btn').forEach(b => {
 
 updateWelcomeStats();
 console.log('WEPAN ready!');
-console.log('NOTE_X:', NOTE_X);
-console.log('HIT_ORDER:', HIT_ORDER);
+console.log('📱 حالت گوشی:', isMobile() ? 'فعال' : 'غیرفعال');
+console.log('🔊 صدا:', soundEnabled ? 'روشن' : 'خاموش');
 </script>
 </body>
 </html>

@@ -2,8 +2,6 @@ from flask import Flask, render_template, request, jsonify
 import os, tempfile, librosa, numpy as np
 from flask import Flask, render_template, send_from_directory
 
-
-
 app = Flask(__name__)
 
 @app.route('/')
@@ -49,11 +47,10 @@ def score():
     msg = '🎉 عالی!' if sc>=90 else '💪 خوب!' if sc>=70 else '📚 تمرین بیشتر'
     return jsonify({'score':round(sc), 'accuracy':round(acc,1), 'message':msg})
 
-
-# سرویس دهی فایل‌های صوتی
+# ===== سرویس دهی فایل‌های صوتی (اصلاح شده) =====
 @app.route('/sounds/<path:filename>')
-def serve_sound(sounds):
-    return send_from_directory('sounds', sounds)
+def serve_sound(filename):
+    return send_from_directory('sounds', filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
