@@ -476,38 +476,25 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با صدای موج‌دار و نت‌های درست
+// WEPAN - نسخه نهایی با صدای WAV
 // =========================================================
 
 console.log('WEPAN loading...');
 
-// ===== موقعیت‌های نت‌ها روی خط HIT =====
+// ===== موقعیت‌های نت‌ها =====
 const NOTE_X = {
-    "D2": 75,
-    "E4": 170,
-    "Bb6": 265,
-    "A8": 355,
-    "D": 430,
-    "G7": 500,
-    "F5": 595,
-    "C3": 690,
-    "A1": 760
+    "D2": 75, "E4": 170, "Bb6": 265, "A8": 355,
+    "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
 
-// ===== موقعیت‌های نت‌ها روی هنگ‌درام =====
 const HANDPAN_POSITIONS = {
-    "A1": [457, 210, 20],
-    "D2": [403, 210, 20],
-    "C3": [496, 171, 20],
-    "E4": [366, 171, 20],
-    "F5": [496, 118, 20],
-    "Bb6": [366, 118, 20],
-    "G7": [457, 81, 20],
-    "A8": [403, 81, 20],
+    "A1": [457, 210, 20], "D2": [403, 210, 20],
+    "C3": [496, 171, 20], "E4": [366, 171, 20],
+    "F5": [496, 118, 20], "Bb6": [366, 118, 20],
+    "G7": [457, 81, 20], "A8": [403, 81, 20],
     "D": [430, 145, 34]
 };
 
-// ===== رنگ‌ها و برچسب‌ها =====
 const NOTE_COLORS = {
     "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8",
     "E4": "#2dd4bf", "F5": "#818cf8", "Bb6": "#fbbf24",
@@ -524,7 +511,6 @@ const NOTE_TO_NUMBER = {
     'F5': 5, 'Bb6': 6, 'G7': 7, 'A8': 8, 'D': 'D'
 };
 
-// ===== لیست نت‌ها (برای اسپاون تصادفی) =====
 const ALL_NOTES = Object.keys(NOTE_X);
 console.log('🎵 نت‌های موجود:', ALL_NOTES);
 
@@ -536,139 +522,97 @@ const HIT_ORDER = [
     { number: 1, note: 'A1' }
 ];
 
-// ===== سیستم صدا =====
-let audioCtx = null;
-let soundEnabled = true;
+// =========================================================
+// سیستم صدا با فایل‌های WAV
+// =========================================================
 
-const FREQS = {
-    'A1': 110.00, 'D2': 146.83, 'C3': 130.81,
-    'E4': 329.63, 'F5': 698.46, 'Bb6': 1864.66,
-    'G7': 3135.96, 'A8': 3520.00, 'D': 293.66,
-    'miss': 150.00, 'combo': 880.00
+let soundEnabled = true;
+let audioElements = {};
+
+// نقشه نت به فایل صوتی
+const SOUND_MAP = {
+    "A1": "1.wav",
+    "D2": "2.wav",
+    "C3": "3.wav",
+    "E4": "4.wav",
+    "F5": "5.wav",
+    "Bb6": "6.wav",
+    "G7": "7.wav",
+    "A8": "8.wav",
+    "D": "D.wav",
+    "miss": "miss.wav",
+    "combo": "combo.wav"
 };
 
-function isMobile() {
-    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-
-function initAudio() {
-    if (!audioCtx) {
+// بارگذاری فایل‌های صوتی
+function loadSounds() {
+    console.log('🔄 بارگذاری فایل‌های صوتی WAV...');
+    let loaded = 0;
+    const total = Object.keys(SOUND_MAP).length;
+    
+    for (let [note, file] of Object.entries(SOUND_MAP)) {
         try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            console.log('✅ AudioContext فعال شد!');
+            const audio = new Audio(`/sounds/${file}`);
+            audio.preload = 'auto';
+            
+            audio.oncanplaythrough = () => {
+                loaded++;
+                console.log(`✅ ${file} بارگذاری شد (${loaded}/${total})`);
+                if (loaded === total) {
+                    console.log('✅ همه صداها بارگذاری شدند!');
+                }
+            };
+            
+            audio.onerror = () => {
+                console.log(`❌ خطا در بارگذاری ${file}`);
+            };
+            
+            audioElements[note] = audio;
         } catch (e) {
-            console.log('❌ AudioContext error:', e);
+            console.log(`❌ خطا در بارگذاری ${file}:`, e);
         }
     }
-    if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-    return audioCtx;
 }
 
-function playHandpanSound(note, volume = 0.3) {
+// پخش صدا
+function playSound(note, volume = 0.6) {
     if (!soundEnabled) return;
+    
     try {
-        const ctx = initAudio();
-        if (!ctx) return;
+        let soundKey = note;
+        const audio = audioElements[soundKey];
         
-        let freq = FREQS[note];
-        if (!freq) {
+        if (!audio) {
+            // اگه نت پیدا نشد، بدون عدد امتحان کن
             const baseNote = note.replace(/[0-9]/g, '');
-            freq = FREQS[baseNote] || 440;
+            const fallback = audioElements[baseNote];
+            if (fallback) {
+                const sound = fallback.cloneNode();
+                sound.volume = volume;
+                sound.play().catch(() => {});
+                sound.onended = () => sound.remove();
+                return;
+            }
+            console.log(`❌ صدای ${note} پیدا نشد`);
+            return;
         }
         
-        const now = ctx.currentTime;
-        const duration = 1.0;
+        const sound = audio.cloneNode();
+        sound.volume = volume;
+        sound.play().catch(() => {});
+        sound.onended = () => sound.remove();
         
-        // نوسان‌ساز اصلی
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
-        
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume * 0.8, now + 0.02);
-        gain.gain.exponentialRampToValueAtTime(volume * 0.4, now + 0.15);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-        
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + duration + 0.1);
-        
-        // هارمونیک دوم
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = 'triangle';
-        osc2.frequency.setValueAtTime(freq * 2, now);
-        gain2.gain.setValueAtTime(0, now);
-        gain2.gain.linearRampToValueAtTime(volume * 0.08, now + 0.02);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.7);
-        osc2.connect(gain2);
-        gain2.connect(ctx.destination);
-        osc2.start(now);
-        osc2.stop(now + duration + 0.1);
-        
-        // ریورب
-        const delay = ctx.createDelay(0.4);
-        const delayGain = ctx.createGain();
-        delay.delayTime.value = 0.3;
-        delayGain.gain.setValueAtTime(0.12, now);
-        delayGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-        gain.connect(delay);
-        delay.connect(delayGain);
-        delayGain.connect(ctx.destination);
-        
-    } catch (e) {}
+    } catch (e) {
+        console.log('خطا در پخش صدا:', e);
+    }
 }
 
 function playMissSound() {
-    if (!soundEnabled) return;
-    try {
-        const ctx = initAudio();
-        if (!ctx) return;
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(200, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.25);
-    } catch (e) {}
+    playSound('miss', 0.4);
 }
 
 function playComboSound() {
-    if (!soundEnabled) return;
-    try {
-        const ctx = initAudio();
-        if (!ctx) return;
-        const now = ctx.currentTime;
-        for (let i = 0; i < 3; i++) {
-            const freq = 660 + i * 110;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, now + i * 0.08);
-            gain.gain.setValueAtTime(0, now + i * 0.08);
-            gain.gain.linearRampToValueAtTime(0.12, now + i * 0.08 + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.12);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now + i * 0.08);
-            osc.stop(now + i * 0.08 + 0.15);
-        }
-    } catch (e) {}
-}
-
-function playSound(note, volume = 0.3) {
-    if (!soundEnabled) return;
-    playHandpanSound(note, volume);
+    playSound('combo', 0.5);
 }
 
 function toggleSound() {
@@ -678,12 +622,16 @@ function toggleSound() {
         btn.textContent = soundEnabled ? '🔊' : '🔇';
         btn.classList.toggle('active', soundEnabled);
     }
+    console.log('🔊 صدا:', soundEnabled ? 'روشن' : 'خاموش');
 }
 
-document.addEventListener('click', initAudio, { once: true });
-document.addEventListener('touchstart', initAudio, { once: true });
+// بارگذاری صداها در شروع
+loadSounds();
 
-// ===== حالت نمایش =====
+// =========================================================
+// بقیه کدهای بازی
+// =========================================================
+
 let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
 
 function getNoteDisplay(noteName) {
@@ -818,7 +766,6 @@ let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
 
 // ===== FUNCTIONS =====
 function showLessons() {
-    initAudio();
     document.getElementById('welcomePage').style.display = 'none';
     document.getElementById('lessonsPage').style.display = 'block';
     document.getElementById('gamePage').style.display = 'none';
@@ -943,7 +890,6 @@ function startTimer(callback) {
 function startLesson(lessonId) {
     currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
-    initAudio();
     document.getElementById('lessonsPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     document.getElementById('resultPage').style.display = 'none';
@@ -1111,7 +1057,6 @@ function drawDroplet(x, y, note) {
 
 function spawnNote() {
     if (!gameRunning || !isGameReady) {
-        console.log('⚠️ بازی آماده نیست');
         return;
     }
     if (notesPlayed >= TOTAL_NOTES) { 
@@ -1119,12 +1064,9 @@ function spawnNote() {
         return; 
     }
     
-    // انتخاب تصادفی از ALL_NOTES
     let note = ALL_NOTES[Math.floor(Math.random() * ALL_NOTES.length)];
     currentTarget = note;
     noteY = 18;
-    
-    console.log('🎵 نت جدید:', note, 'موقعیت X:', NOTE_X[note]);
     
     document.getElementById('targetNote').textContent = getNoteDisplay(note);
     document.getElementById('targetNote').style.color = NOTE_COLORS[note] || '#38bdf8';
@@ -1192,7 +1134,7 @@ function hitNote(note) {
         score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
-        playSound(note, 0.3);
+        playSound(note, 0.6);
         if (combo > 0 && combo % 5 === 0) {
             setTimeout(() => playComboSound(), 100);
         }
@@ -1302,6 +1244,7 @@ document.querySelectorAll('.mode-btn').forEach(b => {
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
 console.log('🎵 نت‌های موجود:', ALL_NOTES);
+console.log('🔊 سیستم صدا با فایل‌های WAV فعال است');
 </script>
 </body>
 </html>
