@@ -476,19 +476,18 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با هنگ‌درام بزرگ‌تر و دقت بالا
+// WEPAN - نسخه نهایی با صدای پایدار (cloneNode)
 // =========================================================
 
 console.log('WEPAN loading...');
 
-// ===== موقعیت‌های نت‌ها روی خط HIT (ثابت) =====
+// ===== موقعیت‌های نت‌ها روی خط HIT =====
 const NOTE_X = {
     "D2": 75, "E4": 170, "Bb6": 265, "A8": 355,
     "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
 
-// ===== موقعیت‌های نت‌ها روی هنگ‌درام (شعاع ۱۸۰، نسبت ۱.۵۶۵) =====
-// مرکز: (430, 145)
+// ===== موقعیت‌های نت‌ها روی هنگ‌درام (شعاع ۱۸۰) =====
 const HANDPAN_POSITIONS = {
     "A1": [472, 247, 30],
     "D2": [388, 247, 30],
@@ -528,12 +527,11 @@ const HIT_ORDER = [
 ];
 
 // =========================================================
-// سیستم صدا با فایل‌های WAV و Web Audio API (همپوشانی کامل)
+// سیستم صدا - با cloneNode (همپوشانی کامل، بدون قطعی)
 // =========================================================
 
-let audioCtx = null;
 let soundEnabled = true;
-let soundBuffers = {};
+let audioElements = {};
 
 const SOUND_FILES = {
     'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
@@ -542,46 +540,34 @@ const SOUND_FILES = {
     'miss': 'miss.wav', 'combo': 'combo.wav'
 };
 
-async function loadSoundBuffers() {
-    const ctx = initAudio();
-    if (!ctx) return;
+function loadSounds() {
+    console.log('🔄 بارگذاری فایل‌های صوتی...');
     for (let [note, file] of Object.entries(SOUND_FILES)) {
         try {
-            const response = await fetch(`/sounds/${file}`);
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-            soundBuffers[note] = audioBuffer;
-            console.log(`✅ ${file} بارگذاری شد`);
+            const audio = new Audio(`/sounds/${file}`);
+            audio.preload = 'auto';
+            audioElements[note] = audio;
+            console.log(`✅ ${file} → ${note}`);
         } catch (e) {
-            console.log(`❌ خطا در بارگذاری ${file}:`, e);
+            console.log(`❌ خطا: ${file}`);
         }
     }
     console.log('✅ همه صداها بارگذاری شدند!');
 }
 
-function playSound(note, volume = 0.5) {
+function playSound(note, volume = 0.6) {
     if (!soundEnabled) return;
     try {
-        const ctx = initAudio();
-        if (!ctx) return;
-        let buffer = soundBuffers[note];
-        if (!buffer) {
-            // اگر نت پیدا نشد، بدون عدد امتحان کن
+        let audio = audioElements[note];
+        if (!audio) {
             const baseNote = note.replace(/[0-9]/g, '');
-            buffer = soundBuffers[baseNote];
-            if (!buffer) return;
+            audio = audioElements[baseNote];
+            if (!audio) return;
         }
-        const source = ctx.createBufferSource();
-        source.buffer = buffer;
-        const gain = ctx.createGain();
-        gain.gain.setValueAtTime(volume, ctx.currentTime);
-        const now = ctx.currentTime;
-        gain.gain.setValueAtTime(volume, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-        source.connect(gain);
-        gain.connect(ctx.destination);
-        source.start(now);
-        source.stop(now + 0.7);
+        const sound = audio.cloneNode();
+        sound.volume = volume;
+        sound.play().catch(() => {});
+        sound.onended = () => sound.remove();
     } catch (e) {}
 }
 
@@ -597,23 +583,7 @@ function toggleSound() {
     }
 }
 
-function initAudio() {
-    if (!audioCtx) {
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {}
-    }
-    if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-    return audioCtx;
-}
-
-document.addEventListener('click', () => { initAudio(); }, { once: true });
-document.addEventListener('touchstart', () => { initAudio(); }, { once: true });
-
-// بارگذاری صداها
-loadSoundBuffers();
+loadSounds();
 
 // =========================================================
 // بقیه کدهای بازی
@@ -1080,7 +1050,6 @@ function animateNote(timestamp) {
         grad.addColorStop(1,'rgba(255,255,255,0)');
         ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(fallingNote.x,fallingNote.y,30,0,Math.PI*2); ctx.fill();
     }
-    // دقت بیشتر: محدوده برخورد از ۴۵ به ۳۵ کاهش داده شد
     if (fallingNote.y > hitY + 35) {
         misses++; combo = 0; updateStats();
         playMissSound();
@@ -1096,13 +1065,12 @@ function hitNote(note) {
     if (!fallingNote || isPaused || !gameRunning || !isGameReady) return;
     if (note !== currentTarget) { combo = 0; updateStats(); return; }
     let dist = Math.abs(fallingNote.y - hitY);
-    // دقت بالا: محدوده مجاز از ۷۰ به ۵۵ کاهش داده شد
     if (dist <= 55) {
         let pts = Math.max(50, 160 - Math.floor(dist * 1.6));
         score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
-        playSound(note, 0.5);
+        playSound(note, 0.6);
         if (combo > 0 && combo % 5 === 0) {
             setTimeout(() => playComboSound(), 80);
         }
@@ -1208,7 +1176,7 @@ document.querySelectorAll('.mode-btn').forEach(b => {
 });
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
-console.log('🔊 هنگ‌درام با شعاع ۱۸۰، نت‌های درشت، صداهای WAV و دقت بالا');
+console.log('🔊 صدا با cloneNode (پایدار و بدون قطعی)');
 </script>
 </body>
 </html>
