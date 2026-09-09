@@ -26,13 +26,11 @@
             position: relative;
         }
 
-        /* ===== صفحات ===== */
         #welcomePage, #loginPage, #signupPage, #profilePage {
             display: none;
         }
         #welcomePage { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; padding: 40px 20px; text-align: center; background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%); }
 
-        /* ===== فرم‌های لاگین و ثبت‌نام ===== */
         #loginPage, #signupPage {
             flex-direction: column;
             align-items: center;
@@ -57,15 +55,8 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .form-group {
-            margin-bottom: 18px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 5px;
-        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; }
         .form-group input {
             width: 100%;
             padding: 10px 14px;
@@ -77,13 +68,8 @@
             outline: none;
             transition: 0.3s;
         }
-        .form-group input:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
-        }
-        .form-group input::placeholder {
-            color: #64748b;
-        }
+        .form-group input:focus { border-color: #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.1); }
+        .form-group input::placeholder { color: #64748b; }
         .form-btn {
             width: 100%;
             padding: 12px;
@@ -97,34 +83,12 @@
             transition: 0.3s;
         }
         .form-btn:hover { opacity: 0.85; transform: scale(1.01); }
-        .form-footer {
-            text-align: center;
-            margin-top: 18px;
-            font-size: 14px;
-            color: #94a3b8;
-        }
-        .form-footer a {
-            color: #38bdf8;
-            cursor: pointer;
-            text-decoration: none;
-        }
+        .form-footer { text-align: center; margin-top: 18px; font-size: 14px; color: #94a3b8; }
+        .form-footer a { color: #38bdf8; cursor: pointer; text-decoration: none; }
         .form-footer a:hover { text-decoration: underline; }
-        .form-error {
-            color: #ef4444;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 10px;
-            min-height: 20px;
-        }
-        .form-success {
-            color: #2dd4bf;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 10px;
-            min-height: 20px;
-        }
+        .form-error { color: #ef4444; font-size: 13px; text-align: center; margin-top: 10px; min-height: 20px; }
+        .form-success { color: #2dd4bf; font-size: 13px; text-align: center; margin-top: 10px; min-height: 20px; }
 
-        /* ===== صفحه پروفایل ===== */
         #profilePage {
             flex-direction: column;
             align-items: center;
@@ -142,25 +106,11 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .profile-header h2 {
-            font-size: 28px;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .profile-header .profile-actions {
-            display: flex;
-            gap: 10px;
-        }
+        .profile-header h2 { font-size: 28px; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .profile-header .profile-actions { display: flex; gap: 10px; }
         .profile-header .profile-actions button {
-            background: #0d1422;
-            border: 1px solid #1c2a3d;
-            color: #94a3b8;
-            padding: 8px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 13px;
+            background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8;
+            padding: 8px 18px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 13px;
         }
         .profile-header .profile-actions button:hover { border-color: #38bdf8; color: #fff; }
         .profile-header .profile-actions .logout-btn:hover { border-color: #ef4444; color: #ef4444; }
@@ -187,16 +137,8 @@
             color: #000;
             margin: 0 auto 15px;
         }
-        .profile-card .username {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-        .profile-card .email {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
+        .profile-card .username { font-size: 22px; font-weight: 700; margin-bottom: 5px; }
+        .profile-card .email { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
         .profile-card .stats {
             display: flex;
             justify-content: center;
@@ -206,15 +148,8 @@
             border-bottom: 1px solid #1a2a3d;
             margin: 10px 0 20px;
         }
-        .profile-card .stats .stat-item .num {
-            font-size: 24px;
-            font-weight: 700;
-            color: #38bdf8;
-        }
-        .profile-card .stats .stat-item .lbl {
-            font-size: 12px;
-            color: #64748b;
-        }
+        .profile-card .stats .stat-item .num { font-size: 24px; font-weight: 700; color: #38bdf8; }
+        .profile-card .stats .stat-item .lbl { font-size: 12px; color: #64748b; }
         .profile-card .edit-btn {
             background: #1a2a3d;
             border: 1px solid #2a3a4d;
@@ -227,7 +162,6 @@
         }
         .profile-card .edit-btn:hover { border-color: #38bdf8; }
 
-        /* ===== بقیه استایل‌های بازی ===== */
         #welcomePage .logo { font-size: 72px; font-weight: 800; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
         #welcomePage .subtitle { color: #94a3b8; font-size: 18px; margin-bottom: 40px; }
         #welcomePage .start-btn { background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; color: #000; padding: 16px 60px; border-radius: 16px; font-size: 22px; font-weight: 700; cursor: pointer; transition: 0.3s; }
@@ -676,13 +610,13 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با اصلاح سینک صدا، الگوریتم ثبت‌نام و زبان
+// WEPAN - نسخه نهایی با سیستم صدای ترکیبی (بدون قطعی)
 // =========================================================
 
 console.log('WEPAN loading...');
 
 // =========================================================
-// متون دو زبانه (کامل)
+// متون دو زبانه
 // =========================================================
 const TEXTS = {
     fa: {
@@ -829,20 +763,16 @@ const TEXTS = {
 function getUsers() {
     return JSON.parse(localStorage.getItem('wepan_users') || '[]');
 }
-
 function saveUsers(users) {
     localStorage.setItem('wepan_users', JSON.stringify(users));
 }
-
 function getCurrentUser() {
     const data = localStorage.getItem('wepan_current_user');
     return data ? JSON.parse(data) : null;
 }
-
 function setCurrentUser(user) {
     localStorage.setItem('wepan_current_user', JSON.stringify(user));
 }
-
 function clearCurrentUser() {
     localStorage.removeItem('wepan_current_user');
 }
@@ -861,33 +791,27 @@ function showPage(pageId) {
         }
     });
 }
-
 function goHome() {
     showPage('welcomePage');
     updateWelcomeStats();
 }
-
 function showLogin() {
     document.getElementById('loginError').textContent = '';
     showPage('loginPage');
 }
-
 function showSignup() {
     document.getElementById('signupError').textContent = '';
     document.getElementById('signupSuccess').textContent = '';
     showPage('signupPage');
 }
-
 function showProfile() {
     updateProfilePage();
     showPage('profilePage');
 }
-
 function showLessons() {
     showPage('lessonsPage');
     renderLessons();
 }
-
 function showSettings() {
     showPage('settingsPage');
     document.getElementById('speedRange').value = GAME_SPEED;
@@ -895,18 +819,14 @@ function showSettings() {
     document.getElementById('dropSizeRange').value = DROPLET_SCALE;
     document.getElementById('dropSizeValueDisplay').textContent = DROPLET_SCALE;
 }
-
 function checkAuthAndStart() {
     const user = getCurrentUser();
-    if (user) {
-        showLessons();
-    } else {
-        showLogin();
-    }
+    if (user) showLessons();
+    else showLogin();
 }
 
 // =========================================================
-// الگوریتم‌های ثبت‌نام (با اعتبارسنجی قوی)
+// الگوریتم‌های ثبت‌نام
 // =========================================================
 function validatePassword(password) {
     const errors = [];
@@ -916,16 +836,13 @@ function validatePassword(password) {
     if (!/[0-9]/.test(password)) errors.push('حداقل یک عدد (0-9)');
     return errors;
 }
-
 function validateUsername(username) {
     if (username.length < 3) return 'نام کاربری حداقل ۳ کاراکتر باشد';
     if (!/^[a-zA-Z0-9_\u0600-\u06FF]+$/.test(username)) return 'نام کاربری فقط شامل حروف، اعداد و زیرخط باشد';
     return null;
 }
-
 function validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) return 'ایمیل معتبر نیست';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'ایمیل معتبر نیست';
     return null;
 }
 
@@ -936,44 +853,26 @@ function signupUser() {
     const confirm = document.getElementById('signupConfirm').value;
     const errorEl = document.getElementById('signupError');
     const successEl = document.getElementById('signupSuccess');
-    
     errorEl.textContent = '';
     successEl.textContent = '';
     
-    // بررسی فیلدهای خالی
     if (!username || !email || !password || !confirm) {
         errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید';
         return;
     }
-    
-    // بررسی نام کاربری
     const usernameError = validateUsername(username);
-    if (usernameError) {
-        errorEl.textContent = '❌ ' + usernameError;
-        return;
-    }
-    
-    // بررسی ایمیل
+    if (usernameError) { errorEl.textContent = '❌ ' + usernameError; return; }
     const emailError = validateEmail(email);
-    if (emailError) {
-        errorEl.textContent = '❌ ' + emailError;
-        return;
-    }
-    
-    // بررسی رمز عبور
+    if (emailError) { errorEl.textContent = '❌ ' + emailError; return; }
     const passwordErrors = validatePassword(password);
     if (passwordErrors.length > 0) {
         errorEl.textContent = '❌ رمز عبور: ' + passwordErrors.join('، ');
         return;
     }
-    
-    // بررسی تطابق رمز
     if (password !== confirm) {
         errorEl.textContent = '❌ رمز عبور و تکرار آن مطابقت ندارند';
         return;
     }
-    
-    // بررسی عدم تکراری بودن
     const users = getUsers();
     if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
         errorEl.textContent = '❌ این نام کاربری قبلاً ثبت شده است';
@@ -983,46 +882,33 @@ function signupUser() {
         errorEl.textContent = '❌ این ایمیل قبلاً ثبت شده است';
         return;
     }
-    
-    // ذخیره کاربر جدید
     users.push({ username, email, password });
     saveUsers(users);
-    
     successEl.textContent = '✅ ثبت‌نام با موفقیت انجام شد!';
     document.getElementById('signupUsername').value = '';
     document.getElementById('signupEmail').value = '';
     document.getElementById('signupPassword').value = '';
     document.getElementById('signupConfirm').value = '';
-    
-    setTimeout(() => {
-        showLogin();
-    }, 1000);
+    setTimeout(() => showLogin(), 1000);
 }
 
-// =========================================================
-// لاگین
-// =========================================================
 function loginUser() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     const errorEl = document.getElementById('loginError');
-    
     if (!username || !password) {
         errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید';
         return;
     }
-    
     const users = getUsers();
     const user = users.find(u => 
         (u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === username.toLowerCase()) && 
         u.password === password
     );
-    
     if (!user) {
         errorEl.textContent = '❌ نام کاربری یا رمز عبور اشتباه است';
         return;
     }
-    
     setCurrentUser({ username: user.username, email: user.email });
     errorEl.textContent = '';
     showLessons();
@@ -1040,20 +926,13 @@ function editProfile() {
     if (newUsername && newUsername.trim() && newUsername.trim() !== user.username) {
         const trimmed = newUsername.trim();
         const usernameError = validateUsername(trimmed);
-        if (usernameError) {
-            alert('❌ ' + usernameError);
-            return;
-        }
+        if (usernameError) { alert('❌ ' + usernameError); return; }
         const users = getUsers();
         const found = users.find(u => u.username.toLowerCase() === trimmed.toLowerCase() && u.username !== user.username);
-        if (found) {
-            alert('❌ این نام کاربری قبلاً ثبت شده است');
-            return;
-        }
+        if (found) { alert('❌ این نام کاربری قبلاً ثبت شده است'); return; }
         const oldUsername = user.username;
         user.username = trimmed;
         setCurrentUser(user);
-        
         const allUsers = getUsers();
         const userIndex = allUsers.findIndex(u => u.username === oldUsername);
         if (userIndex !== -1) {
@@ -1064,23 +943,15 @@ function editProfile() {
     }
 }
 
-// =========================================================
-// به‌روزرسانی پروفایل
-// =========================================================
 function updateProfilePage() {
     const user = getCurrentUser();
-    if (!user) {
-        goHome();
-        return;
-    }
+    if (!user) { goHome(); return; }
     document.getElementById('profileUsername').textContent = user.username;
     document.getElementById('profileEmail').textContent = user.email || 'ایمیل ثبت نشده';
     document.getElementById('profileAvatar').textContent = user.username.charAt(0).toUpperCase();
-    
     const completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
     const totalScore = parseInt(localStorage.getItem('wepan_score') || '0');
     const streak = parseInt(localStorage.getItem('wepan_streak') || '0');
-    
     document.getElementById('profileLessons').textContent = completed.length;
     document.getElementById('profileScore').textContent = totalScore;
     document.getElementById('profileStreak').textContent = streak;
@@ -1101,15 +972,11 @@ let currentLang = localStorage.getItem('wepan_lang') || 'fa';
 function applyLanguage(lang) {
     const t = TEXTS[lang];
     if (!t) return;
-    
-    // صفحه خوش‌آمدگویی
     document.getElementById('welcomeSubtitle').textContent = t.welcomeSubtitle;
     document.getElementById('welcomeStartBtn').textContent = t.welcomeStart;
     document.getElementById('welcomeLoginBtn').textContent = t.welcomeLogin;
     document.getElementById('welcomeSignupBtn').textContent = t.welcomeSignup;
     document.getElementById('welcomeSettingsBtn').textContent = t.welcomeSettings;
-    
-    // لاگین
     document.getElementById('loginTitle').textContent = t.loginTitle;
     document.getElementById('loginUsernameLabel').textContent = t.loginUsernameLabel;
     document.getElementById('loginPasswordLabel').textContent = t.loginPasswordLabel;
@@ -1117,8 +984,6 @@ function applyLanguage(lang) {
     document.getElementById('loginFooterText').textContent = t.loginFooterText;
     document.getElementById('loginFooterLink').textContent = t.loginFooterLink;
     document.getElementById('loginBackLink').textContent = t.loginBackLink;
-    
-    // ثبت‌نام
     document.getElementById('signupTitle').textContent = t.signupTitle;
     document.getElementById('signupUsernameLabel').textContent = t.signupUsernameLabel;
     document.getElementById('signupEmailLabel').textContent = t.signupEmailLabel;
@@ -1129,8 +994,6 @@ function applyLanguage(lang) {
     document.getElementById('signupFooterText').textContent = t.signupFooterText;
     document.getElementById('signupFooterLink').textContent = t.signupFooterLink;
     document.getElementById('signupBackLink').textContent = t.signupBackLink;
-    
-    // پروفایل
     document.getElementById('profileTitle').textContent = t.profileTitle;
     document.getElementById('profileBackBtn').textContent = t.profileBackBtn;
     document.getElementById('profileLogoutBtn').textContent = t.profileLogoutBtn;
@@ -1138,13 +1001,9 @@ function applyLanguage(lang) {
     document.getElementById('profileScoreLabel').textContent = t.profileScoreLabel;
     document.getElementById('profileStreakLabel').textContent = t.profileStreakLabel;
     document.getElementById('profileEditBtn').textContent = t.profileEditBtn;
-    
-    // مراحل
     document.getElementById('lessonsTitle').textContent = t.lessonsTitle;
     document.getElementById('lessonsProfileBtn').textContent = t.lessonsProfileBtn;
     document.getElementById('lessonsHomeBtn').textContent = t.lessonsHomeBtn;
-    
-    // بازی
     document.getElementById('timerText').textContent = t.timerText;
     document.getElementById('nextNoteLabel').textContent = t.nextNoteLabel;
     document.getElementById('speedLabel').textContent = t.speedLabel;
@@ -1152,8 +1011,6 @@ function applyLanguage(lang) {
     document.getElementById('endGameBtn').textContent = t.endGameBtn;
     document.getElementById('recordButton').textContent = t.recordBtn;
     document.getElementById('recordStatus').textContent = t.recordStatus;
-    
-    // نتیجه
     document.getElementById('resultLabel').textContent = t.resultLabel;
     document.getElementById('rHitsLabel').textContent = t.rHitsLabel;
     document.getElementById('rAccuracyLabel').textContent = t.rAccuracyLabel;
@@ -1161,8 +1018,6 @@ function applyLanguage(lang) {
     document.getElementById('retryBtn').textContent = t.retryBtn;
     document.querySelector('#resultPage .btn-lessons').textContent = t.backLessonsBtn;
     document.querySelector('#resultPage .btn-home').textContent = t.homeBtn;
-    
-    // تنظیمات
     document.getElementById('settingsTitle').textContent = t.settingsTitle;
     document.getElementById('settingsBackBtn').textContent = t.settingsBackBtn;
     document.getElementById('langGroupTitle').textContent = t.langGroupTitle;
@@ -1174,20 +1029,14 @@ function applyLanguage(lang) {
     document.getElementById('dropSizeLabel').textContent = t.dropSizeLabel;
     document.getElementById('displayGroupTitle').textContent = t.displayGroupTitle;
     document.getElementById('displayLabel').textContent = t.displayLabel;
-    
-    // دکمه‌های حالت نمایش
     document.querySelectorAll('.mode-btn').forEach(btn => {
         if (btn.dataset.mode === 'letters') btn.textContent = t.modeLetters;
         if (btn.dataset.mode === 'numbers') btn.textContent = t.modeNumbers;
     });
-    
-    // دکمه‌های زبان
     document.querySelectorAll('.lang-btn').forEach(btn => {
         if (btn.dataset.lang === 'fa') btn.textContent = t.fa;
         if (btn.dataset.lang === 'en') btn.textContent = t.en;
     });
-    
-    // درس‌ها
     renderLessons();
 }
 
@@ -1200,11 +1049,12 @@ function setLanguage(lang, btn) {
 }
 
 // =========================================================
-// سیستم صدا - Web Audio API با سینک دقیق
+// سیستم صدا - ترکیبی (Web Audio + cloneNode) بدون قطعی
 // =========================================================
 let audioCtx = null;
 let soundEnabled = true;
 let soundBuffers = {};
+let audioElements = {};
 
 const SOUND_FILES = {
     'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
@@ -1213,18 +1063,27 @@ const SOUND_FILES = {
     'miss': 'miss.wav', 'combo': 'combo.wav'
 };
 
-async function loadSoundBuffers() {
+async function loadSounds() {
     const ctx = initAudio();
-    if (!ctx) return;
+    if (ctx) {
+        for (let [note, file] of Object.entries(SOUND_FILES)) {
+            try {
+                const response = await fetch(`/sounds/${file}`);
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+                soundBuffers[note] = audioBuffer;
+            } catch (e) {}
+        }
+        console.log('✅ Web Audio صداها بارگذاری شدند');
+    }
     for (let [note, file] of Object.entries(SOUND_FILES)) {
         try {
-            const response = await fetch(`/sounds/${file}`);
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-            soundBuffers[note] = audioBuffer;
+            const audio = new Audio(`/sounds/${file}`);
+            audio.preload = 'auto';
+            audioElements[note] = audio;
         } catch (e) {}
     }
-    console.log('✅ صداها بارگذاری شدند');
+    console.log('✅ HTMLAudioElement صداها بارگذاری شدند');
 }
 
 function initAudio() {
@@ -1240,24 +1099,39 @@ function initAudio() {
 }
 
 function playSound(note, volume = 0.5) {
-    if (!soundEnabled || !audioCtx) return;
+    if (!soundEnabled) return;
+    
+    // اول سعی کن با Web Audio پخش کنی (سینک دقیق)
     try {
-        let buffer = soundBuffers[note];
-        if (!buffer) {
-            const baseNote = note.replace(/[0-9]/g, '');
-            buffer = soundBuffers[baseNote];
-            if (!buffer) return;
+        const ctx = initAudio();
+        if (ctx && soundBuffers[note]) {
+            const buffer = soundBuffers[note];
+            const source = ctx.createBufferSource();
+            source.buffer = buffer;
+            const gain = ctx.createGain();
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(volume, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            source.connect(gain);
+            gain.connect(ctx.destination);
+            source.start(now);
+            source.stop(now + 0.6);
+            return;
         }
-        const source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-        const gain = audioCtx.createGain();
-        const now = audioCtx.currentTime;
-        gain.gain.setValueAtTime(volume, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-        source.connect(gain);
-        gain.connect(audioCtx.destination);
-        source.start(now);
-        source.stop(now + 0.6);
+    } catch (e) {}
+    
+    // روش پشتیبان: cloneNode (همیشه پایدار)
+    try {
+        let audio = audioElements[note];
+        if (!audio) {
+            const baseNote = note.replace(/[0-9]/g, '');
+            audio = audioElements[baseNote];
+            if (!audio) return;
+        }
+        const sound = audio.cloneNode();
+        sound.volume = volume;
+        sound.play().catch(() => {});
+        sound.onended = () => sound.remove();
     } catch (e) {}
 }
 
@@ -1283,7 +1157,6 @@ const NOTE_X = {
     "D2": 75, "E4": 170, "Bb6": 265, "A8": 355,
     "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
-
 const HANDPAN_POSITIONS = {
     "A1": [472, 247, 30], "D2": [388, 247, 30],
     "C3": [533, 186, 30], "E4": [327, 186, 30],
@@ -1291,23 +1164,19 @@ const HANDPAN_POSITIONS = {
     "G7": [472, 45, 30], "A8": [388, 45, 30],
     "D": [430, 145, 48]
 };
-
 const NOTE_COLORS = {
     "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8",
     "E4": "#2dd4bf", "F5": "#818cf8", "Bb6": "#fbbf24",
     "G7": "#a78bfa", "A8": "#fb7185", "D": "#60a5fa"
 };
-
 const NOTE_LABELS = {
     "A1": "A", "D2": "D", "C3": "C", "E4": "E",
     "F5": "F", "Bb6": "Bb", "G7": "G", "A8": "A", "D": "D"
 };
-
 const NOTE_TO_NUMBER = {
     'A1': 1, 'D2': 2, 'C3': 3, 'E4': 4,
     'F5': 5, 'Bb6': 6, 'G7': 7, 'A8': 8, 'D': 'D'
 };
-
 const ALL_NOTES = Object.keys(NOTE_X);
 const HIT_ORDER = [
     { number: 2, note: 'D2' }, { number: 4, note: 'E4' },
@@ -1318,7 +1187,6 @@ const HIT_ORDER = [
 ];
 
 let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
-
 function getNoteDisplay(noteName) {
     if (displayMode === 'numbers') {
         const num = NOTE_TO_NUMBER[noteName];
@@ -1326,7 +1194,6 @@ function getNoteDisplay(noteName) {
     }
     return NOTE_LABELS[noteName] || noteName;
 }
-
 function setDisplayMode(mode, btn) {
     displayMode = mode;
     localStorage.setItem('wepan_display_mode', mode);
@@ -1355,7 +1222,6 @@ const LESSONS = [
     { id: 7, title_fa: 'نت G', title_en: 'Note G', desc_fa: 'ضربه روی نت G', desc_en: 'Hit note G', level: 1 },
     { id: 8, title_fa: 'نت A', title_en: 'Note A', desc_fa: 'ضربه روی نت A (بالا)', desc_en: 'Hit note A (high)', level: 1 },
 ];
-
 const TOTAL_NOTES = 20;
 
 function renderLessons() {
@@ -1401,15 +1267,12 @@ let completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
 let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
 
 // =========================================================
-// شروع درس
+// شروع درس و منطق بازی
 // =========================================================
 function startLesson(lessonId) {
     currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
-    
-    // راه‌اندازی صدا با کلیک روی درس
     initAudio();
-    
     document.getElementById('lessonsPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     document.getElementById('resultPage').style.display = 'none';
@@ -1652,7 +1515,7 @@ function hitNote(note) {
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
         
-        // 🔊 پخش صدا با سینک دقیق (همزمان با کلیک)
+        // 🔊 پخش صدا با سیستم ترکیبی (سینک دقیق + پشتیبان)
         playSound(note, 0.5);
         
         if (combo > 0 && combo % 5 === 0) {
@@ -1738,12 +1601,10 @@ function updateSpeedSetting(val) {
     GAME_SPEED = parseInt(val);
     document.getElementById('speedValueDisplay').textContent = val;
 }
-
 function updateDropSize(val) {
     DROPLET_SCALE = parseFloat(val);
     document.getElementById('dropSizeValueDisplay').textContent = val;
 }
-
 function setColor(color, btn) {
     mainColor = color;
     document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
@@ -1763,15 +1624,12 @@ document.getElementById('pauseButton').addEventListener('click', function() {
     isPaused = !isPaused;
     this.textContent = isPaused ? TEXTS[currentLang].resumeBtn : TEXTS[currentLang].pauseBtn;
 });
-
 document.getElementById('speedSelect').addEventListener('change', function() {
     speedMultiplier = parseFloat(this.value);
 });
-
 document.getElementById('endGameBtn').addEventListener('click', function() {
     if (confirm('آیا می‌خوای بازی رو تموم کنی؟')) { finishGame(); }
 });
-
 document.getElementById('handpanCanvas').addEventListener('click', function(e) {
     if (!gameRunning || !isGameReady) return;
     let rect = this.getBoundingClientRect();
@@ -1784,7 +1642,6 @@ document.getElementById('handpanCanvas').addEventListener('click', function(e) {
         }
     }
 });
-
 document.getElementById('recordButton').addEventListener('click', function() {
     alert('🎤 ضبط تمرین (برای تست)');
 });
@@ -1792,19 +1649,15 @@ document.getElementById('recordButton').addEventListener('click', function() {
 // =========================================================
 // شروع
 // =========================================================
-// بارگذاری صداها
-loadSoundBuffers();
-
-// اعمال زبان
+loadSounds();
 applyLanguage(currentLang);
 document.querySelectorAll('.lang-btn').forEach(b => {
     if (b.dataset.lang === currentLang) b.classList.add('active');
     else b.classList.remove('active');
 });
-
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
-console.log('🔊 سینک صدا با کلیک فعال است');
+console.log('🔊 سیستم صدای ترکیبی (Web Audio + cloneNode) فعال است');
 </script>
 </body>
 </html>
