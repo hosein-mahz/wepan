@@ -476,25 +476,32 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با Web Audio API و همپوشانی کامل
+// WEPAN - نسخه نهایی با هنگ‌درام بزرگ‌تر و دقت بالا
 // =========================================================
 
 console.log('WEPAN loading...');
 
-// ===== موقعیت‌های نت‌ها =====
+// ===== موقعیت‌های نت‌ها روی خط HIT (ثابت) =====
 const NOTE_X = {
     "D2": 75, "E4": 170, "Bb6": 265, "A8": 355,
     "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
 
+// ===== موقعیت‌های نت‌ها روی هنگ‌درام (شعاع ۱۸۰، نسبت ۱.۵۶۵) =====
+// مرکز: (430, 145)
 const HANDPAN_POSITIONS = {
-    "A1": [457, 210, 20], "D2": [403, 210, 20],
-    "C3": [496, 171, 20], "E4": [366, 171, 20],
-    "F5": [496, 118, 20], "Bb6": [366, 118, 20],
-    "G7": [457, 81, 20], "A8": [403, 81, 20],
-    "D": [430, 145, 34]
+    "A1": [472, 247, 30],
+    "D2": [388, 247, 30],
+    "C3": [533, 186, 30],
+    "E4": [327, 186, 30],
+    "F5": [533, 103, 30],
+    "Bb6": [327, 103, 30],
+    "G7": [472, 45, 30],
+    "A8": [388, 45, 30],
+    "D": [430, 145, 48]
 };
 
+// ===== رنگ‌ها و برچسب‌ها =====
 const NOTE_COLORS = {
     "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8",
     "E4": "#2dd4bf", "F5": "#818cf8", "Bb6": "#fbbf24",
@@ -521,32 +528,24 @@ const HIT_ORDER = [
 ];
 
 // =========================================================
-// سیستم صدا - Web Audio API با همپوشانی کامل
+// سیستم صدا با فایل‌های WAV و Web Audio API (همپوشانی کامل)
 // =========================================================
 
 let audioCtx = null;
 let soundEnabled = true;
 let soundBuffers = {};
 
-const FREQS = {
-    'A1': 110.00, 'D2': 146.83, 'C3': 130.81,
-    'E4': 329.63, 'F5': 698.46, 'Bb6': 1864.66,
-    'G7': 3135.96, 'A8': 3520.00, 'D': 293.66,
-    'miss': 150.00, 'combo': 880.00
+const SOUND_FILES = {
+    'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
+    'E4': '4.wav', 'F5': '5.wav', 'Bb6': '6.wav',
+    'G7': '7.wav', 'A8': '8.wav', 'D': 'D.wav',
+    'miss': 'miss.wav', 'combo': 'combo.wav'
 };
 
 async function loadSoundBuffers() {
-    const soundFiles = {
-        'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
-        'E4': '4.wav', 'F5': '5.wav', 'Bb6': '6.wav',
-        'G7': '7.wav', 'A8': '8.wav', 'D': 'D.wav',
-        'miss': 'miss.wav', 'combo': 'combo.wav'
-    };
-    
     const ctx = initAudio();
     if (!ctx) return;
-    
-    for (let [note, file] of Object.entries(soundFiles)) {
+    for (let [note, file] of Object.entries(SOUND_FILES)) {
         try {
             const response = await fetch(`/sounds/${file}`);
             const arrayBuffer = await response.arrayBuffer();
@@ -562,66 +561,27 @@ async function loadSoundBuffers() {
 
 function playSound(note, volume = 0.5) {
     if (!soundEnabled) return;
-    
     try {
         const ctx = initAudio();
         if (!ctx) return;
-        
         let buffer = soundBuffers[note];
         if (!buffer) {
+            // اگر نت پیدا نشد، بدون عدد امتحان کن
             const baseNote = note.replace(/[0-9]/g, '');
             buffer = soundBuffers[baseNote];
-            if (!buffer) {
-                playSyntheticSound(note, volume);
-                return;
-            }
+            if (!buffer) return;
         }
-        
         const source = ctx.createBufferSource();
         source.buffer = buffer;
-        
         const gain = ctx.createGain();
         gain.gain.setValueAtTime(volume, ctx.currentTime);
-        
         const now = ctx.currentTime;
         gain.gain.setValueAtTime(volume, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-        
         source.connect(gain);
         gain.connect(ctx.destination);
         source.start(now);
         source.stop(now + 0.7);
-        
-    } catch (e) {}
-}
-
-function playSyntheticSound(note, volume = 0.3) {
-    try {
-        const ctx = initAudio();
-        if (!ctx) return;
-        
-        let freq = FREQS[note];
-        if (!freq) {
-            const baseNote = note.replace(/[0-9]/g, '');
-            freq = FREQS[baseNote] || 440;
-        }
-        
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
-        
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume * 0.7, now + 0.005);
-        gain.gain.exponentialRampToValueAtTime(volume * 0.3, now + 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-        
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.6);
-        
     } catch (e) {}
 }
 
@@ -652,13 +612,11 @@ function initAudio() {
 document.addEventListener('click', () => { initAudio(); }, { once: true });
 document.addEventListener('touchstart', () => { initAudio(); }, { once: true });
 
-// =========================================================
 // بارگذاری صداها
-// =========================================================
 loadSoundBuffers();
 
 // =========================================================
-// بقیه کدهای بازی (همانند قبل)
+// بقیه کدهای بازی
 // =========================================================
 
 let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
@@ -1012,35 +970,41 @@ function drawHandpan(highlight=null) {
     panCtx.strokeRect(10,10,800,260);
     panCtx.fillStyle='#475569'; panCtx.font='bold 9px Arial'; 
     panCtx.fillText('HANDPAN',38,27);
-    const cx=430, cy=145, r=115;
-    panCtx.shadowColor='#040810'; panCtx.shadowBlur=20;
+    
+    const cx=430, cy=145, r=180;
+    panCtx.shadowColor='#040810'; panCtx.shadowBlur=25;
     panCtx.beginPath(); panCtx.arc(cx,cy,r,0,Math.PI*2);
     panCtx.fillStyle='#293646'; panCtx.fill();
     panCtx.shadowBlur=0;
     panCtx.strokeStyle='#64748b'; panCtx.lineWidth=3; panCtx.stroke();
-    panCtx.beginPath(); panCtx.arc(cx,cy,r-8,0,Math.PI*2);
+    panCtx.beginPath(); panCtx.arc(cx,cy,r-10,0,Math.PI*2);
     panCtx.fillStyle='#263342'; panCtx.fill();
     panCtx.strokeStyle='#3f4e61'; panCtx.lineWidth=2; panCtx.stroke();
+    
     for (let [note, [x, y, r2]] of Object.entries(HANDPAN_POSITIONS)) {
         const col = NOTE_COLORS[note] || '#4a596d';
         const hl = highlight === note;
         const display = getNoteDisplay(note);
+        
         panCtx.shadowColor='#111923'; panCtx.shadowBlur=10;
         panCtx.beginPath(); panCtx.arc(x, y, r2+2, 0, Math.PI*2);
         panCtx.fillStyle='#111923'; panCtx.fill();
         panCtx.shadowBlur=0;
+        
         panCtx.beginPath(); panCtx.arc(x, y, r2, 0, Math.PI*2);
         panCtx.fillStyle = hl ? '#1a3a5a' : '#1d2835';
         panCtx.fill();
         panCtx.strokeStyle = hl ? col : '#4a596d';
         panCtx.lineWidth = hl ? 3 : 2;
         panCtx.stroke();
-        panCtx.beginPath(); panCtx.arc(x, y, r2-4, 0, Math.PI*2);
+        
+        panCtx.beginPath(); panCtx.arc(x, y, r2-5, 0, Math.PI*2);
         panCtx.strokeStyle = col;
-        panCtx.lineWidth = 1;
+        panCtx.lineWidth = 1.5;
         panCtx.stroke();
+        
         panCtx.fillStyle = hl ? col : '#e5e7eb';
-        panCtx.font = `bold ${note === 'D' ? 13 : 10}px Arial`;
+        panCtx.font = `bold ${note === 'D' ? 16 : 13}px Arial`;
         panCtx.textAlign = 'center';
         panCtx.textBaseline = 'middle';
         panCtx.fillText(display, x, y);
@@ -1116,7 +1080,8 @@ function animateNote(timestamp) {
         grad.addColorStop(1,'rgba(255,255,255,0)');
         ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(fallingNote.x,fallingNote.y,30,0,Math.PI*2); ctx.fill();
     }
-    if (fallingNote.y > hitY + 45) {
+    // دقت بیشتر: محدوده برخورد از ۴۵ به ۳۵ کاهش داده شد
+    if (fallingNote.y > hitY + 35) {
         misses++; combo = 0; updateStats();
         playMissSound();
         fallingNote = null;
@@ -1131,7 +1096,8 @@ function hitNote(note) {
     if (!fallingNote || isPaused || !gameRunning || !isGameReady) return;
     if (note !== currentTarget) { combo = 0; updateStats(); return; }
     let dist = Math.abs(fallingNote.y - hitY);
-    if (dist <= 70) {
+    // دقت بالا: محدوده مجاز از ۷۰ به ۵۵ کاهش داده شد
+    if (dist <= 55) {
         let pts = Math.max(50, 160 - Math.floor(dist * 1.6));
         score += pts + combo * 10;
         hits++; combo++;
@@ -1242,7 +1208,7 @@ document.querySelectorAll('.mode-btn').forEach(b => {
 });
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
-console.log('🔊 Web Audio API با همپوشانی کامل فعال است');
+console.log('🔊 هنگ‌درام با شعاع ۱۸۰، نت‌های درشت، صداهای WAV و دقت بالا');
 </script>
 </body>
 </html>
