@@ -476,7 +476,7 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با صدای پوشش‌دار و طولانی
+// WEPAN - صدای WAV با پوشش طولانی
 // =========================================================
 
 console.log('WEPAN loading...');
@@ -521,18 +521,33 @@ const HIT_ORDER = [
 ];
 
 // =========================================================
-// سیستم صدا با پوشش طولانی (Web Audio API)
+// سیستم صدا - WAV با پوشش طولانی
 // =========================================================
 
 let audioCtx = null;
 let soundEnabled = true;
+let audioElements = {};
 
-const FREQS = {
-    'A1': 110.00, 'D2': 146.83, 'C3': 130.81,
-    'E4': 329.63, 'F5': 698.46, 'Bb6': 1864.66,
-    'G7': 3135.96, 'A8': 3520.00, 'D': 293.66,
-    'miss': 150.00, 'combo': 880.00
+const SOUND_MAP = {
+    "A1": "1.wav", "D2": "2.wav", "C3": "3.wav",
+    "E4": "4.wav", "F5": "5.wav", "Bb6": "6.wav",
+    "G7": "7.wav", "A8": "8.wav", "D": "D.wav",
+    "miss": "miss.wav", "combo": "combo.wav"
 };
+
+function loadSounds() {
+    console.log('🔄 بارگذاری فایل‌های WAV...');
+    for (let [note, file] of Object.entries(SOUND_MAP)) {
+        try {
+            const audio = new Audio(`/sounds/${file}`);
+            audio.preload = 'auto';
+            audioElements[note] = audio;
+            console.log(`✅ ${file} → ${note}`);
+        } catch (e) {
+            console.log(`❌ خطا: ${file}`);
+        }
+    }
+}
 
 function initAudio() {
     if (!audioCtx) {
@@ -546,156 +561,61 @@ function initAudio() {
     return audioCtx;
 }
 
-function playHandpanSound(note, volume = 0.25) {
+function playSoundWithRelease(note, volume = 0.5, releaseTime = 0.8) {
     if (!soundEnabled) return;
+    
     try {
-        const ctx = initAudio();
-        if (!ctx) return;
-        
-        let freq = FREQS[note];
-        if (!freq) {
+        const audio = audioElements[note];
+        if (!audio) {
             const baseNote = note.replace(/[0-9]/g, '');
-            freq = FREQS[baseNote] || 440;
+            const fallback = audioElements[baseNote];
+            if (fallback) {
+                playWithWebAudio(fallback, volume, releaseTime);
+            }
+            return;
         }
-        
-        const now = ctx.currentTime;
-        const duration = 0.9;
-        
-        // نوسان‌ساز اصلی
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
-        
-        // ویبراتو
-        const vibrato = ctx.createOscillator();
-        const vibratoGain = ctx.createGain();
-        vibrato.frequency.value = 4.0;
-        vibratoGain.gain.value = 2.0;
-        vibrato.connect(vibratoGain);
-        vibratoGain.connect(osc.frequency);
-        vibrato.start(now);
-        vibrato.stop(now + duration);
-        
-        // پوشش طولانی
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume * 0.7, now + 0.015);
-        gain.gain.linearRampToValueAtTime(volume * 0.5, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(volume * 0.2, now + 0.2);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + duration + 0.8);
-        
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + duration + 0.9);
-        
-        // هارمونیک دوم
-        const osc2 = ctx.createOscillator();
-        const gain2 = ctx.createGain();
-        osc2.type = 'triangle';
-        osc2.frequency.setValueAtTime(freq * 2, now);
-        gain2.gain.setValueAtTime(0, now);
-        gain2.gain.linearRampToValueAtTime(volume * 0.06, now + 0.02);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.6);
-        osc2.connect(gain2);
-        gain2.connect(ctx.destination);
-        osc2.start(now);
-        osc2.stop(now + duration + 0.1);
-        
-        // هارمونیک سوم
-        const osc3 = ctx.createOscillator();
-        const gain3 = ctx.createGain();
-        osc3.type = 'sine';
-        osc3.frequency.setValueAtTime(freq * 3, now);
-        gain3.gain.setValueAtTime(0, now);
-        gain3.gain.linearRampToValueAtTime(volume * 0.03, now + 0.03);
-        gain3.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.4);
-        osc3.connect(gain3);
-        gain3.connect(ctx.destination);
-        osc3.start(now);
-        osc3.stop(now + duration + 0.1);
-        
-        // ریورب
-        const delay = ctx.createDelay(0.5);
-        const delayGain = ctx.createGain();
-        delay.delayTime.value = 0.3;
-        delayGain.gain.setValueAtTime(0.15, now);
-        delayGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-        const feedback = ctx.createGain();
-        feedback.gain.value = 0.25;
-        delay.connect(feedback);
-        feedback.connect(delay);
-        gain.connect(delay);
-        delay.connect(delayGain);
-        delayGain.connect(ctx.destination);
-        
-        // صدای ضربه
-        const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
-        const noiseData = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < noiseData.length; i++) {
-            noiseData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (noiseData.length * 0.25));
-        }
-        const noise = ctx.createBufferSource();
-        noise.buffer = noiseBuffer;
-        const noiseGain = ctx.createGain();
-        noiseGain.gain.setValueAtTime(volume * 0.06, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-        noise.connect(noiseGain);
-        noiseGain.connect(ctx.destination);
-        noise.start(now);
-        noise.stop(now + 0.05);
-        
+        playWithWebAudio(audio, volume, releaseTime);
     } catch (e) {}
 }
 
-function playMissSound() {
-    if (!soundEnabled) return;
+function playWithWebAudio(audioElement, volume = 0.5, releaseTime = 0.8) {
     try {
         const ctx = initAudio();
         if (!ctx) return;
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
+        
+        const source = ctx.createMediaElementSource(audioElement.cloneNode());
         const gain = ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(200, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.07, now + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-        osc.connect(gain);
+        source.connect(gain);
         gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.25);
-    } catch (e) {}
-}
-
-function playComboSound() {
-    if (!soundEnabled) return;
-    try {
-        const ctx = initAudio();
-        if (!ctx) return;
+        
         const now = ctx.currentTime;
-        for (let i = 0; i < 3; i++) {
-            const freq = 660 + i * 110;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, now + i * 0.08);
-            gain.gain.setValueAtTime(0, now + i * 0.08);
-            gain.gain.linearRampToValueAtTime(0.1, now + i * 0.08 + 0.02);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.15);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now + i * 0.08);
-            osc.stop(now + i * 0.08 + 0.18);
-        }
-    } catch (e) {}
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume * 0.8, now + 0.01);
+        gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.3, now + 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + releaseTime + 0.2);
+        
+        const sound = audioElement.cloneNode();
+        sound.volume = 1;
+        sound.play().catch(() => {});
+        setTimeout(() => { try { sound.pause(); } catch(e) {} }, (releaseTime + 0.5) * 1000);
+        
+    } catch (e) {
+        try {
+            const sound = audioElement.cloneNode();
+            sound.volume = volume;
+            sound.play().catch(() => {});
+            sound.onended = () => sound.remove();
+        } catch (e2) {}
+    }
 }
 
-function playSound(note, volume = 0.25) {
-    if (!soundEnabled) return;
-    playHandpanSound(note, volume);
+function playSound(note, volume = 0.5) {
+    playSoundWithRelease(note, volume, 0.8);
 }
+
+function playMissSound() { playSound('miss', 0.4); }
+function playComboSound() { playSound('combo', 0.5); }
 
 function toggleSound() {
     soundEnabled = !soundEnabled;
@@ -708,6 +628,7 @@ function toggleSound() {
 
 document.addEventListener('click', initAudio, { once: true });
 document.addEventListener('touchstart', initAudio, { once: true });
+loadSounds();
 
 // =========================================================
 // بقیه کدهای بازی
@@ -794,7 +715,6 @@ const TEXTS = {
     }
 };
 
-// ===== LANGUAGE =====
 let currentLang = localStorage.getItem('wepan_lang') || 'fa';
 
 function applyLanguage(lang) {
@@ -1189,9 +1109,9 @@ function hitNote(note) {
         score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
-        playSound(note, 0.2);
+        playSound(note, 0.5);
         if (combo > 0 && combo % 5 === 0) {
-            setTimeout(() => playComboSound(), 80);
+            setTimeout(() => playComboSound(), 100);
         }
         drawHandpan(note);
         fallingNote = null;
@@ -1295,7 +1215,7 @@ document.querySelectorAll('.mode-btn').forEach(b => {
 });
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
-console.log('🔊 صدای پوشش‌دار فعال است');
+console.log('🔊 صدای WAV با پوشش طولانی فعال است');
 </script>
 </body>
 </html>
