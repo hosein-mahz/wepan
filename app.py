@@ -1,17 +1,23 @@
-from flask import Flask, render_template, request, jsonify
-import os, tempfile, librosa, numpy as np
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
+import tempfile
+import sys
 
 app = Flask(__name__)
 
+# ===== صفحه اصلی =====
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# ===== تحلیل صدا (با مدیریت خطا) =====
 @app.route('/analyze', methods=['POST'])
 def analyze():
     try:
+        # import librosa فقط در این تابع (برای کاهش مصرف)
+        import librosa
+        import numpy as np
+        
         file = request.files['audio']
         with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp:
             file.save(tmp.name)
@@ -34,24 +40,31 @@ def analyze():
         
         os.unlink(path)
         return jsonify({'status':'success', 'detected_notes':list(dict.fromkeys(detected))[:5]})
+        
     except Exception as e:
-        return jsonify({'status':'error','message':str(e)}), 500
+        return jsonify({'status':'error', 'message':str(e)}), 500
 
+# ===== امتیازدهی =====
 @app.route('/score', methods=['POST'])
 def score():
-    data = request.json
-    expected = set(data.get('expectedNotes', []))
-    detected = set(data.get('detectedNotes', []))
-    correct = expected.intersection(detected)
-    acc = (len(correct)/len(expected))*100 if expected else 0
-    sc = max(0, min(100, acc*0.8 + 20 - len(detected-expected)*5))
-    msg = '🎉 عالی!' if sc>=90 else '💪 خوب!' if sc>=70 else '📚 تمرین بیشتر'
-    return jsonify({'score':round(sc), 'accuracy':round(acc,1), 'message':msg})
+    try:
+        data = request.json
+        expected = set(data.get('expectedNotes', []))
+        detected = set(data.get('detectedNotes', []))
+        correct = expected.intersection(detected)
+        acc = (len(correct)/len(expected))*100 if expected else 0
+        sc = max(0, min(100, acc*0.8 + 20 - len(detected-expected)*5))
+        msg = '🎉 عالی!' if sc>=90 else '💪 خوب!' if sc>=70 else '📚 تمرین بیشتر'
+        return jsonify({'score':round(sc), 'accuracy':round(acc,1), 'message':msg})
+    except Exception as e:
+        return jsonify({'status':'error', 'message':str(e)}), 500
 
-# ===== سرویس دهی فایل‌های صوتی (اصلاح شده) =====
+# ===== سرویس دهی فایل‌های صوتی =====
 @app.route('/sounds/<path:filename>')
 def serve_sound(filename):
     return send_from_directory('sounds', filename)
 
+# ===== اجرا (مهم برای Railway) =====
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
