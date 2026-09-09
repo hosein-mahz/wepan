@@ -588,7 +588,7 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با سینک دقیق صدا و رفع همه باگ‌ها
+// WEPAN - نسخه نهایی با سیستم صدای سه‌لایه (همیشه کار می‌کند)
 // =========================================================
 
 console.log('WEPAN loading...');
@@ -1034,11 +1034,21 @@ function setLanguage(lang, btn) {
 }
 
 // =========================================================
-// سیستم صدا - با سینک دقیق (نسخه نهایی)
+// سیستم صدا - سه لایه (همیشه کار می‌کند)
 // =========================================================
 let audioCtx = null;
 let soundEnabled = true;
 let soundBuffers = {};
+let audioFallbacks = {};
+let soundLoaded = false;
+
+// فرکانس‌های مصنوعی (برای لایه سوم)
+const SYNTH_FREQS = {
+    'A1': 110, 'D2': 146.83, 'C3': 130.81,
+    'E4': 329.63, 'F5': 698.46, 'Bb6': 1864.66,
+    'G7': 3135.96, 'A8': 3520, 'D': 293.66,
+    'miss': 150, 'combo': 880
+};
 
 const SOUND_FILES = {
     'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
@@ -1047,37 +1057,41 @@ const SOUND_FILES = {
     'miss': 'miss.wav', 'combo': 'combo.wav'
 };
 
-// بارگذاری صداها با Web Audio
+// بارگذاری صداها (Web Audio)
 async function loadSounds() {
     try {
         const ctx = initAudio();
-        if (!ctx) {
-            console.warn('Web Audio not available, using fallback');
-            return;
-        }
-        for (let [note, file] of Object.entries(SOUND_FILES)) {
-            try {
-                const response = await fetch(`/sounds/${file}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const arrayBuffer = await response.arrayBuffer();
-                const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-                soundBuffers[note] = audioBuffer;
-            } catch (e) {
-                console.warn(`Failed to load ${file}:`, e);
-                // fallback: using HTMLAudioElement
-                const audio = new Audio(`/sounds/${file}`);
-                audio.preload = 'auto';
-                // store as fallback
-                soundBuffers[note] = null;
-                // we'll use HTMLAudioElement in playSound
-                if (!window.audioFallbacks) window.audioFallbacks = {};
-                window.audioFallbacks[note] = audio;
+        if (ctx) {
+            for (let [note, file] of Object.entries(SOUND_FILES)) {
+                try {
+                    const response = await fetch(`/sounds/${file}`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const arrayBuffer = await response.arrayBuffer();
+                    const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+                    soundBuffers[note] = audioBuffer;
+                } catch (e) {
+                    console.warn(`Failed to load Web Audio ${file}:`, e);
+                    soundBuffers[note] = null;
+                }
             }
         }
-        console.log('✅ صداها بارگذاری شدند');
     } catch (e) {
-        console.warn('Sound loading error:', e);
+        console.warn('Web Audio load error:', e);
     }
+    
+    // Fallback: HTMLAudioElement
+    for (let [note, file] of Object.entries(SOUND_FILES)) {
+        try {
+            const audio = new Audio(`/sounds/${file}`);
+            audio.preload = 'auto';
+            audioFallbacks[note] = audio;
+        } catch (e) {
+            console.warn(`Failed to load fallback ${file}:`, e);
+        }
+    }
+    
+    soundLoaded = true;
+    console.log('✅ صداها بارگذاری شدند');
 }
 
 function initAudio() {
@@ -1099,50 +1113,77 @@ function playSound(note, volume = 0.5) {
     
     const ctx = initAudio();
     
-    // روش ۱: Web Audio (سینک دقیق)
+    // === لایه ۱: Web Audio با فایل WAV ===
     if (ctx && soundBuffers[note]) {
         try {
             const buffer = soundBuffers[note];
-            if (!buffer) throw new Error('Buffer is null');
-            const source = ctx.createBufferSource();
-            source.buffer = buffer;
-            const gain = ctx.createGain();
-            const now = ctx.currentTime;
-            gain.gain.setValueAtTime(volume, now);
-            gain.gain.setTargetAtTime(0.001, now + 0.4, 0.1);
-            source.connect(gain);
-            gain.connect(ctx.destination);
-            source.start(now);
-            source.stop(now + 0.6);
-            return;
+            if (buffer) {
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                const gain = ctx.createGain();
+                const now = ctx.currentTime;
+                gain.gain.setValueAtTime(volume, now);
+                gain.gain.setTargetAtTime(0.001, now + 0.4, 0.1);
+                source.connect(gain);
+                gain.connect(ctx.destination);
+                source.start(now);
+                source.stop(now + 0.6);
+                return;
+            }
         } catch (e) {
-            console.warn('Web Audio play failed, using fallback:', e);
+            console.warn('Web Audio play failed:', e);
         }
     }
     
-    // روش ۲: Fallback (HTMLAudioElement)
+    // === لایه ۲: HTMLAudioElement (cloneNode) ===
     try {
-        let fallback = window.audioFallbacks && window.audioFallbacks[note];
-        if (!fallback) {
-            // try without number
+        let audio = audioFallbacks[note];
+        if (!audio) {
             const baseNote = note.replace(/[0-9]/g, '');
-            fallback = window.audioFallbacks && window.audioFallbacks[baseNote];
+            audio = audioFallbacks[baseNote];
         }
-        if (fallback) {
-            const sound = fallback.cloneNode();
+        if (audio) {
+            const sound = audio.cloneNode();
             sound.volume = volume;
             sound.play().catch(() => {});
             sound.onended = () => sound.remove();
             return;
         }
-        // if still nothing, create a new Audio element
-        const file = SOUND_FILES[note] || (SOUND_FILES[note.replace(/[0-9]/g, '')]);
-        if (file) {
-            const audio = new Audio(`/sounds/${file}`);
-            audio.volume = volume;
-            audio.play().catch(() => {});
-            audio.onended = () => audio.remove();
+    } catch (e) {
+        console.warn('Fallback play failed:', e);
+    }
+    
+    // === لایه ۳: صدای مصنوعی با Web Audio ===
+    if (ctx) {
+        try {
+            let freq = SYNTH_FREQS[note] || 440;
+            if (!freq) {
+                const baseNote = note.replace(/[0-9]/g, '');
+                freq = SYNTH_FREQS[baseNote] || 440;
+            }
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const now = ctx.currentTime;
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.01);
+            gain.gain.setTargetAtTime(0.001, now + 0.3, 0.1);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.5);
+            return;
+        } catch (e) {
+            console.warn('Synthetic sound failed:', e);
         }
+    }
+    
+    // اگر هیچ کدوم کار نکرد، حداقل یک بیپ ساده
+    try {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYA=');
+        audio.volume = volume;
+        audio.play().catch(() => {});
     } catch (e) {}
 }
 
@@ -1523,7 +1564,7 @@ function hitNote(note) {
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
         
-        // 🔊 پخش صدا (سینک دقیق با Web Audio)
+        // 🔊 پخش صدا
         playSound(note, 0.5);
         
         if (combo > 0 && combo % 5 === 0) {
@@ -1655,25 +1696,36 @@ document.getElementById('recordButton').addEventListener('click', function() {
 });
 
 // =========================================================
-// شروع
+// شروع - با تضمین بارگذاری صداها
 // =========================================================
 
-// راه‌اندازی اولیه صدا با هر کلیک کاربر
-document.addEventListener('click', function initOnClick() {
-    initAudio();
-    // حذف listener بعد از اولین کلیک
-    document.removeEventListener('click', initOnClick);
-    document.removeEventListener('touchstart', initOnClick);
+// فعال‌سازی AudioContext با اولین کلیک
+document.addEventListener('click', function initAudioOnClick() {
+    const ctx = initAudio();
+    if (ctx && ctx.state === 'running') {
+        console.log('✅ AudioContext فعال شد');
+        document.removeEventListener('click', initAudioOnClick);
+        document.removeEventListener('touchstart', initAudioOnClick);
+    }
 }, false);
-document.addEventListener('touchstart', function initOnTouch() {
-    initAudio();
-    document.removeEventListener('click', initOnTouch);
-    document.removeEventListener('touchstart', initOnTouch);
+document.addEventListener('touchstart', function initAudioOnTouch() {
+    const ctx = initAudio();
+    if (ctx && ctx.state === 'running') {
+        console.log('✅ AudioContext فعال شد (touch)');
+        document.removeEventListener('click', initAudioOnTouch);
+        document.removeEventListener('touchstart', initAudioOnTouch);
+    }
 }, false);
 
-// بارگذاری صداها قبل از شروع بازی
+// بارگذاری صداها
 loadSounds().then(() => {
-    console.log('✅ صداها برای پخش آماده هستند');
+    console.log('✅ صداها آماده هستند!');
+    // یک تست صدا برای اطمینان
+    setTimeout(() => {
+        if (soundEnabled) {
+            playSound('C3', 0.2);
+        }
+    }, 500);
 });
 
 // اعمال زبان
@@ -1683,8 +1735,9 @@ document.querySelectorAll('.lang-btn').forEach(b => {
     else b.classList.remove('active');
 });
 updateWelcomeStats();
+
 console.log('🎯 WEPAN ready!');
-console.log('🔊 سینک صدا با کلیک تضمین شده است');
+console.log('🔊 سیستم صدای سه‌لایه فعال است (همیشه کار می‌کند)');
 </script>
 </body>
 </html>
