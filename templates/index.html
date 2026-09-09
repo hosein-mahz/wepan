@@ -25,12 +25,8 @@
             min-height: 95vh;
             position: relative;
         }
-
-        #welcomePage, #loginPage, #signupPage, #profilePage {
-            display: none;
-        }
+        #welcomePage, #loginPage, #signupPage, #profilePage { display: none; }
         #welcomePage { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; padding: 40px 20px; text-align: center; background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%); }
-
         #loginPage, #signupPage {
             flex-direction: column;
             align-items: center;
@@ -88,7 +84,6 @@
         .form-footer a:hover { text-decoration: underline; }
         .form-error { color: #ef4444; font-size: 13px; text-align: center; margin-top: 10px; min-height: 20px; }
         .form-success { color: #2dd4bf; font-size: 13px; text-align: center; margin-top: 10px; min-height: 20px; }
-
         #profilePage {
             flex-direction: column;
             align-items: center;
@@ -114,7 +109,6 @@
         }
         .profile-header .profile-actions button:hover { border-color: #38bdf8; color: #fff; }
         .profile-header .profile-actions .logout-btn:hover { border-color: #ef4444; color: #ef4444; }
-
         .profile-card {
             background: #0d1422;
             border: 1px solid #1c2a3d;
@@ -161,7 +155,6 @@
             font-size: 14px;
         }
         .profile-card .edit-btn:hover { border-color: #38bdf8; }
-
         #welcomePage .logo { font-size: 72px; font-weight: 800; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
         #welcomePage .subtitle { color: #94a3b8; font-size: 18px; margin-bottom: 40px; }
         #welcomePage .start-btn { background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; color: #000; padding: 16px 60px; border-radius: 16px; font-size: 22px; font-weight: 700; cursor: pointer; transition: 0.3s; }
@@ -171,7 +164,6 @@
         #welcomePage .bottom-buttons { display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
         #welcomePage .bottom-buttons button { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 10px 30px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 14px; }
         #welcomePage .bottom-buttons button:hover { border-color: #38bdf8; color: #fff; }
-
         #lessonsPage { display: none; min-height: 90vh; padding: 30px 25px; background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%); }
         #lessonsPage .lessons-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
         #lessonsPage .lessons-header h2 { font-size: 28px; }
@@ -179,7 +171,6 @@
         #lessonsPage .lessons-header .back-home:hover { border-color: #38bdf8; color: #fff; }
         #lessonsPage .lessons-header .profile-btn { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.3s; }
         #lessonsPage .lessons-header .profile-btn:hover { border-color: #f472b6; color: #f472b6; }
-
         .lesson-card {
             background: #0d1422;
             border: 1px solid #1c2a3d;
@@ -200,9 +191,7 @@
         .lesson-card.locked { opacity: 0.4; cursor: not-allowed; }
         .lesson-card.locked:hover { transform: none; border-color: #1c2a3d; }
         .lesson-card.completed { border-color: #2dd4bf; }
-
         #gamePage { display: none; }
-
         #timerOverlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 10, 18, 0.85); display: none;
@@ -220,7 +209,6 @@
             100% { transform: scale(1); opacity: 1; }
         }
         #timerOverlay .timer-text { position: absolute; bottom: 40%; font-size: 18px; color: #94a3b8; }
-
         .header {
             background: #0d1422; padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center;
@@ -239,16 +227,12 @@
         }
         .sound-toggle:hover { border-color: #38bdf8; color: #fff; }
         .sound-toggle.active { border-color: #2dd4bf; color: #2dd4bf; }
-
         .next-note { text-align: center; padding: 6px 0; font-size: 11px; color: #475569; }
         .next-note .note { font-size: 30px; font-weight: bold; color: #38bdf8; }
-
         .falling-area { background: #09111e; border: 1px solid #1c2a3d; border-radius: 14px; margin: 4px 12px; padding: 4px; }
         #fallingCanvas { width: 100%; height: auto; background: #09111e; display: block; border-radius: 10px; }
-
         .handpan-area { background: #0b1320; border: 1px solid #1c2a3d; border-radius: 14px; margin: 4px 12px; padding: 4px; }
         #handpanCanvas { width: 100%; height: auto; background: #0b1320; display: block; border-radius: 10px; cursor: pointer; }
-
         .controls {
             display: flex; gap: 10px; padding: 6px 12px;
             flex-wrap: wrap; align-items: center;
@@ -257,13 +241,11 @@
         .controls button:hover { border-color: #38bdf8; }
         .controls select { background: #0d1422; color: #e5e7eb; border: 1px solid #1c2a3d; padding: 3px 8px; border-radius: 6px; font-size: 12px; }
         .controls .progress { color: #475569; font-size: 12px; margin-right: auto; }
-
         .record-section { display: flex; align-items: center; gap: 12px; padding: 4px 12px; flex-wrap: wrap; }
         .record-btn { background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; color: #000; padding: 6px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .record-btn.recording { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; animation: pulse 1s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
         .record-status { color: #94a3b8; font-size: 12px; }
-
         #resultPage {
             display: none; flex-direction: column; align-items: center; justify-content: center;
             min-height: 85vh; padding: 40px 20px; text-align: center;
@@ -284,7 +266,6 @@
         #resultPage .result-actions .btn-lessons:hover { transform: scale(1.05); }
         #resultPage .result-actions .btn-home { background: #0d1422; color: #94a3b8; border: 1px solid #1c2a3d; }
         #resultPage .result-actions .btn-home:hover { border-color: #dc2626; color: #dc2626; }
-
         #settingsPage {
             display: none; min-height: 90vh; padding: 30px 25px;
             background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
@@ -293,7 +274,6 @@
         #settingsPage .settings-header h2 { font-size: 28px; }
         #settingsPage .settings-header .back-btn { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.3s; }
         #settingsPage .settings-header .back-btn:hover { border-color: #38bdf8; color: #fff; }
-
         .setting-group {
             background: #0d1422; border: 1px solid #1c2a3d; border-radius: 14px;
             padding: 20px; margin-bottom: 15px;
@@ -329,7 +309,6 @@
         .setting-item .lang-options .lang-btn.active { border-color: #38bdf8; color: #fff; background: #1a3a5a; }
         .setting-item .slider-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .setting-item .slider-group input[type="range"] { min-width: 120px; }
-
         .display-mode-options { display: flex; gap: 10px; }
         .display-mode-options .mode-btn {
             background: #1a2a3d; border: 2px solid transparent; color: #94a3b8;
@@ -337,7 +316,6 @@
         }
         .display-mode-options .mode-btn:hover { border-color: #38bdf8; color: #fff; }
         .display-mode-options .mode-btn.active { border-color: #38bdf8; color: #fff; background: #1a3a5a; }
-
         @media (max-width: 600px) {
             .header { flex-direction: column; gap: 8px; text-align: center; }
             .header .stats { flex-wrap: wrap; justify-content: center; }
@@ -538,8 +516,8 @@
         </div>
         <div class="result-actions">
             <button class="btn-retry" id="retryBtn" onclick="retryGame()">🔄 بازی دوباره</button>
-            <button class="btn-lessons" onclick="backToLessons()">📚 بازگشت به مراحل</button>
-            <button class="btn-home" onclick="goHome()">🏠 صفحه اصلی</button>
+            <button class="btn-lessons" id="resultLessonsBtn" onclick="backToLessons()">📚 بازگشت به مراحل</button>
+            <button class="btn-home" id="resultHomeBtn" onclick="goHome()">🏠 صفحه اصلی</button>
         </div>
     </div>
 
@@ -610,7 +588,7 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با سیستم صدای ترکیبی (بدون قطعی)
+// WEPAN - نسخه نهایی با سینک دقیق صدا و رفع همه باگ‌ها
 // =========================================================
 
 console.log('WEPAN loading...');
@@ -685,7 +663,9 @@ const TEXTS = {
         modeLetters: 'حروف (A, B, C)',
         modeNumbers: 'اعداد (۱, ۲, ۳)',
         fa: 'فارسی',
-        en: 'English'
+        en: 'English',
+        done: '✅ انجام شده',
+        locked: '🔒'
     },
     en: {
         welcomeSubtitle: 'Learn Handpan • Play • Improve',
@@ -753,7 +733,9 @@ const TEXTS = {
         modeLetters: 'Letters (A, B, C)',
         modeNumbers: 'Numbers (1, 2, 3)',
         fa: 'Persian',
-        en: 'English'
+        en: 'English',
+        done: '✅ Completed',
+        locked: '🔒'
     }
 };
 
@@ -945,7 +927,10 @@ function editProfile() {
 
 function updateProfilePage() {
     const user = getCurrentUser();
-    if (!user) { goHome(); return; }
+    if (!user) {
+        showLogin();
+        return;
+    }
     document.getElementById('profileUsername').textContent = user.username;
     document.getElementById('profileEmail').textContent = user.email || 'ایمیل ثبت نشده';
     document.getElementById('profileAvatar').textContent = user.username.charAt(0).toUpperCase();
@@ -1016,8 +1001,8 @@ function applyLanguage(lang) {
     document.getElementById('rAccuracyLabel').textContent = t.rAccuracyLabel;
     document.getElementById('rComboLabel').textContent = t.rComboLabel;
     document.getElementById('retryBtn').textContent = t.retryBtn;
-    document.querySelector('#resultPage .btn-lessons').textContent = t.backLessonsBtn;
-    document.querySelector('#resultPage .btn-home').textContent = t.homeBtn;
+    document.getElementById('resultLessonsBtn').textContent = t.backLessonsBtn;
+    document.getElementById('resultHomeBtn').textContent = t.homeBtn;
     document.getElementById('settingsTitle').textContent = t.settingsTitle;
     document.getElementById('settingsBackBtn').textContent = t.settingsBackBtn;
     document.getElementById('langGroupTitle').textContent = t.langGroupTitle;
@@ -1049,12 +1034,11 @@ function setLanguage(lang, btn) {
 }
 
 // =========================================================
-// سیستم صدا - ترکیبی (Web Audio + cloneNode) بدون قطعی
+// سیستم صدا - با سینک دقیق (نسخه نهایی)
 // =========================================================
 let audioCtx = null;
 let soundEnabled = true;
 let soundBuffers = {};
-let audioElements = {};
 
 const SOUND_FILES = {
     'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
@@ -1063,37 +1047,49 @@ const SOUND_FILES = {
     'miss': 'miss.wav', 'combo': 'combo.wav'
 };
 
+// بارگذاری صداها با Web Audio
 async function loadSounds() {
-    const ctx = initAudio();
-    if (ctx) {
+    try {
+        const ctx = initAudio();
+        if (!ctx) {
+            console.warn('Web Audio not available, using fallback');
+            return;
+        }
         for (let [note, file] of Object.entries(SOUND_FILES)) {
             try {
                 const response = await fetch(`/sounds/${file}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const arrayBuffer = await response.arrayBuffer();
                 const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
                 soundBuffers[note] = audioBuffer;
-            } catch (e) {}
+            } catch (e) {
+                console.warn(`Failed to load ${file}:`, e);
+                // fallback: using HTMLAudioElement
+                const audio = new Audio(`/sounds/${file}`);
+                audio.preload = 'auto';
+                // store as fallback
+                soundBuffers[note] = null;
+                // we'll use HTMLAudioElement in playSound
+                if (!window.audioFallbacks) window.audioFallbacks = {};
+                window.audioFallbacks[note] = audio;
+            }
         }
-        console.log('✅ Web Audio صداها بارگذاری شدند');
+        console.log('✅ صداها بارگذاری شدند');
+    } catch (e) {
+        console.warn('Sound loading error:', e);
     }
-    for (let [note, file] of Object.entries(SOUND_FILES)) {
-        try {
-            const audio = new Audio(`/sounds/${file}`);
-            audio.preload = 'auto';
-            audioElements[note] = audio;
-        } catch (e) {}
-    }
-    console.log('✅ HTMLAudioElement صداها بارگذاری شدند');
 }
 
 function initAudio() {
     if (!audioCtx) {
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {}
+        } catch (e) {
+            console.warn('AudioContext creation failed:', e);
+        }
     }
     if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
+        audioCtx.resume().catch(() => {});
     }
     return audioCtx;
 }
@@ -1101,37 +1097,52 @@ function initAudio() {
 function playSound(note, volume = 0.5) {
     if (!soundEnabled) return;
     
-    // اول سعی کن با Web Audio پخش کنی (سینک دقیق)
-    try {
-        const ctx = initAudio();
-        if (ctx && soundBuffers[note]) {
+    const ctx = initAudio();
+    
+    // روش ۱: Web Audio (سینک دقیق)
+    if (ctx && soundBuffers[note]) {
+        try {
             const buffer = soundBuffers[note];
+            if (!buffer) throw new Error('Buffer is null');
             const source = ctx.createBufferSource();
             source.buffer = buffer;
             const gain = ctx.createGain();
             const now = ctx.currentTime;
             gain.gain.setValueAtTime(volume, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            gain.gain.setTargetAtTime(0.001, now + 0.4, 0.1);
             source.connect(gain);
             gain.connect(ctx.destination);
             source.start(now);
             source.stop(now + 0.6);
             return;
+        } catch (e) {
+            console.warn('Web Audio play failed, using fallback:', e);
         }
-    } catch (e) {}
+    }
     
-    // روش پشتیبان: cloneNode (همیشه پایدار)
+    // روش ۲: Fallback (HTMLAudioElement)
     try {
-        let audio = audioElements[note];
-        if (!audio) {
+        let fallback = window.audioFallbacks && window.audioFallbacks[note];
+        if (!fallback) {
+            // try without number
             const baseNote = note.replace(/[0-9]/g, '');
-            audio = audioElements[baseNote];
-            if (!audio) return;
+            fallback = window.audioFallbacks && window.audioFallbacks[baseNote];
         }
-        const sound = audio.cloneNode();
-        sound.volume = volume;
-        sound.play().catch(() => {});
-        sound.onended = () => sound.remove();
+        if (fallback) {
+            const sound = fallback.cloneNode();
+            sound.volume = volume;
+            sound.play().catch(() => {});
+            sound.onended = () => sound.remove();
+            return;
+        }
+        // if still nothing, create a new Audio element
+        const file = SOUND_FILES[note] || (SOUND_FILES[note.replace(/[0-9]/g, '')]);
+        if (file) {
+            const audio = new Audio(`/sounds/${file}`);
+            audio.volume = volume;
+            audio.play().catch(() => {});
+            audio.onended = () => audio.remove();
+        }
     } catch (e) {}
 }
 
@@ -1146,9 +1157,6 @@ function toggleSound() {
         btn.classList.toggle('active', soundEnabled);
     }
 }
-
-document.addEventListener('click', () => { initAudio(); }, { once: true });
-document.addEventListener('touchstart', () => { initAudio(); }, { once: true });
 
 // =========================================================
 // داده‌های بازی
@@ -1515,7 +1523,7 @@ function hitNote(note) {
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
         
-        // 🔊 پخش صدا با سیستم ترکیبی (سینک دقیق + پشتیبان)
+        // 🔊 پخش صدا (سینک دقیق با Web Audio)
         playSound(note, 0.5);
         
         if (combo > 0 && combo % 5 === 0) {
@@ -1649,7 +1657,26 @@ document.getElementById('recordButton').addEventListener('click', function() {
 // =========================================================
 // شروع
 // =========================================================
-loadSounds();
+
+// راه‌اندازی اولیه صدا با هر کلیک کاربر
+document.addEventListener('click', function initOnClick() {
+    initAudio();
+    // حذف listener بعد از اولین کلیک
+    document.removeEventListener('click', initOnClick);
+    document.removeEventListener('touchstart', initOnClick);
+}, false);
+document.addEventListener('touchstart', function initOnTouch() {
+    initAudio();
+    document.removeEventListener('click', initOnTouch);
+    document.removeEventListener('touchstart', initOnTouch);
+}, false);
+
+// بارگذاری صداها قبل از شروع بازی
+loadSounds().then(() => {
+    console.log('✅ صداها برای پخش آماده هستند');
+});
+
+// اعمال زبان
 applyLanguage(currentLang);
 document.querySelectorAll('.lang-btn').forEach(b => {
     if (b.dataset.lang === currentLang) b.classList.add('active');
@@ -1657,7 +1684,7 @@ document.querySelectorAll('.lang-btn').forEach(b => {
 });
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
-console.log('🔊 سیستم صدای ترکیبی (Web Audio + cloneNode) فعال است');
+console.log('🔊 سینک صدا با کلیک تضمین شده است');
 </script>
 </body>
 </html>
