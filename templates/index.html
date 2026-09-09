@@ -26,36 +26,225 @@
             position: relative;
         }
 
-        #welcomePage {
-            display: flex;
+        /* ===== صفحات ===== */
+        #welcomePage, #loginPage, #signupPage, #profilePage {
+            display: none;
+        }
+        #welcomePage { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; padding: 40px 20px; text-align: center; background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%); }
+
+        /* ===== فرم‌های لاگین و ثبت‌نام ===== */
+        #loginPage, #signupPage {
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 90vh;
             padding: 40px 20px;
-            text-align: center;
             background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
         }
+        #loginPage .form-box, #signupPage .form-box {
+            background: #0d1422;
+            padding: 40px 35px;
+            border-radius: 20px;
+            border: 1px solid #1c2a3d;
+            width: 100%;
+            max-width: 400px;
+        }
+        #loginPage .form-box h2, #signupPage .form-box h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            background: #1a2a3d;
+            border: 1px solid #2a3a4d;
+            border-radius: 10px;
+            color: #e5e7eb;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+        }
+        .form-group input::placeholder {
+            color: #64748b;
+        }
+        .form-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .form-btn:hover { opacity: 0.85; transform: scale(1.01); }
+        .form-footer {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .form-footer a {
+            color: #38bdf8;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .form-footer a:hover { text-decoration: underline; }
+        .form-error {
+            color: #ef4444;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        .form-success {
+            color: #2dd4bf;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        /* ===== صفحه پروفایل ===== */
+        #profilePage {
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 90vh;
+            padding: 30px 25px;
+            background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
+        }
+        .profile-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .profile-header h2 {
+            font-size: 28px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .profile-header .profile-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .profile-header .profile-actions button {
+            background: #0d1422;
+            border: 1px solid #1c2a3d;
+            color: #94a3b8;
+            padding: 8px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 13px;
+        }
+        .profile-header .profile-actions button:hover { border-color: #38bdf8; color: #fff; }
+        .profile-header .profile-actions .logout-btn:hover { border-color: #ef4444; color: #ef4444; }
+
+        .profile-card {
+            background: #0d1422;
+            border: 1px solid #1c2a3d;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .profile-card .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: #000;
+            margin: 0 auto 15px;
+        }
+        .profile-card .username {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .profile-card .email {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .profile-card .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 15px 0;
+            border-top: 1px solid #1a2a3d;
+            border-bottom: 1px solid #1a2a3d;
+            margin: 10px 0 20px;
+        }
+        .profile-card .stats .stat-item .num {
+            font-size: 24px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+        .profile-card .stats .stat-item .lbl {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .profile-card .edit-btn {
+            background: #1a2a3d;
+            border: 1px solid #2a3a4d;
+            color: #e5e7eb;
+            padding: 8px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .profile-card .edit-btn:hover { border-color: #38bdf8; }
+
+        /* ===== بقیه استایل‌های بازی ===== */
         #welcomePage .logo { font-size: 72px; font-weight: 800; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
         #welcomePage .subtitle { color: #94a3b8; font-size: 18px; margin-bottom: 40px; }
         #welcomePage .start-btn { background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; color: #000; padding: 16px 60px; border-radius: 16px; font-size: 22px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         #welcomePage .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); }
         #welcomePage .stats-preview { display: flex; gap: 30px; margin-top: 40px; color: #64748b; font-size: 14px; }
         #welcomePage .stats-preview span { background: #0d1422; padding: 8px 20px; border-radius: 10px; border: 1px solid #1c2a3d; }
-        #welcomePage .bottom-buttons { display: flex; gap: 15px; margin-top: 30px; }
+        #welcomePage .bottom-buttons { display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
         #welcomePage .bottom-buttons button { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 10px 30px; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 14px; }
         #welcomePage .bottom-buttons button:hover { border-color: #38bdf8; color: #fff; }
 
-        #lessonsPage {
-            display: none;
-            min-height: 90vh;
-            padding: 30px 25px;
-            background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
-        }
-        #lessonsPage .lessons-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        #lessonsPage { display: none; min-height: 90vh; padding: 30px 25px; background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%); }
+        #lessonsPage .lessons-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
         #lessonsPage .lessons-header h2 { font-size: 28px; }
         #lessonsPage .lessons-header .back-home { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.3s; }
         #lessonsPage .lessons-header .back-home:hover { border-color: #38bdf8; color: #fff; }
+        #lessonsPage .lessons-header .profile-btn { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        #lessonsPage .lessons-header .profile-btn:hover { border-color: #f472b6; color: #f472b6; }
 
         .lesson-card {
             background: #0d1422;
@@ -81,22 +270,13 @@
         #gamePage { display: none; }
 
         #timerOverlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 10, 18, 0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 10, 18, 0.85); display: none;
+            justify-content: center; align-items: center; z-index: 100;
             border-radius: 20px;
         }
         #timerOverlay .timer-number {
-            font-size: 120px;
-            font-weight: 900;
-            color: #38bdf8;
+            font-size: 120px; font-weight: 900; color: #38bdf8;
             text-shadow: 0 0 60px rgba(56, 189, 248, 0.5);
             animation: timerPulse 0.8s ease-in-out;
         }
@@ -105,21 +285,12 @@
             50% { transform: scale(1.2); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
-        #timerOverlay .timer-text {
-            position: absolute;
-            bottom: 40%;
-            font-size: 18px;
-            color: #94a3b8;
-        }
+        #timerOverlay .timer-text { position: absolute; bottom: 40%; font-size: 18px; color: #94a3b8; }
 
         .header {
-            background: #0d1422;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            position: relative;
+            background: #0d1422; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; position: relative;
         }
         .header h1 { font-size: 22px; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .header .stats { display: flex; gap: 12px; font-size: 12px; font-weight: bold; }
@@ -128,15 +299,9 @@
         .header .stats .combo { color: #fbbf24; }
         .header .stats .accuracy { color: #2dd4bf; }
         .sound-toggle {
-            background: #0d1422;
-            border: 1px solid #1c2a3d;
-            color: #94a3b8;
-            padding: 4px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            transition: 0.3s;
+            background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8;
+            padding: 4px 14px; border-radius: 8px; cursor: pointer;
+            font-weight: bold; font-size: 12px; transition: 0.3s;
         }
         .sound-toggle:hover { border-color: #38bdf8; color: #fff; }
         .sound-toggle.active { border-color: #2dd4bf; color: #2dd4bf; }
@@ -151,11 +316,8 @@
         #handpanCanvas { width: 100%; height: auto; background: #0b1320; display: block; border-radius: 10px; cursor: pointer; }
 
         .controls {
-            display: flex;
-            gap: 10px;
-            padding: 6px 12px;
-            flex-wrap: wrap;
-            align-items: center;
+            display: flex; gap: 10px; padding: 6px 12px;
+            flex-wrap: wrap; align-items: center;
         }
         .controls button { background: #0d1422; border: 1px solid #1c2a3d; color: #e5e7eb; padding: 4px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .controls button:hover { border-color: #38bdf8; }
@@ -169,19 +331,14 @@
         .record-status { color: #94a3b8; font-size: 12px; }
 
         #resultPage {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 85vh;
-            padding: 40px 20px;
-            text-align: center;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 85vh; padding: 40px 20px; text-align: center;
             background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
         }
         #resultPage .result-icon { font-size: 64px; margin-bottom: 10px; }
         #resultPage .result-score { font-size: 72px; font-weight: 800; color: #2dd4bf; }
         #resultPage .result-label { color: #94a3b8; font-size: 18px; margin-bottom: 20px; }
-        #resultPage .result-details { display: flex; gap: 30px; margin: 20px 0 30px; }
+        #resultPage .result-details { display: flex; gap: 30px; margin: 20px 0 30px; flex-wrap: wrap; justify-content: center; }
         #resultPage .result-details div { background: #0d1422; padding: 12px 24px; border-radius: 12px; border: 1px solid #1c2a3d; }
         #resultPage .result-details div .num { font-size: 28px; font-weight: bold; color: #38bdf8; }
         #resultPage .result-details div .lbl { font-size: 12px; color: #64748b; }
@@ -195,105 +352,54 @@
         #resultPage .result-actions .btn-home:hover { border-color: #dc2626; color: #dc2626; }
 
         #settingsPage {
-            display: none;
-            min-height: 90vh;
-            padding: 30px 25px;
+            display: none; min-height: 90vh; padding: 30px 25px;
             background: linear-gradient(135deg, #070c15 0%, #0d1a2a 100%);
         }
-        #settingsPage .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        #settingsPage .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
         #settingsPage .settings-header h2 { font-size: 28px; }
         #settingsPage .settings-header .back-btn { background: #0d1422; border: 1px solid #1c2a3d; color: #94a3b8; padding: 8px 20px; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.3s; }
         #settingsPage .settings-header .back-btn:hover { border-color: #38bdf8; color: #fff; }
 
         .setting-group {
-            background: #0d1422;
-            border: 1px solid #1c2a3d;
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 15px;
+            background: #0d1422; border: 1px solid #1c2a3d; border-radius: 14px;
+            padding: 20px; margin-bottom: 15px;
         }
         .setting-group .group-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: #94a3b8; }
         .setting-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #1a2a3d;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid #1a2a3d; flex-wrap: wrap; gap: 10px;
         }
         .setting-item:last-child { border-bottom: none; }
         .setting-item label { font-size: 14px; color: #e5e7eb; }
         .setting-item select, .setting-item input[type="range"] {
-            background: #1a2a3d;
-            color: #e5e7eb;
-            border: 1px solid #2a3a4d;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            cursor: pointer;
-            outline: none;
+            background: #1a2a3d; color: #e5e7eb; border: 1px solid #2a3a4d;
+            padding: 5px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; outline: none;
         }
         .setting-item input[type="range"] { min-width: 150px; padding: 0; background: transparent; }
         .setting-item .value-display {
-            color: #38bdf8;
-            font-weight: bold;
-            min-width: 45px;
-            text-align: center;
-            font-size: 15px;
-            background: #0d1422;
-            padding: 2px 8px;
-            border-radius: 6px;
-            border: 1px solid #1c2a3d;
+            color: #38bdf8; font-weight: bold; min-width: 45px; text-align: center;
+            font-size: 15px; background: #0d1422; padding: 2px 8px; border-radius: 6px; border: 1px solid #1c2a3d;
         }
         .setting-item .color-options { display: flex; gap: 8px; flex-wrap: wrap; }
         .setting-item .color-options .color-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: 0.3s;
+            width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.3s;
         }
         .setting-item .color-options .color-btn:hover { transform: scale(1.1); }
         .setting-item .color-options .color-btn.active { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
         .setting-item .lang-options { display: flex; gap: 8px; flex-wrap: wrap; }
         .setting-item .lang-options .lang-btn {
-            background: #1a2a3d;
-            border: 2px solid transparent;
-            color: #94a3b8;
-            padding: 4px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 13px;
+            background: #1a2a3d; border: 2px solid transparent; color: #94a3b8;
+            padding: 4px 16px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 13px;
         }
         .setting-item .lang-options .lang-btn:hover { border-color: #38bdf8; color: #fff; }
         .setting-item .lang-options .lang-btn.active { border-color: #38bdf8; color: #fff; background: #1a3a5a; }
-        .setting-item .slider-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .setting-item .slider-group input[type="range"] {
-            min-width: 120px;
-        }
+        .setting-item .slider-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .setting-item .slider-group input[type="range"] { min-width: 120px; }
 
-        .display-mode-options {
-            display: flex;
-            gap: 10px;
-        }
+        .display-mode-options { display: flex; gap: 10px; }
         .display-mode-options .mode-btn {
-            background: #1a2a3d;
-            border: 2px solid transparent;
-            color: #94a3b8;
-            padding: 6px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 14px;
-            font-weight: bold;
+            background: #1a2a3d; border: 2px solid transparent; color: #94a3b8;
+            padding: 6px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 14px; font-weight: bold;
         }
         .display-mode-options .mode-btn:hover { border-color: #38bdf8; color: #fff; }
         .display-mode-options .mode-btn.active { border-color: #38bdf8; color: #fff; background: #1a3a5a; }
@@ -304,12 +410,14 @@
             .controls { justify-content: center; }
             .controls .progress { margin-right: 0; }
             .record-section { justify-content: center; }
-            #resultPage .result-details { flex-direction: column; gap: 10px; }
+            #resultPage .result-details { flex-direction: column; gap: 10px; align-items: center; }
             #welcomePage .logo { font-size: 48px; }
             #lessonsPage .lessons-header { flex-direction: column; gap: 15px; text-align: center; }
             .setting-item { flex-direction: column; align-items: stretch; }
             .setting-item .slider-group { justify-content: center; }
             .display-mode-options { justify-content: center; }
+            #loginPage .form-box, #signupPage .form-box { padding: 25px 20px; }
+            .profile-header { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -320,14 +428,103 @@
     <div id="welcomePage">
         <div class="logo">🥁 WEPAN</div>
         <div class="subtitle" id="welcomeSubtitle">یادگیری هنگ‌درام • بازی • پیشرفت</div>
-        <button class="start-btn" id="startBtn" onclick="showLessons()">▶ شروع</button>
+        <button class="start-btn" id="welcomeStartBtn" onclick="checkAuthAndStart()">▶ شروع</button>
         <div class="stats-preview">
             <span>🏆 <span id="wTotal">8</span> درس</span>
             <span>✅ <span id="wDone">0</span> تکمیل</span>
             <span>🔥 <span id="wStreak">0</span> روز</span>
         </div>
         <div class="bottom-buttons">
-            <button id="settingsBtn" onclick="showSettings()">⚙️ تنظیمات</button>
+            <button id="welcomeLoginBtn" onclick="showLogin()">🔑 ورود</button>
+            <button id="welcomeSignupBtn" onclick="showSignup()">📝 ثبت‌نام</button>
+            <button id="welcomeSettingsBtn" onclick="showSettings()">⚙️ تنظیمات</button>
+        </div>
+    </div>
+
+    <!-- ===== صفحه لاگین ===== -->
+    <div id="loginPage">
+        <div class="form-box">
+            <h2 id="loginTitle">🔑 ورود</h2>
+            <div class="form-group">
+                <label id="loginUsernameLabel">نام کاربری یا ایمیل</label>
+                <input type="text" id="loginUsername" placeholder="نام کاربری خود را وارد کنید">
+            </div>
+            <div class="form-group">
+                <label id="loginPasswordLabel">رمز عبور</label>
+                <input type="password" id="loginPassword" placeholder="رمز عبور خود را وارد کنید">
+            </div>
+            <button class="form-btn" id="loginBtn" onclick="loginUser()">ورود</button>
+            <div id="loginError" class="form-error"></div>
+            <div class="form-footer">
+                <span id="loginFooterText">حساب کاربری ندارید؟</span> <a id="loginFooterLink" onclick="showSignup()">ثبت‌نام کنید</a>
+            </div>
+            <div class="form-footer" style="margin-top:8px;">
+                <a id="loginBackLink" onclick="goHome()">← بازگشت به صفحه اصلی</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== صفحه ثبت‌نام ===== -->
+    <div id="signupPage">
+        <div class="form-box">
+            <h2 id="signupTitle">📝 ثبت‌نام</h2>
+            <div class="form-group">
+                <label id="signupUsernameLabel">نام کاربری</label>
+                <input type="text" id="signupUsername" placeholder="نام کاربری خود را انتخاب کنید">
+            </div>
+            <div class="form-group">
+                <label id="signupEmailLabel">ایمیل</label>
+                <input type="email" id="signupEmail" placeholder="ایمیل خود را وارد کنید">
+            </div>
+            <div class="form-group">
+                <label id="signupPasswordLabel">رمز عبور</label>
+                <input type="password" id="signupPassword" placeholder="رمز عبور خود را انتخاب کنید">
+                <div style="font-size:11px;color:#64748b;margin-top:4px;" id="signupPasswordHint">حداقل ۸ کاراکتر، شامل حروف بزرگ و کوچک و عدد</div>
+            </div>
+            <div class="form-group">
+                <label id="signupConfirmLabel">تکرار رمز عبور</label>
+                <input type="password" id="signupConfirm" placeholder="رمز عبور را دوباره وارد کنید">
+            </div>
+            <button class="form-btn" id="signupBtn" onclick="signupUser()">ثبت‌نام</button>
+            <div id="signupError" class="form-error"></div>
+            <div id="signupSuccess" class="form-success"></div>
+            <div class="form-footer">
+                <span id="signupFooterText">قبلاً ثبت‌نام کرده‌اید؟</span> <a id="signupFooterLink" onclick="showLogin()">وارد شوید</a>
+            </div>
+            <div class="form-footer" style="margin-top:8px;">
+                <a id="signupBackLink" onclick="goHome()">← بازگشت به صفحه اصلی</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== صفحه پروفایل ===== -->
+    <div id="profilePage">
+        <div class="profile-header">
+            <h2 id="profileTitle">👤 پروفایل</h2>
+            <div class="profile-actions">
+                <button id="profileBackBtn" onclick="showLessons()">🎯 بازگشت به بازی</button>
+                <button class="logout-btn" id="profileLogoutBtn" onclick="logoutUser()">🚪 خروج</button>
+            </div>
+        </div>
+        <div class="profile-card">
+            <div class="avatar" id="profileAvatar">?</div>
+            <div class="username" id="profileUsername">کاربر</div>
+            <div class="email" id="profileEmail">ایمیل ثبت نشده</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="num" id="profileLessons">0</div>
+                    <div class="lbl" id="profileLessonsLabel">درس‌های تکمیل شده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="num" id="profileScore">0</div>
+                    <div class="lbl" id="profileScoreLabel">امتیاز کل</div>
+                </div>
+                <div class="stat-item">
+                    <div class="num" id="profileStreak">0</div>
+                    <div class="lbl" id="profileStreakLabel">روز متوالی</div>
+                </div>
+            </div>
+            <button class="edit-btn" id="profileEditBtn" onclick="editProfile()">✏️ ویرایش پروفایل</button>
         </div>
     </div>
 
@@ -335,7 +532,10 @@
     <div id="lessonsPage">
         <div class="lessons-header">
             <h2 id="lessonsTitle">📚 انتخاب مرحله</h2>
-            <button class="back-home" id="homeBtn" onclick="goHome()">🏠 صفحه اصلی</button>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="profile-btn" id="lessonsProfileBtn" onclick="showProfile()">👤 پروفایل</button>
+                <button class="back-home" id="lessonsHomeBtn" onclick="goHome()">🏠 صفحه اصلی</button>
+            </div>
         </div>
         <div id="lessonsContainer"></div>
     </div>
@@ -413,7 +613,7 @@
     <div id="settingsPage">
         <div class="settings-header">
             <h2 id="settingsTitle">⚙️ تنظیمات</h2>
-            <button class="back-btn" onclick="goHome()">🏠 بازگشت</button>
+            <button class="back-btn" id="settingsBackBtn" onclick="goHome()">🏠 بازگشت</button>
         </div>
 
         <div class="setting-group">
@@ -476,31 +676,622 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با صدای پایدار (cloneNode)
+// WEPAN - نسخه نهایی با اصلاح سینک صدا، الگوریتم ثبت‌نام و زبان
 // =========================================================
 
 console.log('WEPAN loading...');
 
-// ===== موقعیت‌های نت‌ها روی خط HIT =====
+// =========================================================
+// متون دو زبانه (کامل)
+// =========================================================
+const TEXTS = {
+    fa: {
+        welcomeSubtitle: 'یادگیری هنگ‌درام • بازی • پیشرفت',
+        welcomeStart: '▶ شروع',
+        welcomeLogin: '🔑 ورود',
+        welcomeSignup: '📝 ثبت‌نام',
+        welcomeSettings: '⚙️ تنظیمات',
+        loginTitle: '🔑 ورود',
+        loginUsernameLabel: 'نام کاربری یا ایمیل',
+        loginPasswordLabel: 'رمز عبور',
+        loginBtn: 'ورود',
+        loginFooterText: 'حساب کاربری ندارید؟',
+        loginFooterLink: 'ثبت‌نام کنید',
+        loginBackLink: '← بازگشت به صفحه اصلی',
+        signupTitle: '📝 ثبت‌نام',
+        signupUsernameLabel: 'نام کاربری',
+        signupEmailLabel: 'ایمیل',
+        signupPasswordLabel: 'رمز عبور',
+        signupPasswordHint: 'حداقل ۸ کاراکتر، شامل حروف بزرگ و کوچک و عدد',
+        signupConfirmLabel: 'تکرار رمز عبور',
+        signupBtn: 'ثبت‌نام',
+        signupFooterText: 'قبلاً ثبت‌نام کرده‌اید؟',
+        signupFooterLink: 'وارد شوید',
+        signupBackLink: '← بازگشت به صفحه اصلی',
+        profileTitle: '👤 پروفایل',
+        profileBackBtn: '🎯 بازگشت به بازی',
+        profileLogoutBtn: '🚪 خروج',
+        profileLessonsLabel: 'درس‌های تکمیل شده',
+        profileScoreLabel: 'امتیاز کل',
+        profileStreakLabel: 'روز متوالی',
+        profileEditBtn: '✏️ ویرایش پروفایل',
+        lessonsTitle: '📚 انتخاب مرحله',
+        lessonsProfileBtn: '👤 پروفایل',
+        lessonsHomeBtn: '🏠 صفحه اصلی',
+        timerText: 'آماده‌ای؟',
+        nextNoteLabel: 'NEXT NOTE',
+        scoreLabel: 'SCORE',
+        comboLabel: 'COMBO',
+        accuracyLabel: 'ACC',
+        pauseBtn: '⏸ PAUSE',
+        resumeBtn: '▶ RESUME',
+        speedLabel: 'SPEED',
+        progressLabel: 'NOTES',
+        endGameBtn: '✕ پایان',
+        recordBtn: '🎤 ضبط تمرین',
+        recordStatus: 'برای تمرین ضبط کن',
+        resultLabel: 'امتیاز نهایی',
+        rHitsLabel: 'ضربات درست',
+        rAccuracyLabel: 'دقت',
+        rComboLabel: 'بهترین COMBO',
+        retryBtn: '🔄 بازی دوباره',
+        backLessonsBtn: '📚 بازگشت به مراحل',
+        homeBtn: '🏠 صفحه اصلی',
+        settingsTitle: '⚙️ تنظیمات',
+        settingsBackBtn: '🏠 بازگشت',
+        langGroupTitle: '🌐 زبان',
+        langLabel: 'زبان',
+        colorGroupTitle: '🎨 رنگ بازی',
+        colorLabel: 'رنگ اصلی',
+        speedGroupTitle: '⚡ سرعت و سایز',
+        speedSettingLabel: 'سرعت قطره‌ها',
+        dropSizeLabel: 'سایز قطره‌ها',
+        displayGroupTitle: '🔤 نمایش نت‌ها',
+        displayLabel: 'نمایش روی نت‌ها',
+        modeLetters: 'حروف (A, B, C)',
+        modeNumbers: 'اعداد (۱, ۲, ۳)',
+        fa: 'فارسی',
+        en: 'English'
+    },
+    en: {
+        welcomeSubtitle: 'Learn Handpan • Play • Improve',
+        welcomeStart: '▶ Start',
+        welcomeLogin: '🔑 Login',
+        welcomeSignup: '📝 Sign Up',
+        welcomeSettings: '⚙️ Settings',
+        loginTitle: '🔑 Login',
+        loginUsernameLabel: 'Username or Email',
+        loginPasswordLabel: 'Password',
+        loginBtn: 'Login',
+        loginFooterText: "Don't have an account?",
+        loginFooterLink: 'Sign up',
+        loginBackLink: '← Back to Home',
+        signupTitle: '📝 Sign Up',
+        signupUsernameLabel: 'Username',
+        signupEmailLabel: 'Email',
+        signupPasswordLabel: 'Password',
+        signupPasswordHint: 'Min 8 chars, include uppercase, lowercase and number',
+        signupConfirmLabel: 'Confirm Password',
+        signupBtn: 'Sign Up',
+        signupFooterText: 'Already have an account?',
+        signupFooterLink: 'Login',
+        signupBackLink: '← Back to Home',
+        profileTitle: '👤 Profile',
+        profileBackBtn: '🎯 Back to Game',
+        profileLogoutBtn: '🚪 Logout',
+        profileLessonsLabel: 'Completed Lessons',
+        profileScoreLabel: 'Total Score',
+        profileStreakLabel: 'Day Streak',
+        profileEditBtn: '✏️ Edit Profile',
+        lessonsTitle: '📚 Select Level',
+        lessonsProfileBtn: '👤 Profile',
+        lessonsHomeBtn: '🏠 Home',
+        timerText: 'Ready?',
+        nextNoteLabel: 'NEXT NOTE',
+        scoreLabel: 'SCORE',
+        comboLabel: 'COMBO',
+        accuracyLabel: 'ACC',
+        pauseBtn: '⏸ PAUSE',
+        resumeBtn: '▶ RESUME',
+        speedLabel: 'SPEED',
+        progressLabel: 'NOTES',
+        endGameBtn: '✕ End',
+        recordBtn: '🎤 Record Practice',
+        recordStatus: 'Tap to record',
+        resultLabel: 'Final Score',
+        rHitsLabel: 'Correct Hits',
+        rAccuracyLabel: 'Accuracy',
+        rComboLabel: 'Best COMBO',
+        retryBtn: '🔄 Play Again',
+        backLessonsBtn: '📚 Back to Levels',
+        homeBtn: '🏠 Home',
+        settingsTitle: '⚙️ Settings',
+        settingsBackBtn: '🏠 Back',
+        langGroupTitle: '🌐 Language',
+        langLabel: 'Language',
+        colorGroupTitle: '🎨 Game Color',
+        colorLabel: 'Main Color',
+        speedGroupTitle: '⚡ Speed & Size',
+        speedSettingLabel: 'Droplet Speed',
+        dropSizeLabel: 'Droplet Size',
+        displayGroupTitle: '🔤 Note Display',
+        displayLabel: 'Display Mode',
+        modeLetters: 'Letters (A, B, C)',
+        modeNumbers: 'Numbers (1, 2, 3)',
+        fa: 'Persian',
+        en: 'English'
+    }
+};
+
+// =========================================================
+// مدیریت کاربران
+// =========================================================
+function getUsers() {
+    return JSON.parse(localStorage.getItem('wepan_users') || '[]');
+}
+
+function saveUsers(users) {
+    localStorage.setItem('wepan_users', JSON.stringify(users));
+}
+
+function getCurrentUser() {
+    const data = localStorage.getItem('wepan_current_user');
+    return data ? JSON.parse(data) : null;
+}
+
+function setCurrentUser(user) {
+    localStorage.setItem('wepan_current_user', JSON.stringify(user));
+}
+
+function clearCurrentUser() {
+    localStorage.removeItem('wepan_current_user');
+}
+
+// =========================================================
+// نمایش صفحات
+// =========================================================
+function showPage(pageId) {
+    const pages = ['welcomePage', 'loginPage', 'signupPage', 'profilePage', 'lessonsPage', 'gamePage', 'resultPage', 'settingsPage'];
+    pages.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = (id === pageId) ? 
+                (id === 'loginPage' || id === 'signupPage' || id === 'profilePage' || id === 'welcomePage' ? 'flex' : 'block') : 
+                'none';
+        }
+    });
+}
+
+function goHome() {
+    showPage('welcomePage');
+    updateWelcomeStats();
+}
+
+function showLogin() {
+    document.getElementById('loginError').textContent = '';
+    showPage('loginPage');
+}
+
+function showSignup() {
+    document.getElementById('signupError').textContent = '';
+    document.getElementById('signupSuccess').textContent = '';
+    showPage('signupPage');
+}
+
+function showProfile() {
+    updateProfilePage();
+    showPage('profilePage');
+}
+
+function showLessons() {
+    showPage('lessonsPage');
+    renderLessons();
+}
+
+function showSettings() {
+    showPage('settingsPage');
+    document.getElementById('speedRange').value = GAME_SPEED;
+    document.getElementById('speedValueDisplay').textContent = GAME_SPEED;
+    document.getElementById('dropSizeRange').value = DROPLET_SCALE;
+    document.getElementById('dropSizeValueDisplay').textContent = DROPLET_SCALE;
+}
+
+function checkAuthAndStart() {
+    const user = getCurrentUser();
+    if (user) {
+        showLessons();
+    } else {
+        showLogin();
+    }
+}
+
+// =========================================================
+// الگوریتم‌های ثبت‌نام (با اعتبارسنجی قوی)
+// =========================================================
+function validatePassword(password) {
+    const errors = [];
+    if (password.length < 8) errors.push('حداقل ۸ کاراکتر');
+    if (!/[a-z]/.test(password)) errors.push('حداقل یک حرف کوچک (a-z)');
+    if (!/[A-Z]/.test(password)) errors.push('حداقل یک حرف بزرگ (A-Z)');
+    if (!/[0-9]/.test(password)) errors.push('حداقل یک عدد (0-9)');
+    return errors;
+}
+
+function validateUsername(username) {
+    if (username.length < 3) return 'نام کاربری حداقل ۳ کاراکتر باشد';
+    if (!/^[a-zA-Z0-9_\u0600-\u06FF]+$/.test(username)) return 'نام کاربری فقط شامل حروف، اعداد و زیرخط باشد';
+    return null;
+}
+
+function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return 'ایمیل معتبر نیست';
+    return null;
+}
+
+function signupUser() {
+    const username = document.getElementById('signupUsername').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const confirm = document.getElementById('signupConfirm').value;
+    const errorEl = document.getElementById('signupError');
+    const successEl = document.getElementById('signupSuccess');
+    
+    errorEl.textContent = '';
+    successEl.textContent = '';
+    
+    // بررسی فیلدهای خالی
+    if (!username || !email || !password || !confirm) {
+        errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید';
+        return;
+    }
+    
+    // بررسی نام کاربری
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+        errorEl.textContent = '❌ ' + usernameError;
+        return;
+    }
+    
+    // بررسی ایمیل
+    const emailError = validateEmail(email);
+    if (emailError) {
+        errorEl.textContent = '❌ ' + emailError;
+        return;
+    }
+    
+    // بررسی رمز عبور
+    const passwordErrors = validatePassword(password);
+    if (passwordErrors.length > 0) {
+        errorEl.textContent = '❌ رمز عبور: ' + passwordErrors.join('، ');
+        return;
+    }
+    
+    // بررسی تطابق رمز
+    if (password !== confirm) {
+        errorEl.textContent = '❌ رمز عبور و تکرار آن مطابقت ندارند';
+        return;
+    }
+    
+    // بررسی عدم تکراری بودن
+    const users = getUsers();
+    if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+        errorEl.textContent = '❌ این نام کاربری قبلاً ثبت شده است';
+        return;
+    }
+    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+        errorEl.textContent = '❌ این ایمیل قبلاً ثبت شده است';
+        return;
+    }
+    
+    // ذخیره کاربر جدید
+    users.push({ username, email, password });
+    saveUsers(users);
+    
+    successEl.textContent = '✅ ثبت‌نام با موفقیت انجام شد!';
+    document.getElementById('signupUsername').value = '';
+    document.getElementById('signupEmail').value = '';
+    document.getElementById('signupPassword').value = '';
+    document.getElementById('signupConfirm').value = '';
+    
+    setTimeout(() => {
+        showLogin();
+    }, 1000);
+}
+
+// =========================================================
+// لاگین
+// =========================================================
+function loginUser() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorEl = document.getElementById('loginError');
+    
+    if (!username || !password) {
+        errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید';
+        return;
+    }
+    
+    const users = getUsers();
+    const user = users.find(u => 
+        (u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === username.toLowerCase()) && 
+        u.password === password
+    );
+    
+    if (!user) {
+        errorEl.textContent = '❌ نام کاربری یا رمز عبور اشتباه است';
+        return;
+    }
+    
+    setCurrentUser({ username: user.username, email: user.email });
+    errorEl.textContent = '';
+    showLessons();
+}
+
+function logoutUser() {
+    clearCurrentUser();
+    goHome();
+}
+
+function editProfile() {
+    const user = getCurrentUser();
+    if (!user) return;
+    const newUsername = prompt('نام کاربری جدید:', user.username);
+    if (newUsername && newUsername.trim() && newUsername.trim() !== user.username) {
+        const trimmed = newUsername.trim();
+        const usernameError = validateUsername(trimmed);
+        if (usernameError) {
+            alert('❌ ' + usernameError);
+            return;
+        }
+        const users = getUsers();
+        const found = users.find(u => u.username.toLowerCase() === trimmed.toLowerCase() && u.username !== user.username);
+        if (found) {
+            alert('❌ این نام کاربری قبلاً ثبت شده است');
+            return;
+        }
+        const oldUsername = user.username;
+        user.username = trimmed;
+        setCurrentUser(user);
+        
+        const allUsers = getUsers();
+        const userIndex = allUsers.findIndex(u => u.username === oldUsername);
+        if (userIndex !== -1) {
+            allUsers[userIndex].username = user.username;
+            saveUsers(allUsers);
+        }
+        updateProfilePage();
+    }
+}
+
+// =========================================================
+// به‌روزرسانی پروفایل
+// =========================================================
+function updateProfilePage() {
+    const user = getCurrentUser();
+    if (!user) {
+        goHome();
+        return;
+    }
+    document.getElementById('profileUsername').textContent = user.username;
+    document.getElementById('profileEmail').textContent = user.email || 'ایمیل ثبت نشده';
+    document.getElementById('profileAvatar').textContent = user.username.charAt(0).toUpperCase();
+    
+    const completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
+    const totalScore = parseInt(localStorage.getItem('wepan_score') || '0');
+    const streak = parseInt(localStorage.getItem('wepan_streak') || '0');
+    
+    document.getElementById('profileLessons').textContent = completed.length;
+    document.getElementById('profileScore').textContent = totalScore;
+    document.getElementById('profileStreak').textContent = streak;
+}
+
+function updateWelcomeStats() {
+    const completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
+    const streak = parseInt(localStorage.getItem('wepan_streak') || '0');
+    document.getElementById('wDone').textContent = completed.length;
+    document.getElementById('wStreak').textContent = streak;
+}
+
+// =========================================================
+// زبان
+// =========================================================
+let currentLang = localStorage.getItem('wepan_lang') || 'fa';
+
+function applyLanguage(lang) {
+    const t = TEXTS[lang];
+    if (!t) return;
+    
+    // صفحه خوش‌آمدگویی
+    document.getElementById('welcomeSubtitle').textContent = t.welcomeSubtitle;
+    document.getElementById('welcomeStartBtn').textContent = t.welcomeStart;
+    document.getElementById('welcomeLoginBtn').textContent = t.welcomeLogin;
+    document.getElementById('welcomeSignupBtn').textContent = t.welcomeSignup;
+    document.getElementById('welcomeSettingsBtn').textContent = t.welcomeSettings;
+    
+    // لاگین
+    document.getElementById('loginTitle').textContent = t.loginTitle;
+    document.getElementById('loginUsernameLabel').textContent = t.loginUsernameLabel;
+    document.getElementById('loginPasswordLabel').textContent = t.loginPasswordLabel;
+    document.getElementById('loginBtn').textContent = t.loginBtn;
+    document.getElementById('loginFooterText').textContent = t.loginFooterText;
+    document.getElementById('loginFooterLink').textContent = t.loginFooterLink;
+    document.getElementById('loginBackLink').textContent = t.loginBackLink;
+    
+    // ثبت‌نام
+    document.getElementById('signupTitle').textContent = t.signupTitle;
+    document.getElementById('signupUsernameLabel').textContent = t.signupUsernameLabel;
+    document.getElementById('signupEmailLabel').textContent = t.signupEmailLabel;
+    document.getElementById('signupPasswordLabel').textContent = t.signupPasswordLabel;
+    document.getElementById('signupPasswordHint').textContent = t.signupPasswordHint;
+    document.getElementById('signupConfirmLabel').textContent = t.signupConfirmLabel;
+    document.getElementById('signupBtn').textContent = t.signupBtn;
+    document.getElementById('signupFooterText').textContent = t.signupFooterText;
+    document.getElementById('signupFooterLink').textContent = t.signupFooterLink;
+    document.getElementById('signupBackLink').textContent = t.signupBackLink;
+    
+    // پروفایل
+    document.getElementById('profileTitle').textContent = t.profileTitle;
+    document.getElementById('profileBackBtn').textContent = t.profileBackBtn;
+    document.getElementById('profileLogoutBtn').textContent = t.profileLogoutBtn;
+    document.getElementById('profileLessonsLabel').textContent = t.profileLessonsLabel;
+    document.getElementById('profileScoreLabel').textContent = t.profileScoreLabel;
+    document.getElementById('profileStreakLabel').textContent = t.profileStreakLabel;
+    document.getElementById('profileEditBtn').textContent = t.profileEditBtn;
+    
+    // مراحل
+    document.getElementById('lessonsTitle').textContent = t.lessonsTitle;
+    document.getElementById('lessonsProfileBtn').textContent = t.lessonsProfileBtn;
+    document.getElementById('lessonsHomeBtn').textContent = t.lessonsHomeBtn;
+    
+    // بازی
+    document.getElementById('timerText').textContent = t.timerText;
+    document.getElementById('nextNoteLabel').textContent = t.nextNoteLabel;
+    document.getElementById('speedLabel').textContent = t.speedLabel;
+    document.getElementById('pauseButton').textContent = t.pauseBtn;
+    document.getElementById('endGameBtn').textContent = t.endGameBtn;
+    document.getElementById('recordButton').textContent = t.recordBtn;
+    document.getElementById('recordStatus').textContent = t.recordStatus;
+    
+    // نتیجه
+    document.getElementById('resultLabel').textContent = t.resultLabel;
+    document.getElementById('rHitsLabel').textContent = t.rHitsLabel;
+    document.getElementById('rAccuracyLabel').textContent = t.rAccuracyLabel;
+    document.getElementById('rComboLabel').textContent = t.rComboLabel;
+    document.getElementById('retryBtn').textContent = t.retryBtn;
+    document.querySelector('#resultPage .btn-lessons').textContent = t.backLessonsBtn;
+    document.querySelector('#resultPage .btn-home').textContent = t.homeBtn;
+    
+    // تنظیمات
+    document.getElementById('settingsTitle').textContent = t.settingsTitle;
+    document.getElementById('settingsBackBtn').textContent = t.settingsBackBtn;
+    document.getElementById('langGroupTitle').textContent = t.langGroupTitle;
+    document.getElementById('langLabel').textContent = t.langLabel;
+    document.getElementById('colorGroupTitle').textContent = t.colorGroupTitle;
+    document.getElementById('colorLabel').textContent = t.colorLabel;
+    document.getElementById('speedGroupTitle').textContent = t.speedGroupTitle;
+    document.getElementById('speedSettingLabel').textContent = t.speedSettingLabel;
+    document.getElementById('dropSizeLabel').textContent = t.dropSizeLabel;
+    document.getElementById('displayGroupTitle').textContent = t.displayGroupTitle;
+    document.getElementById('displayLabel').textContent = t.displayLabel;
+    
+    // دکمه‌های حالت نمایش
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        if (btn.dataset.mode === 'letters') btn.textContent = t.modeLetters;
+        if (btn.dataset.mode === 'numbers') btn.textContent = t.modeNumbers;
+    });
+    
+    // دکمه‌های زبان
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        if (btn.dataset.lang === 'fa') btn.textContent = t.fa;
+        if (btn.dataset.lang === 'en') btn.textContent = t.en;
+    });
+    
+    // درس‌ها
+    renderLessons();
+}
+
+function setLanguage(lang, btn) {
+    currentLang = lang;
+    localStorage.setItem('wepan_lang', lang);
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyLanguage(lang);
+}
+
+// =========================================================
+// سیستم صدا - Web Audio API با سینک دقیق
+// =========================================================
+let audioCtx = null;
+let soundEnabled = true;
+let soundBuffers = {};
+
+const SOUND_FILES = {
+    'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
+    'E4': '4.wav', 'F5': '5.wav', 'Bb6': '6.wav',
+    'G7': '7.wav', 'A8': '8.wav', 'D': 'D.wav',
+    'miss': 'miss.wav', 'combo': 'combo.wav'
+};
+
+async function loadSoundBuffers() {
+    const ctx = initAudio();
+    if (!ctx) return;
+    for (let [note, file] of Object.entries(SOUND_FILES)) {
+        try {
+            const response = await fetch(`/sounds/${file}`);
+            const arrayBuffer = await response.arrayBuffer();
+            const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+            soundBuffers[note] = audioBuffer;
+        } catch (e) {}
+    }
+    console.log('✅ صداها بارگذاری شدند');
+}
+
+function initAudio() {
+    if (!audioCtx) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    return audioCtx;
+}
+
+function playSound(note, volume = 0.5) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+        let buffer = soundBuffers[note];
+        if (!buffer) {
+            const baseNote = note.replace(/[0-9]/g, '');
+            buffer = soundBuffers[baseNote];
+            if (!buffer) return;
+        }
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        const gain = audioCtx.createGain();
+        const now = audioCtx.currentTime;
+        gain.gain.setValueAtTime(volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        source.connect(gain);
+        gain.connect(audioCtx.destination);
+        source.start(now);
+        source.stop(now + 0.6);
+    } catch (e) {}
+}
+
+function playMissSound() { playSound('miss', 0.4); }
+function playComboSound() { playSound('combo', 0.5); }
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('soundToggle');
+    if (btn) {
+        btn.textContent = soundEnabled ? '🔊' : '🔇';
+        btn.classList.toggle('active', soundEnabled);
+    }
+}
+
+document.addEventListener('click', () => { initAudio(); }, { once: true });
+document.addEventListener('touchstart', () => { initAudio(); }, { once: true });
+
+// =========================================================
+// داده‌های بازی
+// =========================================================
 const NOTE_X = {
     "D2": 75, "E4": 170, "Bb6": 265, "A8": 355,
     "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
 
-// ===== موقعیت‌های نت‌ها روی هنگ‌درام (شعاع ۱۸۰) =====
 const HANDPAN_POSITIONS = {
-    "A1": [472, 247, 30],
-    "D2": [388, 247, 30],
-    "C3": [533, 186, 30],
-    "E4": [327, 186, 30],
-    "F5": [533, 103, 30],
-    "Bb6": [327, 103, 30],
-    "G7": [472, 45, 30],
-    "A8": [388, 45, 30],
+    "A1": [472, 247, 30], "D2": [388, 247, 30],
+    "C3": [533, 186, 30], "E4": [327, 186, 30],
+    "F5": [533, 103, 30], "Bb6": [327, 103, 30],
+    "G7": [472, 45, 30], "A8": [388, 45, 30],
     "D": [430, 145, 48]
 };
 
-// ===== رنگ‌ها و برچسب‌ها =====
 const NOTE_COLORS = {
     "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8",
     "E4": "#2dd4bf", "F5": "#818cf8", "Bb6": "#fbbf24",
@@ -525,69 +1316,6 @@ const HIT_ORDER = [
     { number: 5, note: 'F5' }, { number: 3, note: 'C3' },
     { number: 1, note: 'A1' }
 ];
-
-// =========================================================
-// سیستم صدا - با cloneNode (همپوشانی کامل، بدون قطعی)
-// =========================================================
-
-let soundEnabled = true;
-let audioElements = {};
-
-const SOUND_FILES = {
-    'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
-    'E4': '4.wav', 'F5': '5.wav', 'Bb6': '6.wav',
-    'G7': '7.wav', 'A8': '8.wav', 'D': 'D.wav',
-    'miss': 'miss.wav', 'combo': 'combo.wav'
-};
-
-function loadSounds() {
-    console.log('🔄 بارگذاری فایل‌های صوتی...');
-    for (let [note, file] of Object.entries(SOUND_FILES)) {
-        try {
-            const audio = new Audio(`/sounds/${file}`);
-            audio.preload = 'auto';
-            audioElements[note] = audio;
-            console.log(`✅ ${file} → ${note}`);
-        } catch (e) {
-            console.log(`❌ خطا: ${file}`);
-        }
-    }
-    console.log('✅ همه صداها بارگذاری شدند!');
-}
-
-function playSound(note, volume = 0.6) {
-    if (!soundEnabled) return;
-    try {
-        let audio = audioElements[note];
-        if (!audio) {
-            const baseNote = note.replace(/[0-9]/g, '');
-            audio = audioElements[baseNote];
-            if (!audio) return;
-        }
-        const sound = audio.cloneNode();
-        sound.volume = volume;
-        sound.play().catch(() => {});
-        sound.onended = () => sound.remove();
-    } catch (e) {}
-}
-
-function playMissSound() { playSound('miss', 0.4); }
-function playComboSound() { playSound('combo', 0.5); }
-
-function toggleSound() {
-    soundEnabled = !soundEnabled;
-    const btn = document.getElementById('soundToggle');
-    if (btn) {
-        btn.textContent = soundEnabled ? '🔊' : '🔇';
-        btn.classList.toggle('active', soundEnabled);
-    }
-}
-
-loadSounds();
-
-// =========================================================
-// بقیه کدهای بازی
-// =========================================================
 
 let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
 
@@ -614,83 +1342,9 @@ function setDisplayMode(mode, btn) {
     renderLessons();
 }
 
-// ===== متون دو زبانه =====
-const TEXTS = {
-    fa: {
-        welcome: 'یادگیری هنگ‌درام • بازی • پیشرفت',
-        start: '▶ شروع', lessons: '📚 انتخاب مرحله',
-        home: '🏠 صفحه اصلی', settings: '⚙️ تنظیمات',
-        nextNote: 'NEXT NOTE', score: 'SCORE',
-        combo: 'COMBO', accuracy: 'ACC',
-        pause: '⏸ PAUSE', resume: '▶ RESUME',
-        speed: 'SPEED', progress: 'NOTES',
-        end: '✕ پایان', record: '🎤 ضبط تمرین',
-        recordStatus: 'برای تمرین ضبط کن',
-        resultLabel: 'امتیاز نهایی',
-        hits: 'ضربات درست', accLabel: 'دقت',
-        comboLabel: 'بهترین COMBO',
-        retry: '🔄 بازی دوباره',
-        backLessons: '📚 بازگشت به مراحل',
-        done: '✅ انجام شده', locked: '🔒',
-        ready: 'آماده‌ای؟',
-        settingsTitle: '⚙️ تنظیمات',
-        lang: 'زبان', color: 'رنگ اصلی',
-        speedSetting: 'سرعت قطره‌ها',
-        dropSize: 'سایز قطره‌ها',
-        langGroup: '🌐 زبان', colorGroup: '🎨 رنگ بازی',
-        speedGroup: '⚡ سرعت و سایز',
-        displayGroup: '🔤 نمایش نت‌ها',
-        displayLabel: 'نمایش روی نت‌ها'
-    },
-    en: {
-        welcome: 'Learn Handpan • Play • Improve',
-        start: '▶ Start', lessons: '📚 Select Level',
-        home: '🏠 Home', settings: '⚙️ Settings',
-        nextNote: 'NEXT NOTE', score: 'SCORE',
-        combo: 'COMBO', accuracy: 'ACC',
-        pause: '⏸ PAUSE', resume: '▶ RESUME',
-        speed: 'SPEED', progress: 'NOTES',
-        end: '✕ End', record: '🎤 Record Practice',
-        recordStatus: 'Tap to record',
-        resultLabel: 'Final Score',
-        hits: 'Correct Hits', accLabel: 'Accuracy',
-        comboLabel: 'Best COMBO',
-        retry: '🔄 Play Again',
-        backLessons: '📚 Back to Levels',
-        done: '✅ Completed', locked: '🔒',
-        ready: 'Ready?',
-        settingsTitle: '⚙️ Settings',
-        lang: 'Language', color: 'Main Color',
-        speedSetting: 'Droplet Speed',
-        dropSize: 'Droplet Size',
-        langGroup: '🌐 Language', colorGroup: '🎨 Game Color',
-        speedGroup: '⚡ Speed & Size',
-        displayGroup: '🔤 Note Display',
-        displayLabel: 'Display Mode'
-    }
-};
-
-let currentLang = localStorage.getItem('wepan_lang') || 'fa';
-
-function applyLanguage(lang) {
-    const t = TEXTS[lang];
-    if (!t) return;
-    Object.keys(t).forEach(key => {
-        const el = document.getElementById(key);
-        if (el) el.textContent = t[key];
-    });
-    renderLessons();
-}
-
-function setLanguage(lang, btn) {
-    currentLang = lang;
-    localStorage.setItem('wepan_lang', lang);
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    applyLanguage(lang);
-}
-
-// ===== LESSONS =====
+// =========================================================
+// درس‌ها
+// =========================================================
 const LESSONS = [
     { id: 1, title_fa: 'نت A', title_en: 'Note A', desc_fa: 'ضربه روی نت A', desc_en: 'Hit note A', level: 1 },
     { id: 2, title_fa: 'نت D', title_en: 'Note D', desc_fa: 'ضربه روی نت D', desc_en: 'Hit note D', level: 1 },
@@ -703,71 +1357,6 @@ const LESSONS = [
 ];
 
 const TOTAL_NOTES = 20;
-
-// ===== STATE =====
-let currentLesson = null;
-let score = 0, hits = 0, misses = 0, combo = 0, bestCombo = 0, notesPlayed = 0;
-let isPaused = false, gameRunning = false, isGameReady = false;
-let speedMultiplier = 1.0;
-let fallingNote = null, currentTarget = null, noteY = 20, hitY = 220;
-let animationId = null, lastTime = 0;
-let timerInterval = null;
-let canvas, ctx, panCanvas, panCtx;
-let isGameInitialized = false;
-let GAME_SPEED = 200;
-let DROPLET_SCALE = 0.65;
-let mainColor = '#38bdf8';
-let completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
-let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
-
-// ===== FUNCTIONS =====
-function showLessons() {
-    document.getElementById('welcomePage').style.display = 'none';
-    document.getElementById('lessonsPage').style.display = 'block';
-    document.getElementById('gamePage').style.display = 'none';
-    document.getElementById('resultPage').style.display = 'none';
-    document.getElementById('settingsPage').style.display = 'none';
-    renderLessons();
-}
-
-function showSettings() {
-    document.getElementById('welcomePage').style.display = 'none';
-    document.getElementById('lessonsPage').style.display = 'none';
-    document.getElementById('gamePage').style.display = 'none';
-    document.getElementById('resultPage').style.display = 'none';
-    document.getElementById('settingsPage').style.display = 'block';
-    document.getElementById('speedRange').value = GAME_SPEED;
-    document.getElementById('speedValueDisplay').textContent = GAME_SPEED;
-    document.getElementById('dropSizeRange').value = DROPLET_SCALE;
-    document.getElementById('dropSizeValueDisplay').textContent = DROPLET_SCALE;
-}
-
-function goHome() {
-    document.getElementById('welcomePage').style.display = 'flex';
-    document.getElementById('lessonsPage').style.display = 'none';
-    document.getElementById('gamePage').style.display = 'none';
-    document.getElementById('resultPage').style.display = 'none';
-    document.getElementById('settingsPage').style.display = 'none';
-    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    gameRunning = false;
-    isGameReady = false;
-    document.getElementById('timerOverlay').style.display = 'none';
-    updateWelcomeStats();
-}
-
-function backToLessons() {
-    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    gameRunning = false;
-    isGameReady = false;
-    document.getElementById('gamePage').style.display = 'none';
-    document.getElementById('resultPage').style.display = 'none';
-    document.getElementById('settingsPage').style.display = 'none';
-    document.getElementById('lessonsPage').style.display = 'block';
-    document.getElementById('timerOverlay').style.display = 'none';
-    renderLessons();
-}
 
 function renderLessons() {
     const container = document.getElementById('lessonsContainer');
@@ -793,59 +1382,34 @@ function renderLessons() {
     updateWelcomeStats();
 }
 
-function updateWelcomeStats() {
-    document.getElementById('wTotal').textContent = LESSONS.length;
-    document.getElementById('wDone').textContent = completed.length;
-    document.getElementById('wStreak').textContent = streak;
-}
+// =========================================================
+// STATE بازی
+// =========================================================
+let currentLesson = null;
+let score = 0, hits = 0, misses = 0, combo = 0, bestCombo = 0, notesPlayed = 0;
+let isPaused = false, gameRunning = false, isGameReady = false;
+let speedMultiplier = 1.0;
+let fallingNote = null, currentTarget = null, noteY = 20, hitY = 220;
+let animationId = null, lastTime = 0;
+let timerInterval = null;
+let canvas, ctx, panCanvas, panCtx;
+let isGameInitialized = false;
+let GAME_SPEED = 200;
+let DROPLET_SCALE = 0.65;
+let mainColor = '#38bdf8';
+let completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
+let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
 
-function updateSpeedSetting(val) {
-    GAME_SPEED = parseInt(val);
-    document.getElementById('speedValueDisplay').textContent = val;
-}
-
-function updateDropSize(val) {
-    DROPLET_SCALE = parseFloat(val);
-    document.getElementById('dropSizeValueDisplay').textContent = val;
-}
-
-function setColor(color, btn) {
-    mainColor = color;
-    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    document.querySelectorAll('.header h1').forEach(el => {
-        el.style.background = `linear-gradient(135deg, ${color}, ${color}cc)`;
-        el.style.webkitBackgroundClip = 'text';
-        el.style.webkitTextFillColor = 'transparent';
-    });
-}
-
-function startTimer(callback) {
-    let count = 3;
-    const overlay = document.getElementById('timerOverlay');
-    const number = document.getElementById('timerNumber');
-    overlay.style.display = 'flex';
-    number.textContent = count;
-    number.style.animation = 'none';
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-        count--;
-        if (count === 0) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            overlay.style.display = 'none';
-            if (callback) callback();
-            return;
-        }
-        number.textContent = count;
-        number.style.animation = 'none';
-        setTimeout(() => { number.style.animation = 'timerPulse 0.8s ease-in-out'; }, 10);
-    }, 1000);
-}
-
+// =========================================================
+// شروع درس
+// =========================================================
 function startLesson(lessonId) {
     currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
+    
+    // راه‌اندازی صدا با کلیک روی درس
+    initAudio();
+    
     document.getElementById('lessonsPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     document.getElementById('resultPage').style.display = 'none';
@@ -874,7 +1438,7 @@ function resetGame() {
     if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     document.getElementById('timerOverlay').style.display = 'none';
-    document.getElementById('pauseButton').textContent = TEXTS[currentLang].pause;
+    document.getElementById('pauseButton').textContent = TEXTS[currentLang].pauseBtn;
     document.getElementById('scoreDisplay').textContent = 'SCORE 0';
     document.getElementById('comboDisplay').textContent = 'COMBO 0';
     document.getElementById('accuracyDisplay').textContent = 'ACC 0%';
@@ -940,7 +1504,6 @@ function drawHandpan(highlight=null) {
     panCtx.strokeRect(10,10,800,260);
     panCtx.fillStyle='#475569'; panCtx.font='bold 9px Arial'; 
     panCtx.fillText('HANDPAN',38,27);
-    
     const cx=430, cy=145, r=180;
     panCtx.shadowColor='#040810'; panCtx.shadowBlur=25;
     panCtx.beginPath(); panCtx.arc(cx,cy,r,0,Math.PI*2);
@@ -950,29 +1513,24 @@ function drawHandpan(highlight=null) {
     panCtx.beginPath(); panCtx.arc(cx,cy,r-10,0,Math.PI*2);
     panCtx.fillStyle='#263342'; panCtx.fill();
     panCtx.strokeStyle='#3f4e61'; panCtx.lineWidth=2; panCtx.stroke();
-    
     for (let [note, [x, y, r2]] of Object.entries(HANDPAN_POSITIONS)) {
         const col = NOTE_COLORS[note] || '#4a596d';
         const hl = highlight === note;
         const display = getNoteDisplay(note);
-        
         panCtx.shadowColor='#111923'; panCtx.shadowBlur=10;
         panCtx.beginPath(); panCtx.arc(x, y, r2+2, 0, Math.PI*2);
         panCtx.fillStyle='#111923'; panCtx.fill();
         panCtx.shadowBlur=0;
-        
         panCtx.beginPath(); panCtx.arc(x, y, r2, 0, Math.PI*2);
         panCtx.fillStyle = hl ? '#1a3a5a' : '#1d2835';
         panCtx.fill();
         panCtx.strokeStyle = hl ? col : '#4a596d';
         panCtx.lineWidth = hl ? 3 : 2;
         panCtx.stroke();
-        
         panCtx.beginPath(); panCtx.arc(x, y, r2-5, 0, Math.PI*2);
         panCtx.strokeStyle = col;
         panCtx.lineWidth = 1.5;
         panCtx.stroke();
-        
         panCtx.fillStyle = hl ? col : '#e5e7eb';
         panCtx.font = `bold ${note === 'D' ? 16 : 13}px Arial`;
         panCtx.textAlign = 'center';
@@ -1015,6 +1573,29 @@ function drawDroplet(x, y, note) {
     ctx.fillStyle = '#06121c'; ctx.font = 'bold 7px Arial';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(display, x, y + 5*s);
+}
+
+function startTimer(callback) {
+    let count = 3;
+    const overlay = document.getElementById('timerOverlay');
+    const number = document.getElementById('timerNumber');
+    overlay.style.display = 'flex';
+    number.textContent = count;
+    number.style.animation = 'none';
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        count--;
+        if (count === 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            overlay.style.display = 'none';
+            if (callback) callback();
+            return;
+        }
+        number.textContent = count;
+        number.style.animation = 'none';
+        setTimeout(() => { number.style.animation = 'timerPulse 0.8s ease-in-out'; }, 10);
+    }, 1000);
 }
 
 function spawnNote() {
@@ -1070,7 +1651,10 @@ function hitNote(note) {
         score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
-        playSound(note, 0.6);
+        
+        // 🔊 پخش صدا با سینک دقیق (همزمان با کلیک)
+        playSound(note, 0.5);
+        
         if (combo > 0 && combo % 5 === 0) {
             setTimeout(() => playComboSound(), 80);
         }
@@ -1103,6 +1687,8 @@ function finishGame() {
         completed.push(String(currentLesson.id));
         localStorage.setItem('wepan_completed', JSON.stringify(completed));
     }
+    let totalScore = parseInt(localStorage.getItem('wepan_score') || '0') + score;
+    localStorage.setItem('wepan_score', totalScore);
     let today = new Date().toDateString();
     let lastPractice = localStorage.getItem('wepan_last') || null;
     if (lastPractice !== today) {
@@ -1135,11 +1721,47 @@ function retryGame() {
     });
 }
 
-// ===== EVENTS =====
+function backToLessons() {
+    if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    gameRunning = false;
+    isGameReady = false;
+    document.getElementById('gamePage').style.display = 'none';
+    document.getElementById('resultPage').style.display = 'none';
+    document.getElementById('settingsPage').style.display = 'none';
+    document.getElementById('lessonsPage').style.display = 'block';
+    document.getElementById('timerOverlay').style.display = 'none';
+    renderLessons();
+}
+
+function updateSpeedSetting(val) {
+    GAME_SPEED = parseInt(val);
+    document.getElementById('speedValueDisplay').textContent = val;
+}
+
+function updateDropSize(val) {
+    DROPLET_SCALE = parseFloat(val);
+    document.getElementById('dropSizeValueDisplay').textContent = val;
+}
+
+function setColor(color, btn) {
+    mainColor = color;
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.header h1').forEach(el => {
+        el.style.background = `linear-gradient(135deg, ${color}, ${color}cc)`;
+        el.style.webkitBackgroundClip = 'text';
+        el.style.webkitTextFillColor = 'transparent';
+    });
+}
+
+// =========================================================
+// رویدادها
+// =========================================================
 document.getElementById('pauseButton').addEventListener('click', function() {
     if (!gameRunning) return;
     isPaused = !isPaused;
-    this.textContent = isPaused ? TEXTS[currentLang].resume : TEXTS[currentLang].pause;
+    this.textContent = isPaused ? TEXTS[currentLang].resumeBtn : TEXTS[currentLang].pauseBtn;
 });
 
 document.getElementById('speedSelect').addEventListener('change', function() {
@@ -1163,20 +1785,26 @@ document.getElementById('handpanCanvas').addEventListener('click', function(e) {
     }
 });
 
-// ===== RECORD =====
 document.getElementById('recordButton').addEventListener('click', function() {
     alert('🎤 ضبط تمرین (برای تست)');
 });
 
-// ===== START =====
+// =========================================================
+// شروع
+// =========================================================
+// بارگذاری صداها
+loadSoundBuffers();
+
+// اعمال زبان
 applyLanguage(currentLang);
-document.querySelectorAll('.mode-btn').forEach(b => {
-    if (b.dataset.mode === displayMode) b.classList.add('active');
+document.querySelectorAll('.lang-btn').forEach(b => {
+    if (b.dataset.lang === currentLang) b.classList.add('active');
     else b.classList.remove('active');
 });
+
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
-console.log('🔊 صدا با cloneNode (پایدار و بدون قطعی)');
+console.log('🔊 سینک صدا با کلیک فعال است');
 </script>
 </body>
 </html>
