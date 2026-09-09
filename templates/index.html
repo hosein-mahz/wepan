@@ -476,7 +476,7 @@
 
 <script>
 // =========================================================
-// WEPAN - صدای WAV با پوشش طولانی
+// WEPAN - نسخه نهایی با Web Audio API و همپوشانی کامل
 // =========================================================
 
 console.log('WEPAN loading...');
@@ -521,31 +521,119 @@ const HIT_ORDER = [
 ];
 
 // =========================================================
-// سیستم صدا - WAV با پوشش طولانی
+// سیستم صدا - Web Audio API با همپوشانی کامل
 // =========================================================
 
 let audioCtx = null;
 let soundEnabled = true;
-let audioElements = {};
+let soundBuffers = {};
 
-const SOUND_MAP = {
-    "A1": "1.wav", "D2": "2.wav", "C3": "3.wav",
-    "E4": "4.wav", "F5": "5.wav", "Bb6": "6.wav",
-    "G7": "7.wav", "A8": "8.wav", "D": "D.wav",
-    "miss": "miss.wav", "combo": "combo.wav"
+const FREQS = {
+    'A1': 110.00, 'D2': 146.83, 'C3': 130.81,
+    'E4': 329.63, 'F5': 698.46, 'Bb6': 1864.66,
+    'G7': 3135.96, 'A8': 3520.00, 'D': 293.66,
+    'miss': 150.00, 'combo': 880.00
 };
 
-function loadSounds() {
-    console.log('🔄 بارگذاری فایل‌های WAV...');
-    for (let [note, file] of Object.entries(SOUND_MAP)) {
+async function loadSoundBuffers() {
+    const soundFiles = {
+        'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
+        'E4': '4.wav', 'F5': '5.wav', 'Bb6': '6.wav',
+        'G7': '7.wav', 'A8': '8.wav', 'D': 'D.wav',
+        'miss': 'miss.wav', 'combo': 'combo.wav'
+    };
+    
+    const ctx = initAudio();
+    if (!ctx) return;
+    
+    for (let [note, file] of Object.entries(soundFiles)) {
         try {
-            const audio = new Audio(`/sounds/${file}`);
-            audio.preload = 'auto';
-            audioElements[note] = audio;
-            console.log(`✅ ${file} → ${note}`);
+            const response = await fetch(`/sounds/${file}`);
+            const arrayBuffer = await response.arrayBuffer();
+            const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+            soundBuffers[note] = audioBuffer;
+            console.log(`✅ ${file} بارگذاری شد`);
         } catch (e) {
-            console.log(`❌ خطا: ${file}`);
+            console.log(`❌ خطا در بارگذاری ${file}:`, e);
         }
+    }
+    console.log('✅ همه صداها بارگذاری شدند!');
+}
+
+function playSound(note, volume = 0.5) {
+    if (!soundEnabled) return;
+    
+    try {
+        const ctx = initAudio();
+        if (!ctx) return;
+        
+        let buffer = soundBuffers[note];
+        if (!buffer) {
+            const baseNote = note.replace(/[0-9]/g, '');
+            buffer = soundBuffers[baseNote];
+            if (!buffer) {
+                playSyntheticSound(note, volume);
+                return;
+            }
+        }
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(volume, ctx.currentTime);
+        
+        const now = ctx.currentTime;
+        gain.gain.setValueAtTime(volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        
+        source.connect(gain);
+        gain.connect(ctx.destination);
+        source.start(now);
+        source.stop(now + 0.7);
+        
+    } catch (e) {}
+}
+
+function playSyntheticSound(note, volume = 0.3) {
+    try {
+        const ctx = initAudio();
+        if (!ctx) return;
+        
+        let freq = FREQS[note];
+        if (!freq) {
+            const baseNote = note.replace(/[0-9]/g, '');
+            freq = FREQS[baseNote] || 440;
+        }
+        
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume * 0.7, now + 0.005);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.3, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.6);
+        
+    } catch (e) {}
+}
+
+function playMissSound() { playSound('miss', 0.4); }
+function playComboSound() { playSound('combo', 0.5); }
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('soundToggle');
+    if (btn) {
+        btn.textContent = soundEnabled ? '🔊' : '🔇';
+        btn.classList.toggle('active', soundEnabled);
     }
 }
 
@@ -561,77 +649,16 @@ function initAudio() {
     return audioCtx;
 }
 
-function playSoundWithRelease(note, volume = 0.5, releaseTime = 0.8) {
-    if (!soundEnabled) return;
-    
-    try {
-        const audio = audioElements[note];
-        if (!audio) {
-            const baseNote = note.replace(/[0-9]/g, '');
-            const fallback = audioElements[baseNote];
-            if (fallback) {
-                playWithWebAudio(fallback, volume, releaseTime);
-            }
-            return;
-        }
-        playWithWebAudio(audio, volume, releaseTime);
-    } catch (e) {}
-}
-
-function playWithWebAudio(audioElement, volume = 0.5, releaseTime = 0.8) {
-    try {
-        const ctx = initAudio();
-        if (!ctx) return;
-        
-        const source = ctx.createMediaElementSource(audioElement.cloneNode());
-        const gain = ctx.createGain();
-        source.connect(gain);
-        gain.connect(ctx.destination);
-        
-        const now = ctx.currentTime;
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume * 0.8, now + 0.01);
-        gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(volume * 0.3, now + 0.15);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + releaseTime + 0.2);
-        
-        const sound = audioElement.cloneNode();
-        sound.volume = 1;
-        sound.play().catch(() => {});
-        setTimeout(() => { try { sound.pause(); } catch(e) {} }, (releaseTime + 0.5) * 1000);
-        
-    } catch (e) {
-        try {
-            const sound = audioElement.cloneNode();
-            sound.volume = volume;
-            sound.play().catch(() => {});
-            sound.onended = () => sound.remove();
-        } catch (e2) {}
-    }
-}
-
-function playSound(note, volume = 0.5) {
-    playSoundWithRelease(note, volume, 0.8);
-}
-
-function playMissSound() { playSound('miss', 0.4); }
-function playComboSound() { playSound('combo', 0.5); }
-
-function toggleSound() {
-    soundEnabled = !soundEnabled;
-    const btn = document.getElementById('soundToggle');
-    if (btn) {
-        btn.textContent = soundEnabled ? '🔊' : '🔇';
-        btn.classList.toggle('active', soundEnabled);
-    }
-}
-
-document.addEventListener('click', initAudio, { once: true });
-document.addEventListener('touchstart', initAudio, { once: true });
-loadSounds();
+document.addEventListener('click', () => { initAudio(); }, { once: true });
+document.addEventListener('touchstart', () => { initAudio(); }, { once: true });
 
 // =========================================================
-// بقیه کدهای بازی
+// بارگذاری صداها
+// =========================================================
+loadSoundBuffers();
+
+// =========================================================
+// بقیه کدهای بازی (همانند قبل)
 // =========================================================
 
 let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
@@ -1111,7 +1138,7 @@ function hitNote(note) {
         if (combo > bestCombo) bestCombo = combo;
         playSound(note, 0.5);
         if (combo > 0 && combo % 5 === 0) {
-            setTimeout(() => playComboSound(), 100);
+            setTimeout(() => playComboSound(), 80);
         }
         drawHandpan(note);
         fallingNote = null;
@@ -1215,7 +1242,7 @@ document.querySelectorAll('.mode-btn').forEach(b => {
 });
 updateWelcomeStats();
 console.log('🎯 WEPAN ready!');
-console.log('🔊 صدای WAV با پوشش طولانی فعال است');
+console.log('🔊 Web Audio API با همپوشانی کامل فعال است');
 </script>
 </body>
 </html>
