@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import tempfile
-import sys
 
 app = Flask(__name__)
 
@@ -10,11 +9,25 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+## ===== سرویس فایل‌های صوتی از پوشه sounds (و static/sounds برای fallback) =====
+@app.route('/sounds/<path:filename>')
+def serve_sound(filename):
+    # ابتدا از پوشه sounds/
+    try:
+        return send_from_directory('sounds', filename)
+    except:
+        pass
+    # اگر نبود از static/sounds/
+    return send_from_directory('static/sounds', filename)
+
+# همچنین مسیر static/sounds را نیز اضافه می‌کنیم
+@app.route('/static/sounds/<path:filename>')
+def serve_static_sound(filename):
+    return send_from_directory('static/sounds', filename)
 # ===== تحلیل صدا (با مدیریت خطا) =====
 @app.route('/analyze', methods=['POST'])
 def analyze():
     try:
-        # import librosa فقط در این تابع (برای کاهش مصرف)
         import librosa
         import numpy as np
         
@@ -59,12 +72,7 @@ def score():
     except Exception as e:
         return jsonify({'status':'error', 'message':str(e)}), 500
 
-# ===== سرویس دهی فایل‌های صوتی =====
-@app.route('/sounds/<path:filename>')
-def serve_sound(filename):
-    return send_from_directory('sounds', filename)
-
-# ===== اجرا (مهم برای Railway) =====
+# ===== اجرا =====
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)

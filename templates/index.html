@@ -231,8 +231,39 @@
         .next-note .note { font-size: 30px; font-weight: bold; color: #38bdf8; }
         .falling-area { background: #09111e; border: 1px solid #1c2a3d; border-radius: 14px; margin: 4px 12px; padding: 4px; }
         #fallingCanvas { width: 100%; height: auto; background: #09111e; display: block; border-radius: 10px; }
-        .handpan-area { background: #0b1320; border: 1px solid #1c2a3d; border-radius: 14px; margin: 4px 12px; padding: 4px; }
-        #handpanCanvas { width: 100%; height: auto; background: #0b1320; display: block; border-radius: 10px; cursor: pointer; }
+
+        /* ===== Canvas عادی (با مستطیل) ===== */
+        .handpan-area { 
+            background: #0b1320; 
+            border: 1px solid #1c2a3d; 
+            border-radius: 14px; 
+            margin: 4px 12px; 
+            padding: 4px; 
+        }
+        #handpanCanvas { 
+            width: 100%; 
+            height: auto; 
+            background: #0b1320; 
+            display: block; 
+            border-radius: 10px; 
+            cursor: pointer; 
+        }
+
+        /* ===== Canvas فلبداهه (بدون محدوده) ===== */
+        .handpan-area-free { 
+            background: transparent; 
+            margin: 4px 0; 
+            padding: 0; 
+            display: none;
+        }
+        #handpanCanvasFree { 
+            width: 100%; 
+            height: auto; 
+            background: transparent; 
+            display: block; 
+            cursor: pointer; 
+        }
+
         .controls {
             display: flex; gap: 10px; padding: 6px 12px;
             flex-wrap: wrap; align-items: center;
@@ -342,7 +373,7 @@
         <div class="subtitle" id="welcomeSubtitle">یادگیری هنگ‌درام • بازی • پیشرفت</div>
         <button class="start-btn" id="welcomeStartBtn" onclick="checkAuthAndStart()">▶ شروع</button>
         <div class="stats-preview">
-            <span>🏆 <span id="wTotal">8</span> درس</span>
+            <span>🏆 <span id="wTotal">9</span> درس</span>
             <span>✅ <span id="wDone">0</span> تکمیل</span>
             <span>🔥 <span id="wStreak">0</span> روز</span>
         </div>
@@ -470,17 +501,23 @@
             </div>
         </div>
 
-        <div class="next-note">
+        <div class="next-note" id="nextNoteContainer">
             <span style="color:#475569;" id="nextNoteLabel">NEXT NOTE</span>
             <div class="note" id="targetNote">—</div>
         </div>
 
-        <div class="falling-area">
+        <div class="falling-area" id="fallingArea">
             <canvas id="fallingCanvas" width="820" height="280"></canvas>
         </div>
 
-        <div class="handpan-area">
+        <!-- Canvas عادی (درس‌های معمولی) -->
+        <div class="handpan-area" id="handpanArea">
             <canvas id="handpanCanvas" width="820" height="280"></canvas>
+        </div>
+
+        <!-- Canvas فلبداهه (هنگ بزرگ، بدون مستطیل) -->
+        <div class="handpan-area-free" id="handpanAreaFree">
+            <canvas id="handpanCanvasFree" width="820" height="500"></canvas>
         </div>
 
         <div class="controls">
@@ -496,6 +533,7 @@
             </select>
             <span class="progress" id="progressLabel">NOTES 0 / 20</span>
             <button id="endGameBtn" style="background:#dc2626;color:#fff;border:none;padding:4px 14px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:12px;">✕ پایان</button>
+            <button id="testSoundBtn" style="background:#2dd4bf;color:#000;border:none;padding:4px 14px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:12px;">🔊 تست صدا</button>
         </div>
 
         <div class="record-section">
@@ -588,7 +626,7 @@
 
 <script>
 // =========================================================
-// WEPAN - نسخه نهایی با سیستم صدای سه‌لایه (همیشه کار می‌کند)
+// WEPAN - دو Canvas جداگانه برای درس عادی و فلبداهه
 // =========================================================
 
 console.log('WEPAN loading...');
@@ -742,22 +780,14 @@ const TEXTS = {
 // =========================================================
 // مدیریت کاربران
 // =========================================================
-function getUsers() {
-    return JSON.parse(localStorage.getItem('wepan_users') || '[]');
-}
-function saveUsers(users) {
-    localStorage.setItem('wepan_users', JSON.stringify(users));
-}
+function getUsers() { return JSON.parse(localStorage.getItem('wepan_users') || '[]'); }
+function saveUsers(users) { localStorage.setItem('wepan_users', JSON.stringify(users)); }
 function getCurrentUser() {
     const data = localStorage.getItem('wepan_current_user');
     return data ? JSON.parse(data) : null;
 }
-function setCurrentUser(user) {
-    localStorage.setItem('wepan_current_user', JSON.stringify(user));
-}
-function clearCurrentUser() {
-    localStorage.removeItem('wepan_current_user');
-}
+function setCurrentUser(user) { localStorage.setItem('wepan_current_user', JSON.stringify(user)); }
+function clearCurrentUser() { localStorage.removeItem('wepan_current_user'); }
 
 // =========================================================
 // نمایش صفحات
@@ -773,27 +803,15 @@ function showPage(pageId) {
         }
     });
 }
-function goHome() {
-    showPage('welcomePage');
-    updateWelcomeStats();
-}
-function showLogin() {
-    document.getElementById('loginError').textContent = '';
-    showPage('loginPage');
-}
+function goHome() { showPage('welcomePage'); updateWelcomeStats(); }
+function showLogin() { document.getElementById('loginError').textContent = ''; showPage('loginPage'); }
 function showSignup() {
     document.getElementById('signupError').textContent = '';
     document.getElementById('signupSuccess').textContent = '';
     showPage('signupPage');
 }
-function showProfile() {
-    updateProfilePage();
-    showPage('profilePage');
-}
-function showLessons() {
-    showPage('lessonsPage');
-    renderLessons();
-}
+function showProfile() { updateProfilePage(); showPage('profilePage'); }
+function showLessons() { showPage('lessonsPage'); renderLessons(); }
 function showSettings() {
     showPage('settingsPage');
     document.getElementById('speedRange').value = GAME_SPEED;
@@ -808,7 +826,7 @@ function checkAuthAndStart() {
 }
 
 // =========================================================
-// الگوریتم‌های ثبت‌نام
+// اعتبارسنجی
 // =========================================================
 function validatePassword(password) {
     const errors = [];
@@ -842,27 +860,19 @@ function signupUser() {
         errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید';
         return;
     }
-    const usernameError = validateUsername(username);
-    if (usernameError) { errorEl.textContent = '❌ ' + usernameError; return; }
-    const emailError = validateEmail(email);
-    if (emailError) { errorEl.textContent = '❌ ' + emailError; return; }
-    const passwordErrors = validatePassword(password);
-    if (passwordErrors.length > 0) {
-        errorEl.textContent = '❌ رمز عبور: ' + passwordErrors.join('، ');
-        return;
-    }
-    if (password !== confirm) {
-        errorEl.textContent = '❌ رمز عبور و تکرار آن مطابقت ندارند';
-        return;
-    }
+    const ue = validateUsername(username);
+    if (ue) { errorEl.textContent = '❌ ' + ue; return; }
+    const ee = validateEmail(email);
+    if (ee) { errorEl.textContent = '❌ ' + ee; return; }
+    const pe = validatePassword(password);
+    if (pe.length > 0) { errorEl.textContent = '❌ رمز عبور: ' + pe.join('، '); return; }
+    if (password !== confirm) { errorEl.textContent = '❌ رمز عبور و تکرار آن مطابقت ندارند'; return; }
     const users = getUsers();
     if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
-        errorEl.textContent = '❌ این نام کاربری قبلاً ثبت شده است';
-        return;
+        errorEl.textContent = '❌ این نام کاربری قبلاً ثبت شده است'; return;
     }
     if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-        errorEl.textContent = '❌ این ایمیل قبلاً ثبت شده است';
-        return;
+        errorEl.textContent = '❌ این ایمیل قبلاً ثبت شده است'; return;
     }
     users.push({ username, email, password });
     saveUsers(users);
@@ -878,28 +888,19 @@ function loginUser() {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     const errorEl = document.getElementById('loginError');
-    if (!username || !password) {
-        errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید';
-        return;
-    }
+    if (!username || !password) { errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید'; return; }
     const users = getUsers();
     const user = users.find(u => 
         (u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === username.toLowerCase()) && 
         u.password === password
     );
-    if (!user) {
-        errorEl.textContent = '❌ نام کاربری یا رمز عبور اشتباه است';
-        return;
-    }
+    if (!user) { errorEl.textContent = '❌ نام کاربری یا رمز عبور اشتباه است'; return; }
     setCurrentUser({ username: user.username, email: user.email });
     errorEl.textContent = '';
     showLessons();
 }
 
-function logoutUser() {
-    clearCurrentUser();
-    goHome();
-}
+function logoutUser() { clearCurrentUser(); goHome(); }
 
 function editProfile() {
     const user = getCurrentUser();
@@ -907,8 +908,8 @@ function editProfile() {
     const newUsername = prompt('نام کاربری جدید:', user.username);
     if (newUsername && newUsername.trim() && newUsername.trim() !== user.username) {
         const trimmed = newUsername.trim();
-        const usernameError = validateUsername(trimmed);
-        if (usernameError) { alert('❌ ' + usernameError); return; }
+        const ue = validateUsername(trimmed);
+        if (ue) { alert('❌ ' + ue); return; }
         const users = getUsers();
         const found = users.find(u => u.username.toLowerCase() === trimmed.toLowerCase() && u.username !== user.username);
         if (found) { alert('❌ این نام کاربری قبلاً ثبت شده است'); return; }
@@ -916,21 +917,15 @@ function editProfile() {
         user.username = trimmed;
         setCurrentUser(user);
         const allUsers = getUsers();
-        const userIndex = allUsers.findIndex(u => u.username === oldUsername);
-        if (userIndex !== -1) {
-            allUsers[userIndex].username = user.username;
-            saveUsers(allUsers);
-        }
+        const idx = allUsers.findIndex(u => u.username === oldUsername);
+        if (idx !== -1) { allUsers[idx].username = user.username; saveUsers(allUsers); }
         updateProfilePage();
     }
 }
 
 function updateProfilePage() {
     const user = getCurrentUser();
-    if (!user) {
-        showLogin();
-        return;
-    }
+    if (!user) { showLogin(); return; }
     document.getElementById('profileUsername').textContent = user.username;
     document.getElementById('profileEmail').textContent = user.email || 'ایمیل ثبت نشده';
     document.getElementById('profileAvatar').textContent = user.username.charAt(0).toUpperCase();
@@ -1034,160 +1029,136 @@ function setLanguage(lang, btn) {
 }
 
 // =========================================================
-// سیستم صدا - سه لایه (همیشه کار می‌کند)
+// سیستم صدا
 // =========================================================
 let audioCtx = null;
 let soundEnabled = true;
 let soundBuffers = {};
-let audioFallbacks = {};
-let soundLoaded = false;
 
-// فرکانس‌های مصنوعی (برای لایه سوم)
-const SYNTH_FREQS = {
+const SOUND_FILES = {
+    'A1': 'A1.wav', 'D2': 'D2.wav', 'C3': 'C3.wav',
+    'E4': 'E4.wav', 'F5': 'F5.wav', 'Bb6': 'Bb6.wav',
+    'G7': 'G7.wav', 'A8': 'A8.wav', 'D': 'D.wav',
+    'miss': 'miss.wav', 'combo': 'combo.wav'
+};
+
+const FREQS = {
     'A1': 110, 'D2': 146.83, 'C3': 130.81,
     'E4': 329.63, 'F5': 698.46, 'Bb6': 1864.66,
     'G7': 3135.96, 'A8': 3520, 'D': 293.66,
     'miss': 150, 'combo': 880
 };
 
-const SOUND_FILES = {
-    'A1': '1.wav', 'D2': '2.wav', 'C3': '3.wav',
-    'E4': '4.wav', 'F5': '5.wav', 'Bb6': '6.wav',
-    'G7': '7.wav', 'A8': '8.wav', 'D': 'D.wav',
-    'miss': 'miss.wav', 'combo': 'combo.wav'
-};
-
-// بارگذاری صداها (Web Audio)
-async function loadSounds() {
-    try {
-        const ctx = initAudio();
-        if (ctx) {
-            for (let [note, file] of Object.entries(SOUND_FILES)) {
-                try {
-                    const response = await fetch(`/sounds/${file}`);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const arrayBuffer = await response.arrayBuffer();
-                    const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-                    soundBuffers[note] = audioBuffer;
-                } catch (e) {
-                    console.warn(`Failed to load Web Audio ${file}:`, e);
-                    soundBuffers[note] = null;
-                }
-            }
-        }
-    } catch (e) {
-        console.warn('Web Audio load error:', e);
-    }
-    
-    // Fallback: HTMLAudioElement
-    for (let [note, file] of Object.entries(SOUND_FILES)) {
-        try {
-            const audio = new Audio(`/sounds/${file}`);
-            audio.preload = 'auto';
-            audioFallbacks[note] = audio;
-        } catch (e) {
-            console.warn(`Failed to load fallback ${file}:`, e);
-        }
-    }
-    
-    soundLoaded = true;
-    console.log('✅ صداها بارگذاری شدند');
-}
-
 function initAudio() {
     if (!audioCtx) {
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            console.warn('AudioContext creation failed:', e);
-        }
+        } catch (e) { return null; }
     }
-    if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(() => {});
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(e => {});
     }
     return audioCtx;
 }
 
-function playSound(note, volume = 0.5) {
-    if (!soundEnabled) return;
-    
+async function loadSounds() {
     const ctx = initAudio();
-    
-    // === لایه ۱: Web Audio با فایل WAV ===
-    if (ctx && soundBuffers[note]) {
-        try {
-            const buffer = soundBuffers[note];
-            if (buffer) {
-                const source = ctx.createBufferSource();
-                source.buffer = buffer;
-                const gain = ctx.createGain();
-                const now = ctx.currentTime;
-                gain.gain.setValueAtTime(volume, now);
-                gain.gain.setTargetAtTime(0.001, now + 0.4, 0.1);
-                source.connect(gain);
-                gain.connect(ctx.destination);
-                source.start(now);
-                source.stop(now + 0.6);
-                return;
-            }
-        } catch (e) {
-            console.warn('Web Audio play failed:', e);
-        }
-    }
-    
-    // === لایه ۲: HTMLAudioElement (cloneNode) ===
+    if (!ctx) return;
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
     try {
-        let audio = audioFallbacks[note];
-        if (!audio) {
-            const baseNote = note.replace(/[0-9]/g, '');
-            audio = audioFallbacks[baseNote];
-        }
-        if (audio) {
-            const sound = audio.cloneNode();
-            sound.volume = volume;
-            sound.play().catch(() => {});
-            sound.onended = () => sound.remove();
-            return;
-        }
+        await Promise.race([loadAllWavs('/sounds/'), timeoutPromise]);
+        console.log('✅ WAV از sounds/ لود شد');
     } catch (e) {
-        console.warn('Fallback play failed:', e);
-    }
-    
-    // === لایه ۳: صدای مصنوعی با Web Audio ===
-    if (ctx) {
         try {
-            let freq = SYNTH_FREQS[note] || 440;
-            if (!freq) {
-                const baseNote = note.replace(/[0-9]/g, '');
-                freq = SYNTH_FREQS[baseNote] || 440;
-            }
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            const now = ctx.currentTime;
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, now);
-            gain.gain.setValueAtTime(0, now);
-            gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.01);
-            gain.gain.setTargetAtTime(0.001, now + 0.3, 0.1);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now);
-            osc.stop(now + 0.5);
-            return;
-        } catch (e) {
-            console.warn('Synthetic sound failed:', e);
+            await Promise.race([loadAllWavs('/static/sounds/'), timeoutPromise]);
+            console.log('✅ WAV از static/sounds/ لود شد');
+        } catch (e2) {
+            console.warn('⚠️ WAV لود نشد، از صدای مصنوعی استفاده می‌شود');
         }
     }
-    
-    // اگر هیچ کدوم کار نکرد، حداقل یک بیپ ساده
+}
+
+async function loadAllWavs(basePath) {
+    const ctx = initAudio();
+    if (!ctx) return;
+    for (let [note, fileName] of Object.entries(SOUND_FILES)) {
+        let loaded = false;
+        try {
+            const response = await fetch(`${basePath}${fileName}`, { cache: 'no-cache' });
+            if (response.ok) {
+                const arrayBuffer = await response.arrayBuffer();
+                soundBuffers[note] = await ctx.decodeAudioData(arrayBuffer);
+                loaded = true;
+            }
+        } catch (e) {}
+        if (!loaded) {
+            const numMatch = fileName.match(/\d+/);
+            if (numMatch) {
+                const numericFile = numMatch[0] + '.wav';
+                if (numericFile !== fileName) {
+                    try {
+                        const response = await fetch(`${basePath}${numericFile}`, { cache: 'no-cache' });
+                        if (response.ok) {
+                            const arrayBuffer = await response.arrayBuffer();
+                            soundBuffers[note] = await ctx.decodeAudioData(arrayBuffer);
+                            loaded = true;
+                        }
+                    } catch (e) {}
+                }
+            }
+        }
+        if (!loaded) soundBuffers[note] = null;
+    }
+}
+
+function playSyntheticSound(note, volume = 0.4) {
+    const ctx = initAudio();
+    if (!ctx) return;
     try {
-        const audio = new Audio('data:audio/wav;base64,UklGRnoAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYaFhYA=');
-        audio.volume = volume;
-        audio.play().catch(() => {});
+        let freq = FREQS[note] || 440;
+        const now = ctx.currentTime;
+        const duration = 1.5;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        const vib = ctx.createOscillator();
+        const vibG = ctx.createGain();
+        vib.frequency.value = 3.5;
+        vibG.gain.value = 1.5;
+        vib.connect(vibG); vibG.connect(osc.frequency);
+        vib.start(now); vib.stop(now + duration);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume * 0.8, now + 0.02);
+        gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.3, now + 0.4);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(now); osc.stop(now + duration + 0.1);
     } catch (e) {}
 }
 
-function playMissSound() { playSound('miss', 0.4); }
+function playSound(note, volume = 0.4) {
+    if (!soundEnabled) return;
+    if (soundBuffers[note]) {
+        try {
+            const ctx = initAudio();
+            if (!ctx) return;
+            const source = ctx.createBufferSource();
+            source.buffer = soundBuffers[note];
+            const gain = ctx.createGain();
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(volume, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+            source.connect(gain); gain.connect(ctx.destination);
+            source.start(now); source.stop(now + 1.3);
+            return;
+        } catch (e) {}
+    }
+    playSyntheticSound(note, volume);
+}
+
+function playMissSound() { playSound('miss', 0.3); }
 function playComboSound() { playSound('combo', 0.5); }
 
 function toggleSound() {
@@ -1199,13 +1170,26 @@ function toggleSound() {
     }
 }
 
+document.getElementById('testSoundBtn').addEventListener('click', function() {
+    initAudio();
+    if (!soundEnabled) { alert('صدا غیرفعال است!'); return; }
+    const notes = ['A1', 'D2', 'C3', 'E4', 'D'];
+    notes.forEach((n, i) => setTimeout(() => playSound(n, 0.5), i * 300));
+});
+
+document.addEventListener('click', () => initAudio(), { once: false });
+document.addEventListener('touchstart', () => initAudio(), { once: false });
+loadSounds();
+
 // =========================================================
-// داده‌های بازی
+// داده‌های نت
 // =========================================================
 const NOTE_X = {
     "D2": 75, "E4": 170, "Bb6": 265, "A8": 355,
     "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
+
+// ===== درس عادی: هنگ کوچک با مرکز (430,145) شعاع 180 =====
 const HANDPAN_POSITIONS = {
     "A1": [472, 247, 30], "D2": [388, 247, 30],
     "C3": [533, 186, 30], "E4": [327, 186, 30],
@@ -1213,6 +1197,16 @@ const HANDPAN_POSITIONS = {
     "G7": [472, 45, 30], "A8": [388, 45, 30],
     "D": [430, 145, 48]
 };
+
+// ===== فلبداهه: هنگ بزرگ با مرکز (410,250) شعاع 220 =====
+const HANDPAN_POSITIONS_FREE = {
+    "A1": [461, 374, 38], "D2": [359, 374, 38],
+    "C3": [536, 300, 38], "E4": [284, 300, 38],
+    "F5": [536, 199, 38], "Bb6": [284, 199, 38],
+    "G7": [461, 128, 38], "A8": [359, 128, 38],
+    "D": [410, 250, 58]
+};
+
 const NOTE_COLORS = {
     "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8",
     "E4": "#2dd4bf", "F5": "#818cf8", "Bb6": "#fbbf24",
@@ -1251,7 +1245,7 @@ function setDisplayMode(mode, btn) {
     if (document.getElementById('gamePage').style.display === 'block') {
         drawHandpan();
         drawFallingArea();
-        if (currentTarget) {
+        if (currentTarget && !isFreeMode) {
             document.getElementById('targetNote').textContent = getNoteDisplay(currentTarget);
         }
     }
@@ -1262,6 +1256,7 @@ function setDisplayMode(mode, btn) {
 // درس‌ها
 // =========================================================
 const LESSONS = [
+    { id: 0, title_fa: '🎵 فلبداهه', title_en: '🎵 Free Improv', desc_fa: 'بداهه‌نوازی آزاد • بدون بارش نت', desc_en: 'Free Improvisation • No falling notes', level: 0 },
     { id: 1, title_fa: 'نت A', title_en: 'Note A', desc_fa: 'ضربه روی نت A', desc_en: 'Hit note A', level: 1 },
     { id: 2, title_fa: 'نت D', title_en: 'Note D', desc_fa: 'ضربه روی نت D', desc_en: 'Hit note D', level: 1 },
     { id: 3, title_fa: 'نت C', title_en: 'Note C', desc_fa: 'ضربه روی نت C', desc_en: 'Hit note C', level: 1 },
@@ -1277,8 +1272,20 @@ function renderLessons() {
     const container = document.getElementById('lessonsContainer');
     const t = TEXTS[currentLang];
     container.innerHTML = LESSONS.map((l, i) => {
+        if (l.id === 0) {
+            return `
+                <div class="lesson-card completed" onclick="startLesson(${l.id})" style="border-color:#2dd4bf;">
+                    <div class="info">
+                        <h3>${currentLang === 'fa' ? l.title_fa : l.title_en}</h3>
+                        <p>${currentLang === 'fa' ? l.desc_fa : l.desc_en}</p>
+                        <span class="level-tag" style="background:#2dd4bf;">🎵 آزاد</span>
+                    </div>
+                    <div class="status">▶️</div>
+                </div>
+            `;
+        }
         const done = completed.includes(String(l.id));
-        const locked = i > 0 && !completed.includes(String(LESSONS[i-1].id));
+        const locked = i > 1 && !completed.includes(String(LESSONS[i-1].id));
         const title = currentLang === 'fa' ? l.title_fa : l.title_en;
         const desc = currentLang === 'fa' ? l.desc_fa : l.desc_en;
         return `
@@ -1298,7 +1305,7 @@ function renderLessons() {
 }
 
 // =========================================================
-// STATE بازی
+// STATE
 // =========================================================
 let currentLesson = null;
 let score = 0, hits = 0, misses = 0, combo = 0, bestCombo = 0, notesPlayed = 0;
@@ -1307,40 +1314,87 @@ let speedMultiplier = 1.0;
 let fallingNote = null, currentTarget = null, noteY = 20, hitY = 220;
 let animationId = null, lastTime = 0;
 let timerInterval = null;
-let canvas, ctx, panCanvas, panCtx;
+let canvas, ctx;           // Canvas بارش نت
+let panCanvas, panCtx;      // Canvas هنگ عادی
+let panCanvasFree, panCtxFree;  // Canvas هنگ فلبداهه
 let isGameInitialized = false;
 let GAME_SPEED = 200;
 let DROPLET_SCALE = 0.65;
 let mainColor = '#38bdf8';
 let completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
 let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
+let isFreeMode = false;
 
 // =========================================================
-// شروع درس و منطق بازی
+// شروع درس
 // =========================================================
 function startLesson(lessonId) {
     currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
     initAudio();
+    
+    isFreeMode = (lessonId === 0);
+    
     document.getElementById('lessonsPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     document.getElementById('resultPage').style.display = 'none';
     document.getElementById('settingsPage').style.display = 'none';
+    
     const title = currentLang === 'fa' ? currentLesson.title_fa : currentLesson.title_en;
     document.getElementById('gameTitle').textContent = `🥁 ${title}`;
+    
     if (!isGameInitialized) {
         setupCanvases();
         isGameInitialized = true;
     }
+    
+    // ===== نمایش/مخفی کردن Canvas مناسب =====
+    if (isFreeMode) {
+        document.getElementById('handpanArea').style.display = 'none';
+        document.getElementById('handpanAreaFree').style.display = 'block';
+    } else {
+        document.getElementById('handpanArea').style.display = 'block';
+        document.getElementById('handpanAreaFree').style.display = 'none';
+    }
+    resizeCanvases();
+    
     resetGame();
     drawHandpan();
     drawFallingArea();
-    isGameReady = false;
-    startTimer(() => {
-        isGameReady = true;
+    
+    if (isFreeMode) {
+        document.getElementById('timerOverlay').style.display = 'none';
+        document.getElementById('nextNoteContainer').style.display = 'none';
+        document.getElementById('fallingArea').style.display = 'none';
+        document.getElementById('pauseButton').style.display = 'none';
+        document.getElementById('speedSelect').style.display = 'none';
+        document.getElementById('speedLabel').style.display = 'none';
+        document.getElementById('progressLabel').style.display = 'none';
+        document.getElementById('endGameBtn').style.display = 'none';
+        document.getElementById('scoreDisplay').textContent = '🎵 آزاد';
+        document.getElementById('comboDisplay').textContent = '';
+        document.getElementById('accuracyDisplay').textContent = '';
         gameRunning = true;
-        spawnNote();
-    });
+        isGameReady = true;
+    } else {
+        document.getElementById('nextNoteContainer').style.display = 'block';
+        document.getElementById('fallingArea').style.display = 'block';
+        document.getElementById('pauseButton').style.display = 'inline-block';
+        document.getElementById('speedSelect').style.display = 'inline-block';
+        document.getElementById('speedLabel').style.display = 'inline';
+        document.getElementById('progressLabel').style.display = 'inline';
+        document.getElementById('endGameBtn').style.display = 'inline-block';
+        document.getElementById('scoreDisplay').textContent = 'SCORE 0';
+        document.getElementById('comboDisplay').textContent = 'COMBO 0';
+        document.getElementById('accuracyDisplay').textContent = 'ACC 0%';
+        document.getElementById('targetNote').textContent = '—';
+        isGameReady = false;
+        startTimer(() => {
+            isGameReady = true;
+            gameRunning = true;
+            spawnNote();
+        });
+    }
 }
 
 function resetGame() {
@@ -1364,18 +1418,31 @@ function setupCanvases() {
     ctx = canvas.getContext('2d');
     panCanvas = document.getElementById('handpanCanvas');
     panCtx = panCanvas.getContext('2d');
-    const resize = () => {
-        const w = Math.min(820, canvas.parentElement.clientWidth - 10);
-        canvas.style.width = w + 'px';
-        canvas.style.height = (w * 280 / 820) + 'px';
+    panCanvasFree = document.getElementById('handpanCanvasFree');
+    panCtxFree = panCanvasFree.getContext('2d');
+    resizeCanvases();
+    window.addEventListener('resize', resizeCanvases);
+}
+
+function resizeCanvases() {
+    if (!canvas) return;
+    const w = Math.min(820, canvas.parentElement.clientWidth - 10);
+    canvas.style.width = w + 'px';
+    canvas.style.height = (w * 280 / 820) + 'px';
+    
+    if (panCanvas) {
         panCanvas.style.width = w + 'px';
         panCanvas.style.height = (w * 280 / 820) + 'px';
-    };
-    resize();
-    window.addEventListener('resize', resize);
+    }
+    if (panCanvasFree) {
+        panCanvasFree.style.width = w + 'px';
+        panCanvasFree.style.height = (w * 500 / 820) + 'px';
+    }
 }
 
 function drawFallingArea() {
+    if (isFreeMode) return;
+    if (!ctx) return;
     const W=820, H=280;
     ctx.clearRect(0,0,W,H);
     ctx.fillStyle='#475569'; ctx.font='bold 8px Arial'; 
@@ -1409,8 +1476,18 @@ function drawFallingArea() {
     ctx.fillText('HIT', W-43, hitY-36);
 }
 
+// ===== رسم هنگ‌درام - دو Canvas جداگانه =====
 function drawHandpan(highlight=null) {
+    if (isFreeMode) {
+        drawHandpanFree(highlight);
+    } else {
+        drawHandpanNormal(highlight);
+    }
+}
+
+function drawHandpanNormal(highlight) {
     const W=820, H=280;
+    if (!panCtx) return;
     panCtx.clearRect(0,0,W,H);
     panCtx.strokeStyle='#18273a'; panCtx.lineWidth=2; 
     panCtx.strokeRect(10,10,800,260);
@@ -1451,7 +1528,48 @@ function drawHandpan(highlight=null) {
     }
 }
 
+function drawHandpanFree(highlight) {
+    const W=820, H=500;
+    if (!panCtxFree) return;
+    panCtxFree.clearRect(0,0,W,H);
+    const cx=410, cy=250, r=220;
+    panCtxFree.shadowColor='#040810'; panCtxFree.shadowBlur=25;
+    panCtxFree.beginPath(); panCtxFree.arc(cx,cy,r,0,Math.PI*2);
+    panCtxFree.fillStyle='#293646'; panCtxFree.fill();
+    panCtxFree.shadowBlur=0;
+    panCtxFree.strokeStyle='#64748b'; panCtxFree.lineWidth=3; panCtxFree.stroke();
+    panCtxFree.beginPath(); panCtxFree.arc(cx,cy,r-10,0,Math.PI*2);
+    panCtxFree.fillStyle='#263342'; panCtxFree.fill();
+    panCtxFree.strokeStyle='#3f4e61'; panCtxFree.lineWidth=2; panCtxFree.stroke();
+    for (let [note, [x, y, r2]] of Object.entries(HANDPAN_POSITIONS_FREE)) {
+        const col = NOTE_COLORS[note] || '#4a596d';
+        const hl = highlight === note;
+        const display = getNoteDisplay(note);
+        panCtxFree.shadowColor='#111923'; panCtxFree.shadowBlur=10;
+        panCtxFree.beginPath(); panCtxFree.arc(x, y, r2+2, 0, Math.PI*2);
+        panCtxFree.fillStyle='#111923'; panCtxFree.fill();
+        panCtxFree.shadowBlur=0;
+        panCtxFree.beginPath(); panCtxFree.arc(x, y, r2, 0, Math.PI*2);
+        panCtxFree.fillStyle = hl ? '#1a3a5a' : '#1d2835';
+        panCtxFree.fill();
+        panCtxFree.strokeStyle = hl ? col : '#4a596d';
+        panCtxFree.lineWidth = hl ? 3 : 2;
+        panCtxFree.stroke();
+        panCtxFree.beginPath(); panCtxFree.arc(x, y, r2-5, 0, Math.PI*2);
+        panCtxFree.strokeStyle = col;
+        panCtxFree.lineWidth = 1.5;
+        panCtxFree.stroke();
+        panCtxFree.fillStyle = hl ? col : '#e5e7eb';
+        panCtxFree.font = `bold ${note === 'D' ? 22 : 17}px Arial`;
+        panCtxFree.textAlign = 'center';
+        panCtxFree.textBaseline = 'middle';
+        panCtxFree.fillText(display, x, y);
+    }
+}
+
 function drawDroplet(x, y, note) {
+    if (isFreeMode) return;
+    if (!ctx) return;
     const col = NOTE_COLORS[note] || '#38bdf8';
     const s = DROPLET_SCALE;
     ctx.fillStyle = col; ctx.globalAlpha = 0.25;
@@ -1511,6 +1629,7 @@ function startTimer(callback) {
 }
 
 function spawnNote() {
+    if (isFreeMode) return;
     if (!gameRunning || !isGameReady) return;
     if (notesPlayed >= TOTAL_NOTES) { finishGame(); return; }
     let note = ALL_NOTES[Math.floor(Math.random() * ALL_NOTES.length)];
@@ -1528,6 +1647,7 @@ function spawnNote() {
 }
 
 function animateNote(timestamp) {
+    if (isFreeMode) return;
     if (!fallingNote || !gameRunning || !isGameReady) return;
     if (isPaused) { animationId = requestAnimationFrame(animateNote); return; }
     if (!timestamp) timestamp = performance.now();
@@ -1555,7 +1675,16 @@ function animateNote(timestamp) {
 }
 
 function hitNote(note) {
-    if (!fallingNote || isPaused || !gameRunning || !isGameReady) return;
+    if (!gameRunning || !isGameReady) return;
+    
+    if (isFreeMode) {
+        playSound(note, 0.5);
+        drawHandpan(note);
+        setTimeout(() => drawHandpan(), 250);
+        return;
+    }
+    
+    if (!fallingNote || isPaused) return;
     if (note !== currentTarget) { combo = 0; updateStats(); return; }
     let dist = Math.abs(fallingNote.y - hitY);
     if (dist <= 55) {
@@ -1563,13 +1692,8 @@ function hitNote(note) {
         score += pts + combo * 10;
         hits++; combo++;
         if (combo > bestCombo) bestCombo = combo;
-        
-        // 🔊 پخش صدا
         playSound(note, 0.5);
-        
-        if (combo > 0 && combo % 5 === 0) {
-            setTimeout(() => playComboSound(), 80);
-        }
+        if (combo > 0 && combo % 5 === 0) setTimeout(() => playComboSound(), 80);
         drawHandpan(note);
         fallingNote = null;
         updateStats();
@@ -1579,6 +1703,7 @@ function hitNote(note) {
 }
 
 function updateStats() {
+    if (isFreeMode) return;
     document.getElementById('scoreDisplay').textContent = `SCORE ${score}`;
     document.getElementById('comboDisplay').textContent = `COMBO ${combo}`;
     let total = hits + misses;
@@ -1587,6 +1712,7 @@ function updateStats() {
 }
 
 function finishGame() {
+    if (isFreeMode) return;
     gameRunning = false;
     isGameReady = false;
     if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
@@ -1620,6 +1746,9 @@ function finishGame() {
 }
 
 function retryGame() {
+    if (isFreeMode) {
+        resetGame(); drawHandpan(); gameRunning = true; isGameReady = true; return;
+    }
     document.getElementById('resultPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     resetGame();
@@ -1638,6 +1767,7 @@ function backToLessons() {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     gameRunning = false;
     isGameReady = false;
+    isFreeMode = false;
     document.getElementById('gamePage').style.display = 'none';
     document.getElementById('resultPage').style.display = 'none';
     document.getElementById('settingsPage').style.display = 'none';
@@ -1669,7 +1799,7 @@ function setColor(color, btn) {
 // رویدادها
 // =========================================================
 document.getElementById('pauseButton').addEventListener('click', function() {
-    if (!gameRunning) return;
+    if (!gameRunning || isFreeMode) return;
     isPaused = !isPaused;
     this.textContent = isPaused ? TEXTS[currentLang].resumeBtn : TEXTS[currentLang].pauseBtn;
 });
@@ -1677,9 +1807,13 @@ document.getElementById('speedSelect').addEventListener('change', function() {
     speedMultiplier = parseFloat(this.value);
 });
 document.getElementById('endGameBtn').addEventListener('click', function() {
+    if (isFreeMode) { backToLessons(); return; }
     if (confirm('آیا می‌خوای بازی رو تموم کنی؟')) { finishGame(); }
 });
+
+// ===== کلیک روی هنگ عادی =====
 document.getElementById('handpanCanvas').addEventListener('click', function(e) {
+    if (isFreeMode) return;
     if (!gameRunning || !isGameReady) return;
     let rect = this.getBoundingClientRect();
     let scaleX = 820/rect.width, scaleY = 280/rect.height;
@@ -1691,44 +1825,29 @@ document.getElementById('handpanCanvas').addEventListener('click', function(e) {
         }
     }
 });
+
+// ===== کلیک روی هنگ فلبداهه =====
+document.getElementById('handpanCanvasFree').addEventListener('click', function(e) {
+    if (!isFreeMode) return;
+    if (!gameRunning || !isGameReady) return;
+    let rect = this.getBoundingClientRect();
+    let scaleX = 820/rect.width, scaleY = 500/rect.height;
+    let mx = (e.clientX - rect.left)*scaleX, my = (e.clientY - rect.top)*scaleY;
+    for (let [note, [x, y, r]] of Object.entries(HANDPAN_POSITIONS_FREE)) {
+        if (Math.sqrt((mx-x)**2 + (my-y)**2) <= r) {
+            hitNote(note);
+            return;
+        }
+    }
+});
+
 document.getElementById('recordButton').addEventListener('click', function() {
     alert('🎤 ضبط تمرین (برای تست)');
 });
 
 // =========================================================
-// شروع - با تضمین بارگذاری صداها
+// شروع
 // =========================================================
-
-// فعال‌سازی AudioContext با اولین کلیک
-document.addEventListener('click', function initAudioOnClick() {
-    const ctx = initAudio();
-    if (ctx && ctx.state === 'running') {
-        console.log('✅ AudioContext فعال شد');
-        document.removeEventListener('click', initAudioOnClick);
-        document.removeEventListener('touchstart', initAudioOnClick);
-    }
-}, false);
-document.addEventListener('touchstart', function initAudioOnTouch() {
-    const ctx = initAudio();
-    if (ctx && ctx.state === 'running') {
-        console.log('✅ AudioContext فعال شد (touch)');
-        document.removeEventListener('click', initAudioOnTouch);
-        document.removeEventListener('touchstart', initAudioOnTouch);
-    }
-}, false);
-
-// بارگذاری صداها
-loadSounds().then(() => {
-    console.log('✅ صداها آماده هستند!');
-    // یک تست صدا برای اطمینان
-    setTimeout(() => {
-        if (soundEnabled) {
-            playSound('C3', 0.2);
-        }
-    }, 500);
-});
-
-// اعمال زبان
 applyLanguage(currentLang);
 document.querySelectorAll('.lang-btn').forEach(b => {
     if (b.dataset.lang === currentLang) b.classList.add('active');
@@ -1737,7 +1856,7 @@ document.querySelectorAll('.lang-btn').forEach(b => {
 updateWelcomeStats();
 
 console.log('🎯 WEPAN ready!');
-console.log('🔊 سیستم صدای سه‌لایه فعال است (همیشه کار می‌کند)');
+console.log('✅ دو Canvas جداگانه: عادی (با مستطیل) + فلبداهه (بزرگ)');
 </script>
 </body>
 </html>
