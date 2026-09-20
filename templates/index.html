@@ -232,7 +232,6 @@
         .falling-area { background: #09111e; border: 1px solid #1c2a3d; border-radius: 14px; margin: 4px 12px; padding: 4px; }
         #fallingCanvas { width: 100%; height: auto; background: #09111e; display: block; border-radius: 10px; }
 
-        /* ===== Canvas عادی (با مستطیل) ===== */
         .handpan-area { 
             background: #0b1320; 
             border: 1px solid #1c2a3d; 
@@ -247,9 +246,9 @@
             display: block; 
             border-radius: 10px; 
             cursor: pointer; 
+            touch-action: manipulation;
         }
 
-        /* ===== Canvas فلبداهه (بدون محدوده) ===== */
         .handpan-area-free { 
             background: transparent; 
             margin: 4px 0; 
@@ -262,6 +261,7 @@
             background: transparent; 
             display: block; 
             cursor: pointer; 
+            touch-action: manipulation;
         }
 
         .controls {
@@ -367,7 +367,6 @@
 <body>
 <div class="container" style="position:relative;">
 
-    <!-- ===== صفحه خوش‌آمدگویی ===== -->
     <div id="welcomePage">
         <div class="logo">🥁 WEPAN</div>
         <div class="subtitle" id="welcomeSubtitle">یادگیری هنگ‌درام • بازی • پیشرفت</div>
@@ -384,7 +383,6 @@
         </div>
     </div>
 
-    <!-- ===== صفحه لاگین ===== -->
     <div id="loginPage">
         <div class="form-box">
             <h2 id="loginTitle">🔑 ورود</h2>
@@ -407,7 +405,6 @@
         </div>
     </div>
 
-    <!-- ===== صفحه ثبت‌نام ===== -->
     <div id="signupPage">
         <div class="form-box">
             <h2 id="signupTitle">📝 ثبت‌نام</h2>
@@ -440,7 +437,6 @@
         </div>
     </div>
 
-    <!-- ===== صفحه پروفایل ===== -->
     <div id="profilePage">
         <div class="profile-header">
             <h2 id="profileTitle">👤 پروفایل</h2>
@@ -471,7 +467,6 @@
         </div>
     </div>
 
-    <!-- ===== صفحه مراحل ===== -->
     <div id="lessonsPage">
         <div class="lessons-header">
             <h2 id="lessonsTitle">📚 انتخاب مرحله</h2>
@@ -483,7 +478,6 @@
         <div id="lessonsContainer"></div>
     </div>
 
-    <!-- ===== صفحه بازی ===== -->
     <div id="gamePage">
         <div id="timerOverlay">
             <div class="timer-text" id="timerText">آماده‌ای؟</div>
@@ -510,12 +504,10 @@
             <canvas id="fallingCanvas" width="820" height="280"></canvas>
         </div>
 
-        <!-- Canvas عادی (درس‌های معمولی) -->
         <div class="handpan-area" id="handpanArea">
             <canvas id="handpanCanvas" width="820" height="280"></canvas>
         </div>
 
-        <!-- Canvas فلبداهه (هنگ بزرگ، بدون مستطیل) -->
         <div class="handpan-area-free" id="handpanAreaFree">
             <canvas id="handpanCanvasFree" width="820" height="500"></canvas>
         </div>
@@ -542,7 +534,6 @@
         </div>
     </div>
 
-    <!-- ===== صفحه نتیجه ===== -->
     <div id="resultPage">
         <div class="result-icon" id="resultIcon">🎉</div>
         <div class="result-score" id="resultScore">0</div>
@@ -559,13 +550,11 @@
         </div>
     </div>
 
-    <!-- ===== صفحه تنظیمات ===== -->
     <div id="settingsPage">
         <div class="settings-header">
             <h2 id="settingsTitle">⚙️ تنظیمات</h2>
             <button class="back-btn" id="settingsBackBtn" onclick="goHome()">🏠 بازگشت</button>
         </div>
-
         <div class="setting-group">
             <div class="group-title" id="langGroupTitle">🌐 زبان</div>
             <div class="setting-item">
@@ -576,7 +565,6 @@
                 </div>
             </div>
         </div>
-
         <div class="setting-group">
             <div class="group-title" id="colorGroupTitle">🎨 رنگ بازی</div>
             <div class="setting-item">
@@ -591,7 +579,6 @@
                 </div>
             </div>
         </div>
-
         <div class="setting-group">
             <div class="group-title" id="speedGroupTitle">⚡ سرعت و سایز</div>
             <div class="setting-item">
@@ -609,7 +596,6 @@
                 </div>
             </div>
         </div>
-
         <div class="setting-group">
             <div class="group-title" id="displayGroupTitle">🔤 نمایش نت‌ها</div>
             <div class="setting-item">
@@ -625,10 +611,6 @@
 </div>
 
 <script>
-// =========================================================
-// WEPAN - دو Canvas جداگانه برای درس عادی و فلبداهه
-// =========================================================
-
 console.log('WEPAN loading...');
 
 // =========================================================
@@ -636,180 +618,69 @@ console.log('WEPAN loading...');
 // =========================================================
 const TEXTS = {
     fa: {
-        welcomeSubtitle: 'یادگیری هنگ‌درام • بازی • پیشرفت',
-        welcomeStart: '▶ شروع',
-        welcomeLogin: '🔑 ورود',
-        welcomeSignup: '📝 ثبت‌نام',
-        welcomeSettings: '⚙️ تنظیمات',
-        loginTitle: '🔑 ورود',
-        loginUsernameLabel: 'نام کاربری یا ایمیل',
-        loginPasswordLabel: 'رمز عبور',
-        loginBtn: 'ورود',
-        loginFooterText: 'حساب کاربری ندارید؟',
-        loginFooterLink: 'ثبت‌نام کنید',
-        loginBackLink: '← بازگشت به صفحه اصلی',
-        signupTitle: '📝 ثبت‌نام',
-        signupUsernameLabel: 'نام کاربری',
-        signupEmailLabel: 'ایمیل',
-        signupPasswordLabel: 'رمز عبور',
-        signupPasswordHint: 'حداقل ۸ کاراکتر، شامل حروف بزرگ و کوچک و عدد',
-        signupConfirmLabel: 'تکرار رمز عبور',
-        signupBtn: 'ثبت‌نام',
-        signupFooterText: 'قبلاً ثبت‌نام کرده‌اید؟',
-        signupFooterLink: 'وارد شوید',
-        signupBackLink: '← بازگشت به صفحه اصلی',
-        profileTitle: '👤 پروفایل',
-        profileBackBtn: '🎯 بازگشت به بازی',
-        profileLogoutBtn: '🚪 خروج',
-        profileLessonsLabel: 'درس‌های تکمیل شده',
-        profileScoreLabel: 'امتیاز کل',
-        profileStreakLabel: 'روز متوالی',
-        profileEditBtn: '✏️ ویرایش پروفایل',
-        lessonsTitle: '📚 انتخاب مرحله',
-        lessonsProfileBtn: '👤 پروفایل',
-        lessonsHomeBtn: '🏠 صفحه اصلی',
-        timerText: 'آماده‌ای؟',
-        nextNoteLabel: 'NEXT NOTE',
-        scoreLabel: 'SCORE',
-        comboLabel: 'COMBO',
-        accuracyLabel: 'ACC',
-        pauseBtn: '⏸ PAUSE',
-        resumeBtn: '▶ RESUME',
-        speedLabel: 'SPEED',
-        progressLabel: 'NOTES',
-        endGameBtn: '✕ پایان',
-        recordBtn: '🎤 ضبط تمرین',
-        recordStatus: 'برای تمرین ضبط کن',
-        resultLabel: 'امتیاز نهایی',
-        rHitsLabel: 'ضربات درست',
-        rAccuracyLabel: 'دقت',
-        rComboLabel: 'بهترین COMBO',
-        retryBtn: '🔄 بازی دوباره',
-        backLessonsBtn: '📚 بازگشت به مراحل',
-        homeBtn: '🏠 صفحه اصلی',
-        settingsTitle: '⚙️ تنظیمات',
-        settingsBackBtn: '🏠 بازگشت',
-        langGroupTitle: '🌐 زبان',
-        langLabel: 'زبان',
-        colorGroupTitle: '🎨 رنگ بازی',
-        colorLabel: 'رنگ اصلی',
-        speedGroupTitle: '⚡ سرعت و سایز',
-        speedSettingLabel: 'سرعت قطره‌ها',
-        dropSizeLabel: 'سایز قطره‌ها',
-        displayGroupTitle: '🔤 نمایش نت‌ها',
-        displayLabel: 'نمایش روی نت‌ها',
-        modeLetters: 'حروف (A, B, C)',
-        modeNumbers: 'اعداد (۱, ۲, ۳)',
-        fa: 'فارسی',
-        en: 'English',
-        done: '✅ انجام شده',
-        locked: '🔒'
+        welcomeSubtitle: 'یادگیری هنگ‌درام • بازی • پیشرفت', welcomeStart: '▶ شروع', welcomeLogin: '🔑 ورود', welcomeSignup: '📝 ثبت‌نام', welcomeSettings: '⚙️ تنظیمات',
+        loginTitle: '🔑 ورود', loginUsernameLabel: 'نام کاربری یا ایمیل', loginPasswordLabel: 'رمز عبور', loginBtn: 'ورود',
+        loginFooterText: 'حساب کاربری ندارید؟', loginFooterLink: 'ثبت‌نام کنید', loginBackLink: '← بازگشت به صفحه اصلی',
+        signupTitle: '📝 ثبت‌نام', signupUsernameLabel: 'نام کاربری', signupEmailLabel: 'ایمیل', signupPasswordLabel: 'رمز عبور',
+        signupPasswordHint: 'حداقل ۸ کاراکتر، شامل حروف بزرگ و کوچک و عدد', signupConfirmLabel: 'تکرار رمز عبور', signupBtn: 'ثبت‌نام',
+        signupFooterText: 'قبلاً ثبت‌نام کرده‌اید؟', signupFooterLink: 'وارد شوید', signupBackLink: '← بازگشت به صفحه اصلی',
+        profileTitle: '👤 پروفایل', profileBackBtn: '🎯 بازگشت به بازی', profileLogoutBtn: '🚪 خروج',
+        profileLessonsLabel: 'درس‌های تکمیل شده', profileScoreLabel: 'امتیاز کل', profileStreakLabel: 'روز متوالی', profileEditBtn: '✏️ ویرایش پروفایل',
+        lessonsTitle: '📚 انتخاب مرحله', lessonsProfileBtn: '👤 پروفایل', lessonsHomeBtn: '🏠 صفحه اصلی',
+        timerText: 'آماده‌ای؟', nextNoteLabel: 'NEXT NOTE', scoreLabel: 'SCORE', comboLabel: 'COMBO', accuracyLabel: 'ACC',
+        pauseBtn: '⏸ PAUSE', resumeBtn: '▶ RESUME', speedLabel: 'SPEED', progressLabel: 'NOTES', endGameBtn: '✕ پایان',
+        recordBtn: '🎤 ضبط تمرین', recordStatus: 'برای تمرین ضبط کن',
+        resultLabel: 'امتیاز نهایی', rHitsLabel: 'ضربات درست', rAccuracyLabel: 'دقت', rComboLabel: 'بهترین COMBO',
+        retryBtn: '🔄 بازی دوباره', backLessonsBtn: '📚 بازگشت به مراحل', homeBtn: '🏠 صفحه اصلی',
+        settingsTitle: '⚙️ تنظیمات', settingsBackBtn: '🏠 بازگشت', langGroupTitle: '🌐 زبان', langLabel: 'زبان',
+        colorGroupTitle: '🎨 رنگ بازی', colorLabel: 'رنگ اصلی', speedGroupTitle: '⚡ سرعت و سایز',
+        speedSettingLabel: 'سرعت قطره‌ها', dropSizeLabel: 'سایز قطره‌ها', displayGroupTitle: '🔤 نمایش نت‌ها', displayLabel: 'نمایش روی نت‌ها',
+        modeLetters: 'حروف (A, B, C)', modeNumbers: 'اعداد (۱, ۲, ۳)', fa: 'فارسی', en: 'English', done: '✅ انجام شده', locked: '🔒'
     },
     en: {
-        welcomeSubtitle: 'Learn Handpan • Play • Improve',
-        welcomeStart: '▶ Start',
-        welcomeLogin: '🔑 Login',
-        welcomeSignup: '📝 Sign Up',
-        welcomeSettings: '⚙️ Settings',
-        loginTitle: '🔑 Login',
-        loginUsernameLabel: 'Username or Email',
-        loginPasswordLabel: 'Password',
-        loginBtn: 'Login',
-        loginFooterText: "Don't have an account?",
-        loginFooterLink: 'Sign up',
-        loginBackLink: '← Back to Home',
-        signupTitle: '📝 Sign Up',
-        signupUsernameLabel: 'Username',
-        signupEmailLabel: 'Email',
-        signupPasswordLabel: 'Password',
-        signupPasswordHint: 'Min 8 chars, include uppercase, lowercase and number',
-        signupConfirmLabel: 'Confirm Password',
-        signupBtn: 'Sign Up',
-        signupFooterText: 'Already have an account?',
-        signupFooterLink: 'Login',
-        signupBackLink: '← Back to Home',
-        profileTitle: '👤 Profile',
-        profileBackBtn: '🎯 Back to Game',
-        profileLogoutBtn: '🚪 Logout',
-        profileLessonsLabel: 'Completed Lessons',
-        profileScoreLabel: 'Total Score',
-        profileStreakLabel: 'Day Streak',
-        profileEditBtn: '✏️ Edit Profile',
-        lessonsTitle: '📚 Select Level',
-        lessonsProfileBtn: '👤 Profile',
-        lessonsHomeBtn: '🏠 Home',
-        timerText: 'Ready?',
-        nextNoteLabel: 'NEXT NOTE',
-        scoreLabel: 'SCORE',
-        comboLabel: 'COMBO',
-        accuracyLabel: 'ACC',
-        pauseBtn: '⏸ PAUSE',
-        resumeBtn: '▶ RESUME',
-        speedLabel: 'SPEED',
-        progressLabel: 'NOTES',
-        endGameBtn: '✕ End',
-        recordBtn: '🎤 Record Practice',
-        recordStatus: 'Tap to record',
-        resultLabel: 'Final Score',
-        rHitsLabel: 'Correct Hits',
-        rAccuracyLabel: 'Accuracy',
-        rComboLabel: 'Best COMBO',
-        retryBtn: '🔄 Play Again',
-        backLessonsBtn: '📚 Back to Levels',
-        homeBtn: '🏠 Home',
-        settingsTitle: '⚙️ Settings',
-        settingsBackBtn: '🏠 Back',
-        langGroupTitle: '🌐 Language',
-        langLabel: 'Language',
-        colorGroupTitle: '🎨 Game Color',
-        colorLabel: 'Main Color',
-        speedGroupTitle: '⚡ Speed & Size',
-        speedSettingLabel: 'Droplet Speed',
-        dropSizeLabel: 'Droplet Size',
-        displayGroupTitle: '🔤 Note Display',
-        displayLabel: 'Display Mode',
-        modeLetters: 'Letters (A, B, C)',
-        modeNumbers: 'Numbers (1, 2, 3)',
-        fa: 'Persian',
-        en: 'English',
-        done: '✅ Completed',
-        locked: '🔒'
+        welcomeSubtitle: 'Learn Handpan • Play • Improve', welcomeStart: '▶ Start', welcomeLogin: '🔑 Login', welcomeSignup: '📝 Sign Up', welcomeSettings: '⚙️ Settings',
+        loginTitle: '🔑 Login', loginUsernameLabel: 'Username or Email', loginPasswordLabel: 'Password', loginBtn: 'Login',
+        loginFooterText: "Don't have an account?", loginFooterLink: 'Sign up', loginBackLink: '← Back to Home',
+        signupTitle: '📝 Sign Up', signupUsernameLabel: 'Username', signupEmailLabel: 'Email', signupPasswordLabel: 'Password',
+        signupPasswordHint: 'Min 8 chars, include uppercase, lowercase and number', signupConfirmLabel: 'Confirm Password', signupBtn: 'Sign Up',
+        signupFooterText: 'Already have an account?', signupFooterLink: 'Login', signupBackLink: '← Back to Home',
+        profileTitle: '👤 Profile', profileBackBtn: '🎯 Back to Game', profileLogoutBtn: '🚪 Logout',
+        profileLessonsLabel: 'Completed Lessons', profileScoreLabel: 'Total Score', profileStreakLabel: 'Day Streak', profileEditBtn: '✏️ Edit Profile',
+        lessonsTitle: '📚 Select Level', lessonsProfileBtn: '👤 Profile', lessonsHomeBtn: '🏠 Home',
+        timerText: 'Ready?', nextNoteLabel: 'NEXT NOTE', scoreLabel: 'SCORE', comboLabel: 'COMBO', accuracyLabel: 'ACC',
+        pauseBtn: '⏸ PAUSE', resumeBtn: '▶ RESUME', speedLabel: 'SPEED', progressLabel: 'NOTES', endGameBtn: '✕ End',
+        recordBtn: '🎤 Record Practice', recordStatus: 'Tap to record',
+        resultLabel: 'Final Score', rHitsLabel: 'Correct Hits', rAccuracyLabel: 'Accuracy', rComboLabel: 'Best COMBO',
+        retryBtn: '🔄 Play Again', backLessonsBtn: '📚 Back to Levels', homeBtn: '🏠 Home',
+        settingsTitle: '⚙️ Settings', settingsBackBtn: '🏠 Back', langGroupTitle: '🌐 Language', langLabel: 'Language',
+        colorGroupTitle: '🎨 Game Color', colorLabel: 'Main Color', speedGroupTitle: '⚡ Speed & Size',
+        speedSettingLabel: 'Droplet Speed', dropSizeLabel: 'Droplet Size', displayGroupTitle: '🔤 Note Display', displayLabel: 'Display Mode',
+        modeLetters: 'Letters (A, B, C)', modeNumbers: 'Numbers (1, 2, 3)', fa: 'Persian', en: 'English', done: '✅ Completed', locked: '🔒'
     }
 };
 
 // =========================================================
-// مدیریت کاربران
+// کاربران
 // =========================================================
 function getUsers() { return JSON.parse(localStorage.getItem('wepan_users') || '[]'); }
 function saveUsers(users) { localStorage.setItem('wepan_users', JSON.stringify(users)); }
-function getCurrentUser() {
-    const data = localStorage.getItem('wepan_current_user');
-    return data ? JSON.parse(data) : null;
-}
+function getCurrentUser() { const data = localStorage.getItem('wepan_current_user'); return data ? JSON.parse(data) : null; }
 function setCurrentUser(user) { localStorage.setItem('wepan_current_user', JSON.stringify(user)); }
 function clearCurrentUser() { localStorage.removeItem('wepan_current_user'); }
 
-// =========================================================
-// نمایش صفحات
-// =========================================================
 function showPage(pageId) {
     const pages = ['welcomePage', 'loginPage', 'signupPage', 'profilePage', 'lessonsPage', 'gamePage', 'resultPage', 'settingsPage'];
     pages.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
             el.style.display = (id === pageId) ? 
-                (id === 'loginPage' || id === 'signupPage' || id === 'profilePage' || id === 'welcomePage' ? 'flex' : 'block') : 
-                'none';
+                (id === 'loginPage' || id === 'signupPage' || id === 'profilePage' || id === 'welcomePage' ? 'flex' : 'block') : 'none';
         }
     });
 }
 function goHome() { showPage('welcomePage'); updateWelcomeStats(); }
 function showLogin() { document.getElementById('loginError').textContent = ''; showPage('loginPage'); }
-function showSignup() {
-    document.getElementById('signupError').textContent = '';
-    document.getElementById('signupSuccess').textContent = '';
-    showPage('signupPage');
-}
+function showSignup() { document.getElementById('signupError').textContent = ''; document.getElementById('signupSuccess').textContent = ''; showPage('signupPage'); }
 function showProfile() { updateProfilePage(); showPage('profilePage'); }
 function showLessons() { showPage('lessonsPage'); renderLessons(); }
 function showSettings() {
@@ -819,11 +690,7 @@ function showSettings() {
     document.getElementById('dropSizeRange').value = DROPLET_SCALE;
     document.getElementById('dropSizeValueDisplay').textContent = DROPLET_SCALE;
 }
-function checkAuthAndStart() {
-    const user = getCurrentUser();
-    if (user) showLessons();
-    else showLogin();
-}
+function checkAuthAndStart() { const user = getCurrentUser(); if (user) showLessons(); else showLogin(); }
 
 // =========================================================
 // اعتبارسنجی
@@ -853,27 +720,15 @@ function signupUser() {
     const confirm = document.getElementById('signupConfirm').value;
     const errorEl = document.getElementById('signupError');
     const successEl = document.getElementById('signupSuccess');
-    errorEl.textContent = '';
-    successEl.textContent = '';
-    
-    if (!username || !email || !password || !confirm) {
-        errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید';
-        return;
-    }
-    const ue = validateUsername(username);
-    if (ue) { errorEl.textContent = '❌ ' + ue; return; }
-    const ee = validateEmail(email);
-    if (ee) { errorEl.textContent = '❌ ' + ee; return; }
-    const pe = validatePassword(password);
-    if (pe.length > 0) { errorEl.textContent = '❌ رمز عبور: ' + pe.join('، '); return; }
+    errorEl.textContent = ''; successEl.textContent = '';
+    if (!username || !email || !password || !confirm) { errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید'; return; }
+    const ue = validateUsername(username); if (ue) { errorEl.textContent = '❌ ' + ue; return; }
+    const ee = validateEmail(email); if (ee) { errorEl.textContent = '❌ ' + ee; return; }
+    const pe = validatePassword(password); if (pe.length > 0) { errorEl.textContent = '❌ رمز عبور: ' + pe.join('، '); return; }
     if (password !== confirm) { errorEl.textContent = '❌ رمز عبور و تکرار آن مطابقت ندارند'; return; }
     const users = getUsers();
-    if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
-        errorEl.textContent = '❌ این نام کاربری قبلاً ثبت شده است'; return;
-    }
-    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-        errorEl.textContent = '❌ این ایمیل قبلاً ثبت شده است'; return;
-    }
+    if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) { errorEl.textContent = '❌ این نام کاربری قبلاً ثبت شده است'; return; }
+    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) { errorEl.textContent = '❌ این ایمیل قبلاً ثبت شده است'; return; }
     users.push({ username, email, password });
     saveUsers(users);
     successEl.textContent = '✅ ثبت‌نام با موفقیت انجام شد!';
@@ -890,10 +745,7 @@ function loginUser() {
     const errorEl = document.getElementById('loginError');
     if (!username || !password) { errorEl.textContent = '❌ لطفاً همه فیلدها را پر کنید'; return; }
     const users = getUsers();
-    const user = users.find(u => 
-        (u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === username.toLowerCase()) && 
-        u.password === password
-    );
+    const user = users.find(u => (u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === username.toLowerCase()) && u.password === password);
     if (!user) { errorEl.textContent = '❌ نام کاربری یا رمز عبور اشتباه است'; return; }
     setCurrentUser({ username: user.username, email: user.email });
     errorEl.textContent = '';
@@ -908,8 +760,7 @@ function editProfile() {
     const newUsername = prompt('نام کاربری جدید:', user.username);
     if (newUsername && newUsername.trim() && newUsername.trim() !== user.username) {
         const trimmed = newUsername.trim();
-        const ue = validateUsername(trimmed);
-        if (ue) { alert('❌ ' + ue); return; }
+        const ue = validateUsername(trimmed); if (ue) { alert('❌ ' + ue); return; }
         const users = getUsers();
         const found = users.find(u => u.username.toLowerCase() === trimmed.toLowerCase() && u.username !== user.username);
         if (found) { alert('❌ این نام کاربری قبلاً ثبت شده است'); return; }
@@ -1029,35 +880,27 @@ function setLanguage(lang, btn) {
 }
 
 // =========================================================
-// سیستم صدا
+// صدا
 // =========================================================
 let audioCtx = null;
 let soundEnabled = true;
 let soundBuffers = {};
 
 const SOUND_FILES = {
-    'A1': 'A1.wav', 'D2': 'D2.wav', 'C3': 'C3.wav',
-    'E4': 'E4.wav', 'F5': 'F5.wav', 'Bb6': 'Bb6.wav',
-    'G7': 'G7.wav', 'A8': 'A8.wav', 'D': 'D.wav',
-    'miss': 'miss.wav', 'combo': 'combo.wav'
+    'A1': 'A1.wav', 'D2': 'D2.wav', 'C3': 'C3.wav', 'E4': 'E4.wav', 'F5': 'F5.wav',
+    'Bb6': 'Bb6.wav', 'G7': 'G7.wav', 'A8': 'A8.wav', 'D': 'D.wav', 'miss': 'miss.wav', 'combo': 'combo.wav'
 };
 
 const FREQS = {
-    'A1': 110, 'D2': 146.83, 'C3': 130.81,
-    'E4': 329.63, 'F5': 698.46, 'Bb6': 1864.66,
-    'G7': 3135.96, 'A8': 3520, 'D': 293.66,
-    'miss': 150, 'combo': 880
+    'A1': 110, 'D2': 146.83, 'C3': 130.81, 'E4': 329.63, 'F5': 698.46,
+    'Bb6': 1864.66, 'G7': 3135.96, 'A8': 3520, 'D': 293.66, 'miss': 150, 'combo': 880
 };
 
 function initAudio() {
     if (!audioCtx) {
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) { return null; }
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
     }
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(e => {});
-    }
+    if (audioCtx.state === 'suspended') { audioCtx.resume().catch(e => {}); }
     return audioCtx;
 }
 
@@ -1065,16 +908,10 @@ async function loadSounds() {
     const ctx = initAudio();
     if (!ctx) return;
     const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000));
-    try {
-        await Promise.race([loadAllWavs('/sounds/'), timeoutPromise]);
-        console.log('✅ WAV از sounds/ لود شد');
-    } catch (e) {
-        try {
-            await Promise.race([loadAllWavs('/static/sounds/'), timeoutPromise]);
-            console.log('✅ WAV از static/sounds/ لود شد');
-        } catch (e2) {
-            console.warn('⚠️ WAV لود نشد، از صدای مصنوعی استفاده می‌شود');
-        }
+    try { await Promise.race([loadAllWavs('/sounds/'), timeoutPromise]); console.log('✅ WAV از sounds/'); }
+    catch (e) {
+        try { await Promise.race([loadAllWavs('/static/sounds/'), timeoutPromise]); console.log('✅ WAV از static/sounds/'); }
+        catch (e2) { console.warn('⚠️ WAV لود نشد، مصنوعی'); }
     }
 }
 
@@ -1111,51 +948,64 @@ async function loadAllWavs(basePath) {
     }
 }
 
-function playSyntheticSound(note, volume = 0.4) {
+function playSyntheticSound(note, volume = 0.4, when = null) {
     const ctx = initAudio();
     if (!ctx) return;
     try {
+        if (when === null) when = ctx.currentTime;
         let freq = FREQS[note] || 440;
-        const now = ctx.currentTime;
         const duration = 1.5;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
+        osc.frequency.setValueAtTime(freq, when);
         const vib = ctx.createOscillator();
         const vibG = ctx.createGain();
         vib.frequency.value = 3.5;
         vibG.gain.value = 1.5;
         vib.connect(vibG); vibG.connect(osc.frequency);
-        vib.start(now); vib.stop(now + duration);
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(volume * 0.8, now + 0.02);
-        gain.gain.linearRampToValueAtTime(volume * 0.6, now + 0.1);
-        gain.gain.exponentialRampToValueAtTime(volume * 0.3, now + 0.4);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        vib.start(when); vib.stop(when + duration);
+        gain.gain.setValueAtTime(0, when);
+        gain.gain.linearRampToValueAtTime(volume * 0.8, when + 0.02);
+        gain.gain.linearRampToValueAtTime(volume * 0.6, when + 0.1);
+        gain.gain.exponentialRampToValueAtTime(volume * 0.3, when + 0.4);
+        gain.gain.exponentialRampToValueAtTime(0.001, when + duration);
         osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(now); osc.stop(now + duration + 0.1);
+        osc.start(when); osc.stop(when + duration + 0.1);
     } catch (e) {}
 }
 
+// ===== زمان‌بندی هماهنگ برای لمس چندتایی =====
+// همه صداها 30ms در آینده زمان‌بندی می‌شن.
+// اگه نت دوم در همون بازه بیاد، از همون timestamp استفاده می‌کنه → هر دو با هم پخش می‌شن.
+let lastScheduledWhen = 0;
+const SYNC_WINDOW = 0.035; // 35ms
+
 function playSound(note, volume = 0.4) {
     if (!soundEnabled) return;
+    const ctx = initAudio();
+    if (!ctx) return;
+    
+    // اگر آخرین زمان‌بندی هنوز در آینده‌ست و در بازه sync قرار داره، از همون استفاده کن
+    let when = ctx.currentTime + 0.03; // 30ms تاخیر ثابت
+    if (lastScheduledWhen > when && (lastScheduledWhen - when) < SYNC_WINDOW) {
+        when = lastScheduledWhen;
+    }
+    lastScheduledWhen = when;
+    
     if (soundBuffers[note]) {
         try {
-            const ctx = initAudio();
-            if (!ctx) return;
             const source = ctx.createBufferSource();
             source.buffer = soundBuffers[note];
             const gain = ctx.createGain();
-            const now = ctx.currentTime;
-            gain.gain.setValueAtTime(volume, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+            gain.gain.setValueAtTime(volume, when);
+            gain.gain.exponentialRampToValueAtTime(0.001, when + 1.2);
             source.connect(gain); gain.connect(ctx.destination);
-            source.start(now); source.stop(now + 1.3);
+            source.start(when); source.stop(when + 1.3);
             return;
         } catch (e) {}
     }
-    playSyntheticSound(note, volume);
+    playSyntheticSound(note, volume, when);
 }
 
 function playMissSound() { playSound('miss', 0.3); }
@@ -1164,10 +1014,7 @@ function playComboSound() { playSound('combo', 0.5); }
 function toggleSound() {
     soundEnabled = !soundEnabled;
     const btn = document.getElementById('soundToggle');
-    if (btn) {
-        btn.textContent = soundEnabled ? '🔊' : '🔇';
-        btn.classList.toggle('active', soundEnabled);
-    }
+    if (btn) { btn.textContent = soundEnabled ? '🔊' : '🔇'; btn.classList.toggle('active', soundEnabled); }
 }
 
 document.getElementById('testSoundBtn').addEventListener('click', function() {
@@ -1189,7 +1036,6 @@ const NOTE_X = {
     "D": 430, "G7": 500, "F5": 595, "C3": 690, "A1": 760
 };
 
-// ===== درس عادی: هنگ کوچک با مرکز (430,145) شعاع 180 =====
 const HANDPAN_POSITIONS = {
     "A1": [472, 247, 30], "D2": [388, 247, 30],
     "C3": [533, 186, 30], "E4": [327, 186, 30],
@@ -1198,7 +1044,6 @@ const HANDPAN_POSITIONS = {
     "D": [430, 145, 48]
 };
 
-// ===== فلبداهه: هنگ بزرگ با مرکز (410,250) شعاع 220 =====
 const HANDPAN_POSITIONS_FREE = {
     "A1": [461, 374, 38], "D2": [359, 374, 38],
     "C3": [536, 300, 38], "E4": [284, 300, 38],
@@ -1208,25 +1053,19 @@ const HANDPAN_POSITIONS_FREE = {
 };
 
 const NOTE_COLORS = {
-    "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8",
-    "E4": "#2dd4bf", "F5": "#818cf8", "Bb6": "#fbbf24",
-    "G7": "#a78bfa", "A8": "#fb7185", "D": "#60a5fa"
+    "A1": "#f472b6", "D2": "#34d399", "C3": "#38bdf8", "E4": "#2dd4bf", "F5": "#818cf8",
+    "Bb6": "#fbbf24", "G7": "#a78bfa", "A8": "#fb7185", "D": "#60a5fa"
 };
 const NOTE_LABELS = {
-    "A1": "A", "D2": "D", "C3": "C", "E4": "E",
-    "F5": "F", "Bb6": "Bb", "G7": "G", "A8": "A", "D": "D"
+    "A1": "A", "D2": "D", "C3": "C", "E4": "E", "F5": "F",
+    "Bb6": "Bb", "G7": "G", "A8": "A", "D": "D"
 };
-const NOTE_TO_NUMBER = {
-    'A1': 1, 'D2': 2, 'C3': 3, 'E4': 4,
-    'F5': 5, 'Bb6': 6, 'G7': 7, 'A8': 8, 'D': 'D'
-};
+const NOTE_TO_NUMBER = { 'A1': 1, 'D2': 2, 'C3': 3, 'E4': 4, 'F5': 5, 'Bb6': 6, 'G7': 7, 'A8': 8, 'D': 'D' };
 const ALL_NOTES = Object.keys(NOTE_X);
 const HIT_ORDER = [
-    { number: 2, note: 'D2' }, { number: 4, note: 'E4' },
-    { number: 6, note: 'Bb6' }, { number: 8, note: 'A8' },
-    { number: 'D', note: 'D' }, { number: 7, note: 'G7' },
-    { number: 5, note: 'F5' }, { number: 3, note: 'C3' },
-    { number: 1, note: 'A1' }
+    { number: 2, note: 'D2' }, { number: 4, note: 'E4' }, { number: 6, note: 'Bb6' },
+    { number: 8, note: 'A8' }, { number: 'D', note: 'D' }, { number: 7, note: 'G7' },
+    { number: 5, note: 'F5' }, { number: 3, note: 'C3' }, { number: 1, note: 'A1' }
 ];
 
 let displayMode = localStorage.getItem('wepan_display_mode') || 'letters';
@@ -1243,10 +1082,9 @@ function setDisplayMode(mode, btn) {
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     if (document.getElementById('gamePage').style.display === 'block') {
-        drawHandpan();
-        drawFallingArea();
-        if (currentTarget && !isFreeMode) {
-            document.getElementById('targetNote').textContent = getNoteDisplay(currentTarget);
+        drawHandpan(); drawFallingArea();
+        if (currentTargets.length > 0 && !isFreeMode) {
+            document.getElementById('targetNote').textContent = currentTargets.map(n => getNoteDisplay(n)).join(' • ');
         }
     }
     renderLessons();
@@ -1311,12 +1149,14 @@ let currentLesson = null;
 let score = 0, hits = 0, misses = 0, combo = 0, bestCombo = 0, notesPlayed = 0;
 let isPaused = false, gameRunning = false, isGameReady = false;
 let speedMultiplier = 1.0;
-let fallingNote = null, currentTarget = null, noteY = 20, hitY = 220;
+let fallingNotes = [];
+let currentTargets = [];
+let hitY = 220;
 let animationId = null, lastTime = 0;
 let timerInterval = null;
-let canvas, ctx;           // Canvas بارش نت
-let panCanvas, panCtx;      // Canvas هنگ عادی
-let panCanvasFree, panCtxFree;  // Canvas هنگ فلبداهه
+let canvas, ctx;
+let panCanvas, panCtx;
+let panCanvasFree, panCtxFree;
 let isGameInitialized = false;
 let GAME_SPEED = 200;
 let DROPLET_SCALE = 0.65;
@@ -1325,6 +1165,25 @@ let completed = JSON.parse(localStorage.getItem('wepan_completed') || '[]');
 let streak = parseInt(localStorage.getItem('wepan_streak') || '0');
 let isFreeMode = false;
 
+// ===== جلوگیری از صدا زدن دوباره spawnNotes =====
+let spawnScheduled = false;
+let spawnTimer = null;
+
+function scheduleSpawn(delay) {
+    if (spawnScheduled) return;
+    spawnScheduled = true;
+    spawnTimer = setTimeout(() => {
+        spawnScheduled = false;
+        spawnTimer = null;
+        spawnNotes();
+    }, delay);
+}
+
+function cancelSpawn() {
+    if (spawnTimer) { clearTimeout(spawnTimer); spawnTimer = null; }
+    spawnScheduled = false;
+}
+
 // =========================================================
 // شروع درس
 // =========================================================
@@ -1332,23 +1191,22 @@ function startLesson(lessonId) {
     currentLesson = LESSONS.find(l => l.id === lessonId);
     if (!currentLesson) return;
     initAudio();
-    
     isFreeMode = (lessonId === 0);
-    
+    cancelSpawn();
+
     document.getElementById('lessonsPage').style.display = 'none';
     document.getElementById('gamePage').style.display = 'block';
     document.getElementById('resultPage').style.display = 'none';
     document.getElementById('settingsPage').style.display = 'none';
-    
+
     const title = currentLang === 'fa' ? currentLesson.title_fa : currentLesson.title_en;
     document.getElementById('gameTitle').textContent = `🥁 ${title}`;
-    
+
     if (!isGameInitialized) {
         setupCanvases();
         isGameInitialized = true;
     }
-    
-    // ===== نمایش/مخفی کردن Canvas مناسب =====
+
     if (isFreeMode) {
         document.getElementById('handpanArea').style.display = 'none';
         document.getElementById('handpanAreaFree').style.display = 'block';
@@ -1357,11 +1215,11 @@ function startLesson(lessonId) {
         document.getElementById('handpanAreaFree').style.display = 'none';
     }
     resizeCanvases();
-    
+
     resetGame();
     drawHandpan();
     drawFallingArea();
-    
+
     if (isFreeMode) {
         document.getElementById('timerOverlay').style.display = 'none';
         document.getElementById('nextNoteContainer').style.display = 'none';
@@ -1392,15 +1250,16 @@ function startLesson(lessonId) {
         startTimer(() => {
             isGameReady = true;
             gameRunning = true;
-            spawnNote();
+            spawnNotes();
         });
     }
 }
 
 function resetGame() {
     score = 0; hits = 0; misses = 0; combo = 0; bestCombo = 0; notesPlayed = 0;
-    isPaused = false; fallingNote = null; currentTarget = null; lastTime = 0;
+    isPaused = false; fallingNotes = []; currentTargets = []; lastTime = 0;
     isGameReady = false; gameRunning = false;
+    cancelSpawn();
     if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     document.getElementById('timerOverlay').style.display = 'none';
@@ -1429,7 +1288,6 @@ function resizeCanvases() {
     const w = Math.min(820, canvas.parentElement.clientWidth - 10);
     canvas.style.width = w + 'px';
     canvas.style.height = (w * 280 / 820) + 'px';
-    
     if (panCanvas) {
         panCanvas.style.width = w + 'px';
         panCanvas.style.height = (w * 280 / 820) + 'px';
@@ -1476,13 +1334,9 @@ function drawFallingArea() {
     ctx.fillText('HIT', W-43, hitY-36);
 }
 
-// ===== رسم هنگ‌درام - دو Canvas جداگانه =====
 function drawHandpan(highlight=null) {
-    if (isFreeMode) {
-        drawHandpanFree(highlight);
-    } else {
-        drawHandpanNormal(highlight);
-    }
+    if (isFreeMode) drawHandpanFree(highlight);
+    else drawHandpanNormal(highlight);
 }
 
 function drawHandpanNormal(highlight) {
@@ -1628,19 +1482,41 @@ function startTimer(callback) {
     }, 1000);
 }
 
-function spawnNote() {
+// ===== بارش نت: ۷۰٪ تکی، ۳۰٪ دوتایی =====
+function spawnNotes() {
     if (isFreeMode) return;
     if (!gameRunning || !isGameReady) return;
     if (notesPlayed >= TOTAL_NOTES) { finishGame(); return; }
-    let note = ALL_NOTES[Math.floor(Math.random() * ALL_NOTES.length)];
-    currentTarget = note;
-    noteY = 18;
-    document.getElementById('targetNote').textContent = getNoteDisplay(note);
-    document.getElementById('targetNote').style.color = NOTE_COLORS[note] || '#38bdf8';
+
+    let count = 1;
+    if (Math.random() < 0.3 && notesPlayed < TOTAL_NOTES - 1) count = 2;
+    count = Math.min(count, TOTAL_NOTES - notesPlayed);
+
+    const selected = [];
+    const available = [...ALL_NOTES];
+    for (let i = 0; i < count; i++) {
+        if (available.length === 0) break;
+        const idx = Math.floor(Math.random() * available.length);
+        selected.push(available[idx]);
+        available.splice(idx, 1);
+    }
+
+    currentTargets = selected;
+    document.getElementById('targetNote').textContent = selected.map(n => getNoteDisplay(n)).join(' • ');
+    document.getElementById('targetNote').style.color = '#38bdf8';
     document.getElementById('progressLabel').textContent = `NOTES ${notesPlayed+1} / ${TOTAL_NOTES}`;
-    notesPlayed++;
-    drawHandpan(note);
-    fallingNote = { note: note, x: NOTE_X[note] || 430, y: noteY };
+    notesPlayed += count;
+
+    selected.forEach((note, i) => {
+        fallingNotes.push({
+            note: note,
+            x: NOTE_X[note] || 430,
+            y: 18 - i * 12,
+            speed: GAME_SPEED * speedMultiplier
+        });
+    });
+
+    drawHandpan();
     lastTime = 0;
     if (animationId) cancelAnimationFrame(animationId);
     animateNote();
@@ -1648,27 +1524,43 @@ function spawnNote() {
 
 function animateNote(timestamp) {
     if (isFreeMode) return;
-    if (!fallingNote || !gameRunning || !isGameReady) return;
+    if (!gameRunning || !isGameReady) return;
     if (isPaused) { animationId = requestAnimationFrame(animateNote); return; }
     if (!timestamp) timestamp = performance.now();
     let dt = lastTime ? Math.min((timestamp-lastTime)/1000, 0.04) : 0.016;
     lastTime = timestamp;
-    let speed = GAME_SPEED * speedMultiplier;
-    fallingNote.y += speed * dt;
-    drawFallingArea();
-    drawDroplet(fallingNote.x, fallingNote.y, fallingNote.note);
-    if (Math.abs(fallingNote.y - hitY) < 50) {
-        let grad = ctx.createRadialGradient(fallingNote.x,fallingNote.y,3,fallingNote.x,fallingNote.y,30);
-        grad.addColorStop(0,'rgba(255,255,255,0.15)');
-        grad.addColorStop(1,'rgba(255,255,255,0)');
-        ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(fallingNote.x,fallingNote.y,30,0,Math.PI*2); ctx.fill();
+
+    for (let i = fallingNotes.length - 1; i >= 0; i--) {
+        const fn = fallingNotes[i];
+        fn.y += fn.speed * dt;
+        if (fn.y > hitY + 35) {
+            misses++; combo = 0; updateStats();
+            playMissSound();
+            // حذف از هدف‌ها هم
+            currentTargets = currentTargets.filter(n => n !== fn.note || fallingNotes.some(f => f.note === fn.note && f !== fn));
+            fallingNotes.splice(i, 1);
+        }
     }
-    if (fallingNote.y > hitY + 35) {
-        misses++; combo = 0; updateStats();
-        playMissSound();
-        fallingNote = null;
-        if (notesPlayed >= TOTAL_NOTES) { setTimeout(finishGame, 200); return; }
-        setTimeout(spawnNote, 200);
+
+    drawFallingArea();
+    for (const fn of fallingNotes) {
+        drawDroplet(fn.x, fn.y, fn.note);
+        if (Math.abs(fn.y - hitY) < 50) {
+            let grad = ctx.createRadialGradient(fn.x,fn.y,3,fn.x,fn.y,30);
+            grad.addColorStop(0,'rgba(255,255,255,0.15)');
+            grad.addColorStop(1,'rgba(255,255,255,0)');
+            ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(fn.x,fn.y,30,0,Math.PI*2); ctx.fill();
+        }
+    }
+
+    // ✅ استفاده از scheduleSpawn برای جلوگیری از صدا زدن دوباره
+    if (fallingNotes.length === 0 && gameRunning) {
+        if (notesPlayed >= TOTAL_NOTES) {
+            scheduleSpawn(150);  // برای finishGame
+            setTimeout(() => { cancelSpawn(); finishGame(); }, 150);
+        } else {
+            scheduleSpawn(250);
+        }
         return;
     }
     animationId = requestAnimationFrame(animateNote);
@@ -1676,29 +1568,45 @@ function animateNote(timestamp) {
 
 function hitNote(note) {
     if (!gameRunning || !isGameReady) return;
-    
+
     if (isFreeMode) {
         playSound(note, 0.5);
         drawHandpan(note);
         setTimeout(() => drawHandpan(), 250);
         return;
     }
-    
-    if (!fallingNote || isPaused) return;
-    if (note !== currentTarget) { combo = 0; updateStats(); return; }
-    let dist = Math.abs(fallingNote.y - hitY);
-    if (dist <= 55) {
-        let pts = Math.max(50, 160 - Math.floor(dist * 1.6));
-        score += pts + combo * 10;
-        hits++; combo++;
-        if (combo > bestCombo) bestCombo = combo;
-        playSound(note, 0.5);
-        if (combo > 0 && combo % 5 === 0) setTimeout(() => playComboSound(), 80);
-        drawHandpan(note);
-        fallingNote = null;
-        updateStats();
-        if (notesPlayed >= TOTAL_NOTES) { setTimeout(finishGame, 150); return; }
-        setTimeout(spawnNote, 150);
+    if (isPaused) return;
+    if (!currentTargets.includes(note)) { combo = 0; updateStats(); return; }
+
+    let bestIdx = -1, bestDist = Infinity;
+    for (let i = 0; i < fallingNotes.length; i++) {
+        if (fallingNotes[i].note === note) {
+            const d = Math.abs(fallingNotes[i].y - hitY);
+            if (d < bestDist) { bestDist = d; bestIdx = i; }
+        }
+    }
+    if (bestIdx === -1 || bestDist > 55) return;
+
+    let pts = Math.max(50, 160 - Math.floor(bestDist * 1.6));
+    score += pts + combo * 10;
+    hits++; combo++;
+    if (combo > bestCombo) bestCombo = combo;
+
+    playSound(note, 0.5);
+    if (combo > 0 && combo % 5 === 0) setTimeout(() => playComboSound(), 80);
+
+    fallingNotes.splice(bestIdx, 1);
+    currentTargets = currentTargets.filter(n => n !== note);
+    drawHandpan(note);
+    updateStats();
+
+    // ✅ اگر همه قطرات رفتند → scheduleSpawn
+    if (fallingNotes.length === 0 && gameRunning) {
+        if (notesPlayed >= TOTAL_NOTES) {
+            setTimeout(finishGame, 150);
+        } else {
+            scheduleSpawn(200);
+        }
     }
 }
 
@@ -1713,11 +1621,12 @@ function updateStats() {
 
 function finishGame() {
     if (isFreeMode) return;
+    cancelSpawn();
     gameRunning = false;
     isGameReady = false;
     if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    fallingNote = null;
+    fallingNotes = []; currentTargets = [];
     document.getElementById('timerOverlay').style.display = 'none';
     let total = hits + misses;
     let acc = total > 0 ? Math.round((hits/total)*100) : 0;
@@ -1758,16 +1667,18 @@ function retryGame() {
     startTimer(() => {
         isGameReady = true;
         gameRunning = true;
-        spawnNote();
+        spawnNotes();
     });
 }
 
 function backToLessons() {
+    cancelSpawn();
     if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     gameRunning = false;
     isGameReady = false;
     isFreeMode = false;
+    fallingNotes = []; currentTargets = [];
     document.getElementById('gamePage').style.display = 'none';
     document.getElementById('resultPage').style.display = 'none';
     document.getElementById('settingsPage').style.display = 'none';
@@ -1776,14 +1687,8 @@ function backToLessons() {
     renderLessons();
 }
 
-function updateSpeedSetting(val) {
-    GAME_SPEED = parseInt(val);
-    document.getElementById('speedValueDisplay').textContent = val;
-}
-function updateDropSize(val) {
-    DROPLET_SCALE = parseFloat(val);
-    document.getElementById('dropSizeValueDisplay').textContent = val;
-}
+function updateSpeedSetting(val) { GAME_SPEED = parseInt(val); document.getElementById('speedValueDisplay').textContent = val; }
+function updateDropSize(val) { DROPLET_SCALE = parseFloat(val); document.getElementById('dropSizeValueDisplay').textContent = val; }
 function setColor(color, btn) {
     mainColor = color;
     document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
@@ -1803,42 +1708,73 @@ document.getElementById('pauseButton').addEventListener('click', function() {
     isPaused = !isPaused;
     this.textContent = isPaused ? TEXTS[currentLang].resumeBtn : TEXTS[currentLang].pauseBtn;
 });
-document.getElementById('speedSelect').addEventListener('change', function() {
-    speedMultiplier = parseFloat(this.value);
-});
+document.getElementById('speedSelect').addEventListener('change', function() { speedMultiplier = parseFloat(this.value); });
 document.getElementById('endGameBtn').addEventListener('click', function() {
     if (isFreeMode) { backToLessons(); return; }
     if (confirm('آیا می‌خوای بازی رو تموم کنی؟')) { finishGame(); }
 });
 
-// ===== کلیک روی هنگ عادی =====
-document.getElementById('handpanCanvas').addEventListener('click', function(e) {
+// ===== هندلر مشترک برای کلیک و لمس چندتایی =====
+function handleHit(clientX, clientY, rect, scaleY, positions) {
+    const scaleX = 820 / rect.width;
+    const sy = scaleY / rect.height;
+    const mx = (clientX - rect.left) * scaleX;
+    const my = (clientY - rect.top) * sy;
+    for (let [note, [x, y, r]] of Object.entries(positions)) {
+        if (Math.sqrt((mx-x)**2 + (my-y)**2) <= r) {
+            hitNote(note);
+            return true;
+        }
+    }
+    return false;
+}
+
+// ===== هنگ عادی =====
+const handpanCanvasEl = document.getElementById('handpanCanvas');
+let lastTouchNormal = 0;
+
+handpanCanvasEl.addEventListener('touchstart', function(e) {
     if (isFreeMode) return;
     if (!gameRunning || !isGameReady) return;
-    let rect = this.getBoundingClientRect();
-    let scaleX = 820/rect.width, scaleY = 280/rect.height;
-    let mx = (e.clientX - rect.left)*scaleX, my = (e.clientY - rect.top)*scaleY;
-    for (let [note, [x, y, r]] of Object.entries(HANDPAN_POSITIONS)) {
-        if (Math.sqrt((mx-x)**2 + (my-y)**2) <= r) {
-            hitNote(note);
-            return;
-        }
+    e.preventDefault();
+    lastTouchNormal = Date.now();
+    const rect = this.getBoundingClientRect();
+    for (let i = 0; i < e.changedTouches.length; i++) {
+        const t = e.changedTouches[i];
+        handleHit(t.clientX, t.clientY, rect, 280, HANDPAN_POSITIONS);
     }
+}, { passive: false });
+
+handpanCanvasEl.addEventListener('click', function(e) {
+    if (isFreeMode) return;
+    if (Date.now() - lastTouchNormal < 500) return;
+    if (!gameRunning || !isGameReady) return;
+    const rect = this.getBoundingClientRect();
+    handleHit(e.clientX, e.clientY, rect, 280, HANDPAN_POSITIONS);
 });
 
-// ===== کلیک روی هنگ فلبداهه =====
-document.getElementById('handpanCanvasFree').addEventListener('click', function(e) {
+// ===== هنگ فلبداهه =====
+const handpanCanvasFreeEl = document.getElementById('handpanCanvasFree');
+let lastTouchFree = 0;
+
+handpanCanvasFreeEl.addEventListener('touchstart', function(e) {
     if (!isFreeMode) return;
     if (!gameRunning || !isGameReady) return;
-    let rect = this.getBoundingClientRect();
-    let scaleX = 820/rect.width, scaleY = 500/rect.height;
-    let mx = (e.clientX - rect.left)*scaleX, my = (e.clientY - rect.top)*scaleY;
-    for (let [note, [x, y, r]] of Object.entries(HANDPAN_POSITIONS_FREE)) {
-        if (Math.sqrt((mx-x)**2 + (my-y)**2) <= r) {
-            hitNote(note);
-            return;
-        }
+    e.preventDefault();
+    lastTouchFree = Date.now();
+    const rect = this.getBoundingClientRect();
+    for (let i = 0; i < e.changedTouches.length; i++) {
+        const t = e.changedTouches[i];
+        handleHit(t.clientX, t.clientY, rect, 500, HANDPAN_POSITIONS_FREE);
     }
+}, { passive: false });
+
+handpanCanvasFreeEl.addEventListener('click', function(e) {
+    if (!isFreeMode) return;
+    if (Date.now() - lastTouchFree < 500) return;
+    if (!gameRunning || !isGameReady) return;
+    const rect = this.getBoundingClientRect();
+    handleHit(e.clientX, e.clientY, rect, 500, HANDPAN_POSITIONS_FREE);
 });
 
 document.getElementById('recordButton').addEventListener('click', function() {
@@ -1856,7 +1792,7 @@ document.querySelectorAll('.lang-btn').forEach(b => {
 updateWelcomeStats();
 
 console.log('🎯 WEPAN ready!');
-console.log('✅ دو Canvas جداگانه: عادی (با مستطیل) + فلبداهه (بزرگ)');
+console.log('✅ باگ بارش ۳-۴ تایی رفع شد + پشتیبانی لمسی چندتایی');
 </script>
 </body>
 </html>
